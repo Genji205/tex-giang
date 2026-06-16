@@ -1,20 +1,93 @@
 <template>
-  <div :class="['app-container', theme, { 'sidebar-collapsed': sidebarCollapsed, 'is-print-mode': isPrintMode }]">
+  <div
+    :class="[
+      'app-container',
+      theme,
+      { 'sidebar-collapsed': sidebarCollapsed, 'is-print-mode': isPrintMode },
+    ]"
+  >
     <!-- Sidebar Navigation Drawer (Hidden in standard Print mode) -->
     <aside class="app-sidebar no-print">
       <!-- Sidebar Brand Header -->
       <div class="sidebar-brand">
         <div class="brand-logo-wrapper">
           <svg viewBox="0 0 120 70" class="brand-logo-svg">
-            <text x="12" y="44" font-family="'Times New Roman', Georgia, serif" font-weight="900" font-size="44" fill="currentColor">T</text>
-            <circle cx="56" cy="30" r="16.5" stroke="currentColor" stroke-width="1.8" fill="none" />
-            <circle cx="56" cy="30" r="13.5" stroke="currentColor" stroke-width="1" fill="none" />
-            <line x1="56" y1="30" x2="68" y2="30" stroke="currentColor" stroke-width="2" />
-            <text x="45" y="41" font-family="'Times New Roman', Georgia, serif" font-weight="900" font-size="34" fill="currentColor">G</text>
-            <text x="82" y="44" font-family="'Times New Roman', Georgia, serif" font-weight="900" font-size="44" fill="currentColor">I</text>
-            
-            <rect x="3" y="52" width="114" height="15" fill="none" stroke="currentColor" stroke-width="1" />
-            <text x="60" y="63" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="9.5" text-anchor="middle" letter-spacing="1" fill="currentColor">TEX-GIANG</text>
+            <text
+              x="12"
+              y="44"
+              font-family="'Times New Roman', Georgia, serif"
+              font-weight="900"
+              font-size="44"
+              fill="currentColor"
+            >
+              T
+            </text>
+            <circle
+              cx="56"
+              cy="30"
+              r="16.5"
+              stroke="currentColor"
+              stroke-width="1.8"
+              fill="none"
+            />
+            <circle
+              cx="56"
+              cy="30"
+              r="13.5"
+              stroke="currentColor"
+              stroke-width="1"
+              fill="none"
+            />
+            <line
+              x1="56"
+              y1="30"
+              x2="68"
+              y2="30"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <text
+              x="45"
+              y="41"
+              font-family="'Times New Roman', Georgia, serif"
+              font-weight="900"
+              font-size="34"
+              fill="currentColor"
+            >
+              G
+            </text>
+            <text
+              x="82"
+              y="44"
+              font-family="'Times New Roman', Georgia, serif"
+              font-weight="900"
+              font-size="44"
+              fill="currentColor"
+            >
+              I
+            </text>
+
+            <rect
+              x="3"
+              y="52"
+              width="114"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1"
+            />
+            <text
+              x="60"
+              y="63"
+              font-family="Arial, Helvetica, sans-serif"
+              font-weight="bold"
+              font-size="9.5"
+              text-anchor="middle"
+              letter-spacing="1"
+              fill="currentColor"
+            >
+              TEX-GIANG
+            </text>
           </svg>
         </div>
         <span class="brand-name">Tex-Giang QA</span>
@@ -36,14 +109,20 @@
           <div class="db-status-indicator" :class="dbStatus">
             <span class="status-dot"></span>
             <span class="status-text">
-              {{ dbStatus === 'connected' ? 'Dữ liệu: Live DB' : dbStatus === 'loading' ? 'Đang kết nối...' : 'Dữ liệu: Offline Mock' }}
+              {{
+                dbStatus === "connected"
+                  ? "Dữ liệu: Live DB"
+                  : dbStatus === "loading"
+                  ? "Đang kết nối..."
+                  : "Dữ liệu: Offline Mock"
+              }}
             </span>
           </div>
         </div>
 
         <ul class="nav-list">
-          <li 
-            v-for="tab in tabs" 
+          <li
+            v-for="tab in tabs"
             :key="tab.id"
             :class="['nav-item', { active: activeTab === tab.id }]"
             @click="selectTab(tab.id)"
@@ -59,14 +138,24 @@
       <!-- Sidebar Footer / Controls -->
       <div class="sidebar-footer">
         <!-- Theme Toggle -->
-        <button class="footer-control-btn" @click="toggleTheme" title="Chuyển đổi Sáng / Tối">
-          <span class="control-icon">{{ theme === 'dark' ? '☀️' : '🌙' }}</span>
-          <span class="control-text">{{ theme === 'dark' ? 'Chế độ Sáng' : 'Chế độ Tối' }}</span>
+        <button
+          class="footer-control-btn"
+          @click="toggleTheme"
+          title="Chuyển đổi Sáng / Tối"
+        >
+          <span class="control-icon">{{ theme === "dark" ? "☀️" : "🌙" }}</span>
+          <span class="control-text">{{
+            theme === "dark" ? "Chế độ Sáng" : "Chế độ Tối"
+          }}</span>
         </button>
 
         <!-- Sidebar Collapse Button -->
-        <button class="footer-control-btn collapse-toggle" @click="toggleSidebar" :title="sidebarCollapsed ? 'Mở rộng menu' : 'Thu gọn menu'">
-          <span class="control-icon">{{ sidebarCollapsed ? '➡️' : '⬅️' }}</span>
+        <button
+          class="footer-control-btn collapse-toggle"
+          @click="toggleSidebar"
+          :title="sidebarCollapsed ? 'Mở rộng menu' : 'Thu gọn menu'"
+        >
+          <span class="control-icon">{{ sidebarCollapsed ? "➡️" : "⬅️" }}</span>
           <span class="control-text">Thu Gọn Menu</span>
         </button>
 
@@ -83,8 +172,8 @@
 
     <!-- Main Component Render Area -->
     <main class="app-main">
-      <component 
-        :is="activeComponent" 
+      <component
+        :is="activeComponent"
         v-bind="componentProps"
         @update-data="onUpdateData"
         @update-target-data="onUpdateTargetData"
@@ -97,38 +186,40 @@
 </template>
 
 <script>
-import QualityReport from './components/QualityReport.vue';
-import ComparisonReport from './components/ComparisonReport.vue';
-import TargetTracking from './components/TargetTracking.vue';
-import FinalReport from './components/FinalReport.vue';
-import PagePlaceholder from './components/PagePlaceholder.vue';
-import axios from 'axios';
+import QualityReport from "./components/QualityReport.vue";
+import ComparisonReport from "./components/ComparisonReport.vue";
+import TargetTracking from "./components/TargetTracking.vue";
+import FinalReport from "./components/FinalReport.vue";
+import PagePlaceholder from "./components/PagePlaceholder.vue";
+import axios from "axios";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     QualityReport,
     ComparisonReport,
     TargetTracking,
     FinalReport,
-    PagePlaceholder
+    PagePlaceholder,
   },
   data() {
     return {
-      theme: 'dark',
+      theme: "dark",
       sidebarCollapsed: false,
       activeTab: 1,
       isPrintMode: false,
       selectedYear: 2025,
-      availableYears: [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030],
+      availableYears: [
+        2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030,
+      ],
       tabs: [
-        { id: 1, name: 'Trang 1: Số Liệu', icon: '📊' },
-        { id: 2, name: 'Trang 2: So Sánh', icon: '📈' },
-        { id: 3, name: 'Trang 3: Mục Tiêu', icon: '🎯' },
-        { id: 4, name: 'Trang 4: Kết Quả', icon: '📋', badge: 'Mới' }
+        { id: 1, name: "Trang 1: Số Liệu", icon: "📊" },
+        { id: 2, name: "Trang 2: So Sánh", icon: "📈" },
+        { id: 3, name: "Trang 3: Mục Tiêu", icon: "🎯" },
+        { id: 4, name: "Trang 4: Kết Quả", icon: "📋" },
       ],
       dataStore: {},
-      dbStatus: 'offline'
+      dbStatus: "offline",
     };
   },
   created() {
@@ -137,43 +228,43 @@ export default {
   },
   computed: {
     activeComponent() {
-      if (this.activeTab === 1) return 'QualityReport';
-      if (this.activeTab === 2) return 'ComparisonReport';
-      if (this.activeTab === 3) return 'TargetTracking';
-      if (this.activeTab === 4) return 'FinalReport';
-      return 'PagePlaceholder';
+      if (this.activeTab === 1) return "QualityReport";
+      if (this.activeTab === 2) return "ComparisonReport";
+      if (this.activeTab === 3) return "TargetTracking";
+      if (this.activeTab === 4) return "FinalReport";
+      return "PagePlaceholder";
     },
     componentProps() {
       const prevYearData = this.getYearData(this.selectedYear - 1);
       const activeYearData = this.getYearData(this.selectedYear);
 
       if (this.activeTab === 1 || this.activeTab === 2) {
-        return { 
+        return {
           theme: this.theme,
           data2024: prevYearData.quality,
           data2025: activeYearData.quality,
-          selectedYear: this.selectedYear
+          selectedYear: this.selectedYear,
         };
       } else if (this.activeTab === 3) {
         return {
           theme: this.theme,
           targetTrackingData: activeYearData.targetTracking,
-          selectedYear: this.selectedYear
+          selectedYear: this.selectedYear,
         };
       } else if (this.activeTab === 4) {
         return {
           theme: this.theme,
           finalReportData: activeYearData.finalReport,
-          selectedYear: this.selectedYear
+          selectedYear: this.selectedYear,
         };
       } else {
         return { pageNumber: this.activeTab };
       }
-    }
+    },
   },
   methods: {
     toggleTheme() {
-      this.theme = this.theme === 'dark' ? 'light' : 'dark';
+      this.theme = this.theme === "dark" ? "light" : "dark";
     },
     toggleSidebar() {
       this.sidebarCollapsed = !this.sidebarCollapsed;
@@ -183,11 +274,12 @@ export default {
       this.isPrintMode = false;
     },
     onViewModeChange(mode) {
-      this.isPrintMode = (mode === 'print-preview');
+      this.isPrintMode = mode === "print-preview";
     },
     // Page 1 & 2 Sync
     onUpdateData({ year, rowIdx, monthIdx, value }) {
-      const targetYear = year === 2024 ? this.selectedYear - 1 : this.selectedYear;
+      const targetYear =
+        year === 2024 ? this.selectedYear - 1 : this.selectedYear;
       const targetTable = this.getYearData(targetYear).quality;
       targetTable.rows[rowIdx].months.splice(monthIdx, 1, value);
     },
@@ -198,7 +290,7 @@ export default {
       metric[rowKey].splice(monthIdx, 1, value);
 
       // Persist to localStorage if editing targets
-      if (rowKey === 'target') {
+      if (rowKey === "target") {
         const key = `target_tracking_targets_${this.selectedYear}_${metric.id}`;
         localStorage.setItem(key, JSON.stringify(metric.target));
       }
@@ -207,35 +299,38 @@ export default {
     onUpdateFinalData({ monthIdx, key, value }) {
       const activeYearData = this.getYearData(this.selectedYear);
       const row = activeYearData.finalReport.rows[monthIdx];
-      
-      if (key === 'defects') {
+
+      if (key === "defects") {
         row.defects = value;
       } else {
         row[key] = value;
         // Auto-rebalance counts: final = passed + failed
-        if (key === 'final') {
+        if (key === "final") {
           row.passed = value - row.failed;
-        } else if (key === 'passed') {
+        } else if (key === "passed") {
           row.failed = row.final - value;
-        } else if (key === 'failed') {
+        } else if (key === "failed") {
           row.passed = row.final - value;
         }
       }
     },
     async loadAllData() {
-      this.dbStatus = 'loading';
+      this.dbStatus = "loading";
       const currentYear = this.selectedYear;
       const prevYear = currentYear - 1;
 
       try {
         await Promise.all([
           this.fetchYearDataFromDb(currentYear),
-          this.fetchYearDataFromDb(prevYear)
+          this.fetchYearDataFromDb(prevYear),
         ]);
-        this.dbStatus = 'connected';
+        this.dbStatus = "connected";
       } catch (err) {
-        console.error('Failed to load database data, falling back to mock.', err);
-        this.dbStatus = 'offline';
+        console.error(
+          "Failed to load database data, falling back to mock.",
+          err
+        );
+        this.dbStatus = "offline";
         this.ensureFallbackData(currentYear);
         this.ensureFallbackData(prevYear);
       }
@@ -243,22 +338,28 @@ export default {
       this.applyPersistedTargets(prevYear);
     },
     async fetchYearDataFromDb(year) {
-      const responseQuality = await axios.get(`http://localhost:5000/api/reports/quality?year=${year}`);
-      const responseTarget = await axios.get(`http://localhost:5000/api/reports/target-tracking?year=${year}`);
-      const responseFinal = await axios.get(`http://localhost:5000/api/reports/final-qa?year=${year}`);
+      const responseQuality = await axios.get(
+        `http://localhost:5000/api/reports/quality?year=${year}`
+      );
+      const responseTarget = await axios.get(
+        `http://localhost:5000/api/reports/target-tracking?year=${year}`
+      );
+      const responseFinal = await axios.get(
+        `http://localhost:5000/api/reports/final-qa?year=${year}`
+      );
 
       if (
-        responseQuality.data.status === 'success' &&
-        responseTarget.data.status === 'success' &&
-        responseFinal.data.status === 'success'
+        responseQuality.data.status === "success" &&
+        responseTarget.data.status === "success" &&
+        responseFinal.data.status === "success"
       ) {
         this.dataStore[year] = {
           quality: responseQuality.data.data,
           targetTracking: responseTarget.data.data,
-          finalReport: responseFinal.data.data
+          finalReport: responseFinal.data.data,
         };
       } else {
-        throw new Error('API returned unsuccessful status');
+        throw new Error("API returned unsuccessful status");
       }
     },
     ensureFallbackData(year) {
@@ -266,7 +367,7 @@ export default {
         this.dataStore[year] = {
           quality: this.generateQualityData(year),
           targetTracking: this.generateTargetTrackingData(year),
-          finalReport: this.generateFinalReportData(year)
+          finalReport: this.generateFinalReportData(year),
         };
       }
     },
@@ -275,16 +376,18 @@ export default {
     onResetData() {
       const currentYear = this.selectedYear;
       const prevYear = currentYear - 1;
-      
+
       const clearKeysForYear = (year) => {
         const data = this.dataStore[year];
         if (data && data.targetTracking) {
-          data.targetTracking.metrics.forEach(metric => {
-            localStorage.removeItem(`target_tracking_targets_${year}_${metric.id}`);
+          data.targetTracking.metrics.forEach((metric) => {
+            localStorage.removeItem(
+              `target_tracking_targets_${year}_${metric.id}`
+            );
           });
         }
       };
-      
+
       clearKeysForYear(currentYear);
       clearKeysForYear(prevYear);
 
@@ -300,7 +403,7 @@ export default {
         this.dataStore[year] = {
           quality: this.generateQualityData(year),
           targetTracking: this.generateTargetTrackingData(year),
-          finalReport: this.generateFinalReportData(year)
+          finalReport: this.generateFinalReportData(year),
         };
         this.applyPersistedTargets(year);
       }
@@ -308,14 +411,14 @@ export default {
     },
     applyPersistedTargets(year) {
       if (this.dataStore[year] && this.dataStore[year].targetTracking) {
-        this.dataStore[year].targetTracking.metrics.forEach(metric => {
+        this.dataStore[year].targetTracking.metrics.forEach((metric) => {
           const key = `target_tracking_targets_${year}_${metric.id}`;
           const saved = localStorage.getItem(key);
           if (saved) {
             try {
               metric.target = JSON.parse(saved);
             } catch (e) {
-              console.error('Error parsing saved targets', e);
+              console.error("Error parsing saved targets", e);
             }
           }
         });
@@ -326,138 +429,216 @@ export default {
       this.dataStore = {
         2024: {
           quality: {
-            title: 'TỔNG KẾT TỶ LỆ HÀNG HƯ TRUNG BÌNH NĂM 2024 XNTH 2',
-            col1Header: 'XN 3',
+            title: "TỔNG KẾT TỶ LỆ HÀNG HƯ TRUNG BÌNH NĂM 2024 XNTH 2",
+            col1Header: "XN 3",
             rows: [
               {
-                label: 'Trước ủi 2024',
-                months: [0.00, 0.00, 0.00, 12.63, 13.57, 9.48, 12.57, 11.89, 12.48, 10.14, 11.96, 9.11]
+                label: "Trước ủi 2024",
+                months: [
+                  0.0, 0.0, 0.0, 12.63, 13.57, 9.48, 12.57, 11.89, 12.48, 10.14,
+                  11.96, 9.11,
+                ],
               },
               {
-                label: 'Sau ủi 2024',
-                months: [0.00, 0.00, 0.00, 28.38, 14.22, 10.02, 14.39, 11.95, 13.62, 7.43, 11.23, 9.15]
-              }
-            ]
+                label: "Sau ủi 2024",
+                months: [
+                  0.0, 0.0, 0.0, 28.38, 14.22, 10.02, 14.39, 11.95, 13.62, 7.43,
+                  11.23, 9.15,
+                ],
+              },
+            ],
           },
           targetTracking: this.generateTargetTrackingData(2024),
-          finalReport: this.generateFinalReportData(2024)
+          finalReport: this.generateFinalReportData(2024),
         },
         2025: {
           quality: {
-            title: 'TỔNG KẾT TỶ LỆ HÀNG HƯ TRUNG BÌNH NĂM 2025 XNTH 2',
-            col1Header: 'XN 3',
+            title: "TỔNG KẾT TỶ LỆ HÀNG HƯ TRUNG BÌNH NĂM 2025 XNTH 2",
+            col1Header: "XN 3",
             rows: [
               {
-                label: 'Trước ủi 2025',
-                months: [11.15, 12.33, 11.25, 9.46, 8.22, 10.64, 7.90, 8.13, 9.49, 11.35, 9.89, 8.36]
+                label: "Trước ủi 2025",
+                months: [
+                  11.15, 12.33, 11.25, 9.46, 8.22, 10.64, 7.9, 8.13, 9.49,
+                  11.35, 9.89, 8.36,
+                ],
               },
               {
-                label: 'Sau ủi 2025',
-                months: [13.82, 12.50, 11.56, 7.68, 8.71, 9.76, 7.79, 8.21, 9.39, 11.31, 9.39, 8.00]
-              }
-            ]
+                label: "Sau ủi 2025",
+                months: [
+                  13.82, 12.5, 11.56, 7.68, 8.71, 9.76, 7.79, 8.21, 9.39, 11.31,
+                  9.39, 8.0,
+                ],
+              },
+            ],
           },
           targetTracking: {
-            title: 'THEO DÕI MỤC TIÊU CHẤT LƯỢNG 2025',
-            subtitle: 'MỤC TIÊU - KẾT QUẢ XNCG 2025',
+            title: "THEO DÕI MỤC TIÊU CHẤT LƯỢNG 2025",
+            subtitle: "MỤC TIÊU - KẾT QUẢ XNCG 2025",
             metrics: [
               {
-                id: 'before-iron',
-                name: 'Mục tiêu tỉ lệ SPKPH trước ủi',
+                id: "before-iron",
+                name: "Mục tiêu tỉ lệ SPKPH trước ủi",
                 maxY: 50,
                 yGridSteps: 5,
-                target: [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
-                actual: [7.0, 7.6, 7.4, 7.3, 7.30, 7.80, 7.0, 7.0, 6.7, 7.50, 7.70, 7.6]
+                target: [
+                  5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0,
+                ],
+                actual: [
+                  7.0, 7.6, 7.4, 7.3, 7.3, 7.8, 7.0, 7.0, 6.7, 7.5, 7.7, 7.6,
+                ],
               },
               {
-                id: 'after-iron',
-                name: 'Mục tiêu tỉ lệ SPKPH sau ủi',
+                id: "after-iron",
+                name: "Mục tiêu tỉ lệ SPKPH sau ủi",
                 maxY: 20,
                 yGridSteps: 4,
-                target: [2.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0],
-                actual: [6.3, 5.7, 5.2, 4.9, 5.30, 5.40, 6.0, 5.2, 5.0, 4.70, 5.10, 4.70]
+                target: [
+                  2.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0,
+                ],
+                actual: [
+                  6.3, 5.7, 5.2, 4.9, 5.3, 5.4, 6.0, 5.2, 5.0, 4.7, 5.1, 4.7,
+                ],
               },
               {
-                id: 'final-defect',
-                name: 'Mục tiêu tỉ lệ SPKPH final',
+                id: "final-defect",
+                name: "Mục tiêu tỉ lệ SPKPH final",
                 maxY: 50,
                 yGridSteps: 5,
-                target: [0.0, 3.0, 3.0, 3.0, 3.0, 3.0, 0.0, 3.0, 0.0, 0.0, 3.0, 0.0],
-                actual: [3.4, 13.0, 4.0, 4.3, 5.6, 0.0, 5.0, 0.0, 0.0, 9.1, 0.0, 0.0]
+                target: [
+                  0.0, 3.0, 3.0, 3.0, 3.0, 3.0, 0.0, 3.0, 0.0, 0.0, 3.0, 0.0,
+                ],
+                actual: [
+                  3.4, 13.0, 4.0, 4.3, 5.6, 0.0, 5.0, 0.0, 0.0, 9.1, 0.0, 0.0,
+                ],
               },
               {
-                id: 'on-time-delivery',
-                name: 'Mục tiêu giao hàng đúng tiến độ',
+                id: "on-time-delivery",
+                name: "Mục tiêu giao hàng đúng tiến độ",
                 maxY: 200,
                 yGridSteps: 4,
-                target: [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0],
-                actual: [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]
+                target: [
+                  100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
+                  100.0, 100.0, 100.0,
+                ],
+                actual: [
+                  100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
+                  100.0, 100.0, 100.0,
+                ],
               },
               {
-                id: 'customer-complaints',
-                name: 'Mục tiêu khiếu nại của khách hàng',
+                id: "customer-complaints",
+                name: "Mục tiêu khiếu nại của khách hàng",
                 maxY: 4,
                 yGridSteps: 2,
-                target: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
-                actual: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-              }
-            ]
+                target: [
+                  0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
+                ],
+                actual: [
+                  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                ],
+              },
+            ],
           },
           finalReport: {
-            title: 'BÁO CÁO KẾT QUẢ FINAL NĂM 2025 XN-CHỢ GẠO',
-            company: 'CÔNG TY CỔ PHẦN TEX-GIANG',
-            department: 'Bộ phận: QLCL',
-            date: 'Ngày 27 tháng 12 Năm 2025',
+            title: "BÁO CÁO KẾT QUẢ FINAL NĂM 2025 XN-CHỢ GẠO",
+            company: "CÔNG TY CỔ PHẦN TEX-GIANG",
+            department: "Bộ phận: QLCL",
+            date: "Ngày 27 tháng 12 Năm 2025",
             rows: [
-              { month: 'T1', final: 29, passed: 28, failed: 1, defects: 'Cầm nhãn' },
-              { month: 'T2', final: 30, passed: 26, failed: 4, defects: 'Cầm nhãn + khuy đứt chỉ' },
-              { month: 'T3', final: 25, passed: 24, failed: 1, defects: 'Dây treo cổ sau xì + đứt chỉ' },
-              { month: 'T4', final: 23, passed: 22, failed: 1, defects: 'cầm nhãn + đứt chỉ' },
-              { month: 'T5', final: 18, passed: 17, failed: 1, defects: 'Tape ngực xéo + đứt chỉ' },
-              { month: 'T6', final: 20, passed: 20, failed: 0, defects: '' },
-              { month: 'T7', final: 20, passed: 19, failed: 1, defects: 'Đứt chỉ + cầm nhãn + rách' },
-              { month: 'T8', final: 19, passed: 19, failed: 0, defects: '' },
-              { month: 'T9', final: 16, passed: 16, failed: 0, defects: '' },
-              { month: 'T10', final: 11, passed: 10, failed: 1, defects: 'vành nón giựt, cầm nhãn' },
-              { month: 'T11', final: 4, passed: 4, failed: 0, defects: '' },
-              { month: 'T12', final: 4, passed: 4, failed: 0, defects: '' }
-            ]
-          }
-        }
+              {
+                month: "T1",
+                final: 29,
+                passed: 28,
+                failed: 1,
+                defects: "Cầm nhãn",
+              },
+              {
+                month: "T2",
+                final: 30,
+                passed: 26,
+                failed: 4,
+                defects: "Cầm nhãn + khuy đứt chỉ",
+              },
+              {
+                month: "T3",
+                final: 25,
+                passed: 24,
+                failed: 1,
+                defects: "Dây treo cổ sau xì + đứt chỉ",
+              },
+              {
+                month: "T4",
+                final: 23,
+                passed: 22,
+                failed: 1,
+                defects: "cầm nhãn + đứt chỉ",
+              },
+              {
+                month: "T5",
+                final: 18,
+                passed: 17,
+                failed: 1,
+                defects: "Tape ngực xéo + đứt chỉ",
+              },
+              { month: "T6", final: 20, passed: 20, failed: 0, defects: "" },
+              {
+                month: "T7",
+                final: 20,
+                passed: 19,
+                failed: 1,
+                defects: "Đứt chỉ + cầm nhãn + rách",
+              },
+              { month: "T8", final: 19, passed: 19, failed: 0, defects: "" },
+              { month: "T9", final: 16, passed: 16, failed: 0, defects: "" },
+              {
+                month: "T10",
+                final: 11,
+                passed: 10,
+                failed: 1,
+                defects: "vành nón giựt, cầm nhãn",
+              },
+              { month: "T11", final: 4, passed: 4, failed: 0, defects: "" },
+              { month: "T12", final: 4, passed: 4, failed: 0, defects: "" },
+            ],
+          },
+        },
       };
     },
 
     generateQualityData(year) {
       const seed = (year % 10) + 1;
-      const baseTruoc = 9.0 + (seed * 0.4);
-      const baseSau = baseTruoc - 0.5 + (seed * 0.2);
-      
+      const baseTruoc = 9.0 + seed * 0.4;
+      const baseSau = baseTruoc - 0.5 + seed * 0.2;
+
       const truocMonths = [];
       const sauMonths = [];
       for (let m = 0; m < 12; m++) {
-        const swing = Math.sin((m / 11) * Math.PI * 2) * 2.5 + Math.cos((m / 11) * Math.PI) * 1.2;
+        const swing =
+          Math.sin((m / 11) * Math.PI * 2) * 2.5 +
+          Math.cos((m / 11) * Math.PI) * 1.2;
         const noise = ((year * (m + 1)) % 100) / 100 - 0.5;
-        
+
         let tVal = Math.max(2.0, baseTruoc + swing + noise);
         let sVal = Math.max(1.5, baseSau + swing * 0.9 + noise * 0.8);
-        
+
         truocMonths.push(parseFloat(tVal.toFixed(2)));
         sauMonths.push(parseFloat(sVal.toFixed(2)));
       }
-      
+
       return {
         title: `TỔNG KẾT TỶ LỆ HÀNG HƯ TRUNG BÌNH NĂM ${year} XNTH 2`,
-        col1Header: 'XN 3',
+        col1Header: "XN 3",
         rows: [
           {
             label: `Trước ủi ${year}`,
-            months: truocMonths
+            months: truocMonths,
           },
           {
             label: `Sau ủi ${year}`,
-            months: sauMonths
-          }
-        ]
+            months: sauMonths,
+          },
+        ],
       };
     },
 
@@ -466,119 +647,130 @@ export default {
       const beforeActual = [];
       const afterTarget = Array(12).fill(3.0);
       const afterActual = [];
-      const finalTarget = [0.0, 3.0, 3.0, 3.0, 3.0, 3.0, 0.0, 3.0, 0.0, 0.0, 3.0, 0.0];
+      const finalTarget = [
+        0.0, 3.0, 3.0, 3.0, 3.0, 3.0, 0.0, 3.0, 0.0, 0.0, 3.0, 0.0,
+      ];
       const finalActual = [];
       const onTimeTarget = Array(12).fill(100.0);
       const onTimeActual = Array(12).fill(100.0);
       const complaintsTarget = Array(12).fill(0.1);
       const complaintsActual = [];
-      
+
       for (let m = 0; m < 12; m++) {
-        beforeActual.push(parseFloat((6.5 + ((year * (m + 3)) % 15) / 10).toFixed(1)));
-        afterActual.push(parseFloat((4.5 + ((year * (m + 7)) % 15) / 10).toFixed(1)));
-        finalActual.push(((year * (m + 11)) % 10) < 3 ? 0.0 : parseFloat((3.0 + ((year * (m + 5)) % 10)).toFixed(1)));
-        complaintsActual.push(((year * (m + 1)) % 20) === 0 ? 1.0 : 0.0);
+        beforeActual.push(
+          parseFloat((6.5 + ((year * (m + 3)) % 15) / 10).toFixed(1))
+        );
+        afterActual.push(
+          parseFloat((4.5 + ((year * (m + 7)) % 15) / 10).toFixed(1))
+        );
+        finalActual.push(
+          (year * (m + 11)) % 10 < 3
+            ? 0.0
+            : parseFloat((3.0 + ((year * (m + 5)) % 10)).toFixed(1))
+        );
+        complaintsActual.push((year * (m + 1)) % 20 === 0 ? 1.0 : 0.0);
       }
-      
+
       return {
         title: `THEO DÕI MỤC TIÊU CHẤT LƯỢNG ${year}`,
         subtitle: `MỤC TIÊU - KẾT QUẢ XNCG ${year}`,
         metrics: [
           {
-            id: 'before-iron',
-            name: 'Mục tiêu tỉ lệ SPKPH trước ủi',
+            id: "before-iron",
+            name: "Mục tiêu tỉ lệ SPKPH trước ủi",
             maxY: 50,
             yGridSteps: 5,
             target: beforeTarget,
-            actual: beforeActual
+            actual: beforeActual,
           },
           {
-            id: 'after-iron',
-            name: 'Mục tiêu tỉ lệ SPKPH sau ủi',
+            id: "after-iron",
+            name: "Mục tiêu tỉ lệ SPKPH sau ủi",
             maxY: 20,
             yGridSteps: 4,
             target: afterTarget,
-            actual: afterActual
+            actual: afterActual,
           },
           {
-            id: 'final-defect',
-            name: 'Mục tiêu tỉ lệ SPKPH final',
+            id: "final-defect",
+            name: "Mục tiêu tỉ lệ SPKPH final",
             maxY: 50,
             yGridSteps: 5,
             target: finalTarget,
-            actual: finalActual
+            actual: finalActual,
           },
           {
-            id: 'on-time-delivery',
-            name: 'Mục tiêu giao hàng đúng tiến độ',
+            id: "on-time-delivery",
+            name: "Mục tiêu giao hàng đúng tiến độ",
             maxY: 200,
             yGridSteps: 4,
             target: onTimeTarget,
-            actual: onTimeActual
+            actual: onTimeActual,
           },
           {
-            id: 'customer-complaints',
-            name: 'Mục tiêu khiếu nại của khách hàng',
+            id: "customer-complaints",
+            name: "Mục tiêu khiếu nại của khách hàng",
             maxY: 4,
             yGridSteps: 2,
             target: complaintsTarget,
-            actual: complaintsActual
-          }
-        ]
+            actual: complaintsActual,
+          },
+        ],
       };
     },
 
     generateFinalReportData(year) {
       const defectsPool = [
-        'Cầm nhãn', 
-        'Cầm nhãn + khuy đứt chỉ', 
-        'Dây treo cổ sau xì + đứt chỉ', 
-        'cầm nhãn + đứt chỉ', 
-        'Tape ngực xéo + đứt chỉ', 
-        'Đứt chỉ + cầm nhãn + rách', 
-        'vành nón giựt, cầm nhãn',
-        'Xéo nẹp + sút sườn',
-        'Dơ bẩn mực dính',
-        'Đứt chỉ móc xích nách'
+        "Cầm nhãn",
+        "Cầm nhãn + khuy đứt chỉ",
+        "Dây treo cổ sau xì + đứt chỉ",
+        "cầm nhãn + đứt chỉ",
+        "Tape ngực xéo + đứt chỉ",
+        "Đứt chỉ + cầm nhãn + rách",
+        "vành nón giựt, cầm nhãn",
+        "Xéo nẹp + sút sườn",
+        "Dơ bẩn mực dính",
+        "Đứt chỉ móc xích nách",
       ];
-      
+
       const rows = [];
       for (let m = 1; m <= 12; m++) {
         const finalVal = 5 + ((year * m + 13) % 31);
         let failedVal = (year * m) % 5;
         if (failedVal >= finalVal) failedVal = 0;
         const passedVal = finalVal - failedVal;
-        const defects = failedVal > 0 ? defectsPool[(year * m) % defectsPool.length] : '';
-        
+        const defects =
+          failedVal > 0 ? defectsPool[(year * m) % defectsPool.length] : "";
+
         rows.push({
           month: `T${m}`,
           final: finalVal,
           passed: passedVal,
           failed: failedVal,
-          defects: defects
+          defects: defects,
         });
       }
-      
+
       return {
         title: `BÁO CÁO KẾT QUẢ FINAL NĂM ${year} XN-CHỢ GẠO`,
-        company: 'CÔNG TY CỔ PHẦN TEX-GIANG',
-        department: 'Bộ phận: QLCL',
+        company: "CÔNG TY CỔ PHẦN TEX-GIANG",
+        department: "Bộ phận: QLCL",
         date: `Ngày 27 tháng 12 Năm ${year}`,
-        rows: rows
+        rows: rows,
       };
-    }
+    },
   },
   watch: {
     selectedYear() {
       this.loadAllData();
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style>
 /* Reset & Global styles */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap");
 
 * {
   margin: 0;
@@ -587,7 +779,7 @@ export default {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   overflow-x: hidden;
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -638,7 +830,12 @@ body {
   color: var(--text-primary);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: inherit;
 }
 
@@ -905,7 +1102,11 @@ h1, h2, h3, h4, h5, h6 {
   .app-sidebar {
     width: 70px;
   }
-  .brand-name, .nav-text, .nav-badge, .control-text, .user-info {
+  .brand-name,
+  .nav-text,
+  .nav-badge,
+  .control-text,
+  .user-info {
     display: none;
   }
   .app-main {
@@ -969,8 +1170,12 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
 }
 @keyframes status-blink {
-  0% { opacity: 0.4; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .app-container.sidebar-collapsed .sidebar-year-selector {

@@ -55,6 +55,16 @@
 
           <div class="chart-container">
             <svg class="custom-svg-chart" viewBox="0 0 1000 320" width="100%" height="280">
+              <defs>
+                <linearGradient id="grad1-2024" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#475569" />
+                  <stop offset="100%" stop-color="#64748b" />
+                </linearGradient>
+                <linearGradient id="grad1-2025" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#0891b2" />
+                  <stop offset="100%" stop-color="#06b6d4" />
+                </linearGradient>
+              </defs>
               <!-- Grid Lines (0% - 16%, step 2%) -->
               <line v-for="grid in yGridLines1" :key="'g1-'+grid.y" x1="60" :y1="grid.y" x2="960" :y2="grid.y" class="grid-line" />
               <!-- Y Axis labels -->
@@ -72,6 +82,7 @@
                   :width="barConfig.width"
                   :height="getBarHeight(getVal1(m, 0), 16)"
                   class="bar-rect bar-2024"
+                  fill="url(#grad1-2024)"
                   @mouseenter="showTooltip($event, selectedYear - 1, 'Trước ủi', m, getVal1(m, 0))"
                   @mouseleave="hideTooltip"
                 />
@@ -82,6 +93,7 @@
                   :width="barConfig.width"
                   :height="getBarHeight(getVal1(m, 1), 16)"
                   class="bar-rect bar-2025"
+                  fill="url(#grad1-2025)"
                   @mouseenter="showTooltip($event, selectedYear, 'Trước ủi', m, getVal1(m, 1))"
                   @mouseleave="hideTooltip"
                 />
@@ -97,6 +109,14 @@
               <div class="legend-item">
                 <span class="legend-color bar-color-2025"></span>
                 <span class="legend-label">Trước ủi {{ selectedYear }}</span>
+              </div>
+            </div>
+
+            <!-- Tooltip Element -->
+            <div v-if="tooltip.visible && tooltip.stage === 'Trước ủi'" class="chart-tooltip" :style="tooltip.style">
+              <div class="tooltip-title">{{ tooltip.month }} ({{ tooltip.year }})</div>
+              <div class="tooltip-content">
+                <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }}%</span>
               </div>
             </div>
           </div>
@@ -139,6 +159,16 @@
 
           <div class="chart-container">
             <svg class="custom-svg-chart" viewBox="0 0 1000 320" width="100%" height="280">
+              <defs>
+                <linearGradient id="grad2-2024" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#475569" />
+                  <stop offset="100%" stop-color="#64748b" />
+                </linearGradient>
+                <linearGradient id="grad2-2025" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#0891b2" />
+                  <stop offset="100%" stop-color="#06b6d4" />
+                </linearGradient>
+              </defs>
               <!-- Grid Lines (0% - 30%, step 5%) -->
               <line v-for="grid in yGridLines2" :key="'g2-'+grid.y" x1="60" :y1="grid.y" x2="960" :y2="grid.y" class="grid-line" />
               <!-- Y Axis labels -->
@@ -156,6 +186,7 @@
                   :width="barConfig.width"
                   :height="getBarHeight(getVal2(m, 0), 30)"
                   class="bar-rect bar-2024"
+                  fill="url(#grad2-2024)"
                   @mouseenter="showTooltip($event, selectedYear - 1, 'Sau ủi', m, getVal2(m, 0))"
                   @mouseleave="hideTooltip"
                 />
@@ -166,6 +197,7 @@
                   :width="barConfig.width"
                   :height="getBarHeight(getVal2(m, 1), 30)"
                   class="bar-rect bar-2025"
+                  fill="url(#grad2-2025)"
                   @mouseenter="showTooltip($event, selectedYear, 'Sau ủi', m, getVal2(m, 1))"
                   @mouseleave="hideTooltip"
                 />
@@ -181,6 +213,14 @@
               <div class="legend-item">
                 <span class="legend-color bar-color-2025"></span>
                 <span class="legend-label">Sau ủi {{ selectedYear }}</span>
+              </div>
+            </div>
+
+            <!-- Tooltip Element -->
+            <div v-if="tooltip.visible && tooltip.stage === 'Sau ủi'" class="chart-tooltip" :style="tooltip.style">
+              <div class="tooltip-title">{{ tooltip.month }} ({{ tooltip.year }})</div>
+              <div class="tooltip-content">
+                <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }}%</span>
               </div>
             </div>
           </div>
@@ -215,13 +255,6 @@
         </div>
       </section>
 
-      <!-- Tooltip Element -->
-      <div v-if="tooltip.visible" class="chart-tooltip" :style="tooltip.style">
-        <div class="tooltip-title">{{ tooltip.month }} ({{ tooltip.year }})</div>
-        <div class="tooltip-content">
-          <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }}%</span>
-        </div>
-      </div>
     </main>
 
     <!-- Print / Official A4 Document View -->
@@ -412,8 +445,8 @@ export default {
 
       // Bar Dimensions
       barConfig: {
-        width: 14,
-        gap: 3
+        width: 16,
+        gap: 0
       }
     };
   },
@@ -492,9 +525,9 @@ export default {
     getBarX(mIdx, seriesIdx) {
       const center = this.getXColumnCenter(mIdx);
       if (seriesIdx === 0) {
-        return center - this.barConfig.width - 2;
+        return center - this.barConfig.width;
       } else {
-        return center + 2;
+        return center;
       }
     },
     getBarY(value, maxY) {
@@ -541,9 +574,9 @@ export default {
       const colWidth = 840 / 13;
       const colCenter = ((mIdx - 1) * colWidth) + (colWidth / 2);
       if (seriesIdx === 0) {
-        return colCenter - 13;
+        return colCenter - 12;
       } else {
-        return colCenter + 1;
+        return colCenter;
       }
     },
     getPaperBarY(value, maxY) {
@@ -567,6 +600,7 @@ export default {
       this.tooltip.year = year;
       this.tooltip.month = mIdx === 13 ? 'Trung Bình' : 'Tháng ' + mIdx;
       this.tooltip.label = stage + ' ' + year;
+      this.tooltip.stage = stage;
       this.tooltip.value = val.toFixed(2);
       this.tooltip.style = {
         top: `${clientY - 75}px`,
@@ -735,8 +769,8 @@ export default {
   border-radius: 4px;
 }
 
-.bar-color-2024 { background-color: #3b82f6; }
-.bar-color-2025 { background-color: #ec4899; }
+.bar-color-2024 { background: linear-gradient(135deg, #475569, #64748b); }
+.bar-color-2025 { background: linear-gradient(135deg, #0891b2, #06b6d4); }
 
 /* Tooltip */
 .chart-tooltip {

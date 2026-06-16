@@ -82,6 +82,12 @@
               width="100%"
               height="200"
             >
+              <defs>
+                <linearGradient :id="'areaActualGrad-' + mIdx" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.22" />
+                  <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.00" />
+                </linearGradient>
+              </defs>
               <!-- Grid Lines -->
               <line
                 v-for="gridVal in getGridValues(metric)"
@@ -125,6 +131,13 @@
                 class="chart-path path-actual"
               />
 
+              <!-- Area under actual line -->
+              <path
+                :d="getChartAreaPath(metric, 'actual')"
+                class="chart-area-path"
+                :fill="'url(#areaActualGrad-' + mIdx + ')'"
+              />
+
               <!-- Interactive Dots for Target -->
               <g>
                 <circle
@@ -134,7 +147,7 @@
                   :cy="getYCoordinate(val, metric.maxY)"
                   r="5"
                   class="chart-dot dot-target"
-                  @mouseenter="showTooltip($event, 'Mục tiêu', idx + 1, val)"
+                  @mouseenter="showTooltip($event, 'Mục tiêu', idx + 1, val, mIdx)"
                   @mouseleave="hideTooltip"
                 />
               </g>
@@ -148,7 +161,7 @@
                   :cy="getYCoordinate(val, metric.maxY)"
                   r="5"
                   class="chart-dot dot-actual"
-                  @mouseenter="showTooltip($event, 'Thực tế', idx + 1, val)"
+                  @mouseenter="showTooltip($event, 'Thực tế', idx + 1, val, mIdx)"
                   @mouseleave="hideTooltip"
                 />
               </g>
@@ -163,6 +176,15 @@
               <div class="legend-item">
                 <span class="legend-color color-actual"></span>
                 <span class="legend-label">Thực tế</span>
+              </div>
+            </div>
+
+            <!-- Tooltip Element -->
+            <div v-if="tooltip.visible && tooltip.metricIdx === mIdx" class="chart-tooltip" :style="tooltip.style">
+              <div class="tooltip-title">Tháng {{ tooltip.month }}</div>
+              <div class="tooltip-content">
+                <strong>{{ tooltip.label }}:</strong>
+                <span class="text-highlight">{{ tooltip.value }}%</span>
               </div>
             </div>
           </div>
@@ -232,14 +254,6 @@
         </div>
       </section>
 
-      <!-- Tooltip Element -->
-      <div v-if="tooltip.visible" class="chart-tooltip" :style="tooltip.style">
-        <div class="tooltip-title">Tháng {{ tooltip.month }}</div>
-        <div class="tooltip-content">
-          <strong>{{ tooltip.label }}:</strong>
-          <span class="text-highlight">{{ tooltip.value }}%</span>
-        </div>
-      </div>
     </main>
 
     <!-- Print / Official A4 Document View -->
@@ -633,6 +647,26 @@ export default {
       });
       return path;
     },
+    getChartAreaPath(metric, key) {
+      const values = metric[key];
+      let path = "";
+      values.forEach((v, idx) => {
+        const x = this.getXCoordinate(idx + 1);
+        const y = this.getYCoordinate(v, metric.maxY);
+        if (idx === 0) {
+          path += `M ${x} ${y}`;
+        } else {
+          path += ` L ${x} ${y}`;
+        }
+      });
+      if (values.length > 0) {
+        const firstX = this.getXCoordinate(1);
+        const lastX = this.getXCoordinate(values.length);
+        const graphBottom = this.chartConfig.paddingY + this.chartConfig.graphHeight;
+        path += ` L ${lastX} ${graphBottom} L ${firstX} ${graphBottom} Z`;
+      }
+      return path;
+    },
 
     // SVG coordinate math for print A4 portrait view (compact scale)
     getPrintX(mIdx) {
@@ -708,7 +742,7 @@ export default {
     },
 
     // Tooltip trigger
-    showTooltip(event, label, mIdx, val) {
+    showTooltip(event, label, mIdx, val, metricIdx) {
       const chartContainer = event.target.closest(".chart-container");
       if (!chartContainer) return;
 
@@ -719,6 +753,7 @@ export default {
       this.tooltip.month = mIdx;
       this.tooltip.label = label;
       this.tooltip.value = val.toString();
+      this.tooltip.metricIdx = metricIdx;
       this.tooltip.style = {
         top: `${clientY - 75}px`,
         left: `${clientX - 60}px`,
@@ -856,11 +891,17 @@ export default {
 }
 
 .path-target {
-  stroke: #3b82f6; /* Blue series */
+  stroke: #64748b; /* slate gray target */
+  stroke-dasharray: 6,4; /* dashed target line */
 }
 
 .path-actual {
-  stroke: #ec4899; /* Pink series */
+  stroke: #06b6d4; /* cyan actual line */
+}
+
+.chart-area-path {
+  stroke: none;
+  transition: d 0.4s ease;
 }
 
 .chart-dot {
@@ -871,12 +912,12 @@ export default {
 
 .dot-target {
   fill: var(--bg-primary);
-  stroke: #3b82f6;
+  stroke: #64748b;
 }
 
 .dot-actual {
   fill: var(--bg-primary);
-  stroke: #ec4899;
+  stroke: #06b6d4;
 }
 
 .chart-dot:hover {
@@ -907,10 +948,10 @@ export default {
 }
 
 .color-target {
-  background-color: #3b82f6;
+  background-color: #64748b;
 }
 .color-actual {
-  background-color: #ec4899;
+  background-color: #06b6d4;
 }
 
 /* Tooltip on SVG Chart */

@@ -79,6 +79,16 @@
         <div class="chart-container">
           <!-- Custom Interactive SVG Chart -->
           <svg class="custom-svg-chart" viewBox="0 0 1000 350" width="100%" height="320">
+            <defs>
+              <linearGradient id="areaTruocGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.00" />
+              </linearGradient>
+              <linearGradient id="areaSauGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ff5a00" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="#ff5a00" stop-opacity="0.00" />
+              </linearGradient>
+            </defs>
             <!-- Grid Lines -->
             <line v-for="grid in yGridLines" :key="grid.y" x1="60" :y1="grid.y" x2="960" :y2="grid.y" class="grid-line" />
             
@@ -955,28 +965,28 @@ export default {
 }
 
 .path-truoc {
-  stroke: #3b82f6;
+  stroke: #06b6d4;
 }
 
 .path-sau {
-  stroke: #ec4899;
+  stroke: #ff5a00;
 }
 
 .chart-area-path {
-  opacity: 0.12;
+  opacity: 1;
   transition: d 0.4s ease;
 }
 
 .app-container.light .chart-area-path {
-  opacity: 0.06;
+  opacity: 1;
 }
 
 .area-truoc {
-  fill: #3b82f6;
+  fill: url(#areaTruocGrad);
 }
 
 .area-sau {
-  fill: #ec4899;
+  fill: url(#areaSauGrad);
 }
 
 .chart-dot {
@@ -987,12 +997,12 @@ export default {
 
 .dot-truoc {
   fill: var(--bg-primary);
-  stroke: #3b82f6;
+  stroke: #06b6d4;
 }
 
 .dot-sau {
   fill: var(--bg-primary);
-  stroke: #ec4899;
+  stroke: #ff5a00;
 }
 
 .chart-dot:hover {
@@ -1022,8 +1032,8 @@ export default {
   border-radius: 3px;
 }
 
-.color-truoc { background-color: #3b82f6; }
-.color-sau { background-color: #ec4899; }
+.color-truoc { background: #06b6d4; }
+.color-sau { background: #ff5a00; }
 
 .chart-tooltip {
   position: absolute;

@@ -170,6 +170,16 @@
           <div class="chart-container">
             <div class="chart-wrapper-box">
               <svg class="custom-svg-chart" viewBox="0 0 1000 280" width="100%" height="240">
+                <defs>
+                  <linearGradient id="finalGrad" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#3b82f6" />
+                    <stop offset="100%" stop-color="#60a5fa" />
+                  </linearGradient>
+                  <linearGradient id="failedGrad" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#ef4444" />
+                    <stop offset="100%" stop-color="#f87171" />
+                  </linearGradient>
+                </defs>
                 <!-- Y Axis solid line -->
                 <line x1="70" y1="30" x2="70" y2="250" stroke="var(--text-secondary)" stroke-width="1.5" />
                 
@@ -197,6 +207,7 @@
                     :width="barConfig.width"
                     :height="getBarHeight(getBarVal(m, 0))"
                     class="bar-rect bar-final"
+                    fill="url(#finalGrad)"
                     @mouseenter="showTooltip($event, 'Số lần final', m, getBarVal(m, 0))"
                     @mouseleave="hideTooltip"
                   />
@@ -207,6 +218,7 @@
                     :width="barConfig.width"
                     :height="getBarHeight(getBarVal(m, 1))"
                     class="bar-rect bar-failed"
+                    fill="url(#failedGrad)"
                     @mouseenter="showTooltip($event, 'Số lần không đạt', m, getBarVal(m, 1))"
                     @mouseleave="hideTooltip"
                   />
@@ -223,8 +235,16 @@
                   <span class="legend-square-dash fill-failed-dash"></span>
                   <span>Số lần không đạt</span>
                 </div>
-              </div>
             </div>
+          </div>
+
+          <!-- Tooltip Element -->
+          <div v-if="tooltip.visible" class="chart-tooltip" :style="tooltip.style">
+            <div class="tooltip-title">{{ tooltip.month }}</div>
+            <div class="tooltip-content">
+              <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }} lần</span>
+            </div>
+          </div>
           </div>
         </div>
 
@@ -283,13 +303,6 @@
         </div>
       </div>
 
-      <!-- Tooltip Element -->
-      <div v-if="tooltip.visible" class="chart-tooltip" :style="tooltip.style">
-        <div class="tooltip-title">{{ tooltip.month }}</div>
-        <div class="tooltip-content">
-          <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }} lần</span>
-        </div>
-      </div>
     </main>
 
     <!-- Print / Official A4 Document View -->
@@ -379,7 +392,7 @@
             <g v-for="m in 13" :key="'pb-'+m">
               <!-- Bar: Số lần final -->
               <rect 
-                :x="185 + (m - 1) * 62.6923 + 62.6923 / 2 - 15" 
+                :x="185 + (m - 1) * 62.6923 + 62.6923 / 2 - 14" 
                 :y="getPaperBarY(getBarVal(m, 0))" 
                 width="14" 
                 :height="getPaperBarHeight(getBarVal(m, 0))" 
@@ -389,7 +402,7 @@
               />
               <!-- Bar: Số lần không đạt -->
               <rect 
-                :x="185 + (m - 1) * 62.6923 + 62.6923 / 2 + 1" 
+                :x="185 + (m - 1) * 62.6923 + 62.6923 / 2" 
                 :y="getPaperBarY(getBarVal(m, 1))" 
                 width="14" 
                 :height="getPaperBarHeight(getBarVal(m, 1))" 
@@ -520,8 +533,8 @@ export default {
       },
 
       barConfig: {
-        width: 20,
-        gap: 3
+        width: 22,
+        gap: 0
       }
     };
   },
@@ -987,8 +1000,8 @@ export default {
   vertical-align: middle;
 }
 
-.fill-final-dash { background-color: #4f46e5; }
-.fill-failed-dash { background-color: #f43f5e; }
+.fill-final-dash { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+.fill-failed-dash { background: linear-gradient(135deg, #ef4444, #f87171); }
 .fill-passed-rate-dash { background-color: #10b981; }
 .fill-failed-rate-dash { background-color: #f59e0b; }
 
