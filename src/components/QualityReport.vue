@@ -4,21 +4,21 @@
     <header class="page-action-header no-print">
       <div class="page-title-badge">
         <span class="pulse-dot"></span>
-        <h2>Trang 1: Báo Cáo Chất Lượng XNTH 2025</h2>
+        <h2>Trang 1: Báo Cáo Chất Lượng XNTH {{ selectedYear }}</h2>
       </div>
-      
+
       <div class="page-actions">
         <!-- View Mode Selector -->
         <div class="mode-selector">
-          <button 
-            :class="['btn-mode', { active: viewMode === 'dashboard' }]" 
+          <button
+            :class="['btn-mode', { active: viewMode === 'dashboard' }]"
             @click="setViewMode('dashboard')"
             title="Xem giao diện báo cáo thông minh và biểu đồ trực quan"
           >
             <span class="icon">📊</span> Bảng Điều Khiển
           </button>
-          <button 
-            :class="['btn-mode', { active: viewMode === 'print-preview' }]" 
+          <button
+            :class="['btn-mode', { active: viewMode === 'print-preview' }]"
             @click="setViewMode('print-preview')"
             title="Xem giao diện chuẩn khổ giấy báo cáo thực tế"
           >
@@ -27,37 +27,54 @@
         </div>
 
         <!-- Export Excel Action -->
-        <button class="btn-action btn-excel" @click="exportExcel" title="Xuất dữ liệu báo cáo ra file Excel">
+        <button
+          class="btn-action btn-excel"
+          @click="exportExcel"
+          title="Xuất dữ liệu báo cáo ra file Excel"
+        >
           <span class="icon">📥</span> Xuất Excel
         </button>
 
         <!-- Print Action -->
-        <button class="btn-action btn-print" @click="triggerPrint" title="In báo cáo này ra giấy hoặc PDF">
+        <button
+          class="btn-action btn-print"
+          @click="triggerPrint"
+          title="In báo cáo này ra giấy hoặc PDF"
+        >
           <span class="icon">🖨️</span> In Báo Cáo
         </button>
 
         <!-- Reset Data -->
-        <button class="btn-action btn-secondary" @click="resetData" title="Khôi phục số liệu gốc theo ảnh">
+        <button
+          class="btn-action btn-secondary"
+          @click="resetData"
+          title="Khôi phục số liệu gốc theo ảnh"
+        >
           <span class="icon">🔄</span> Khôi Phục
         </button>
       </div>
     </header>
 
     <!-- Interactive Dashboard View -->
-    <main v-if="viewMode === 'dashboard'" class="dashboard-content animate-fade-in no-print">
+    <main
+      v-if="viewMode === 'dashboard'"
+      class="dashboard-content animate-fade-in no-print"
+    >
       <!-- Welcome & Summary Cards -->
       <section class="summary-section">
         <div class="welcome-card">
-          <h2>Báo Cáo Tổng Kết Chất Lượng XNTH 2025</h2>
-          <p>Nhập hoặc điều chỉnh số liệu của các tháng để cập nhật báo cáo tự động. Giao diện biểu đồ và thống kê sẽ thay đổi trực quan theo thời gian thực.</p>
+          <h2>Báo Cáo Tổng Kết Chất Lượng XNTH {{ selectedYear }}</h2>
+          <p>
+            Nhập hoặc điều chỉnh số liệu của các tháng để cập nhật báo cáo tự
+            động. Giao diện biểu đồ và thống kê sẽ thay đổi trực quan theo thời
+            gian thực.
+          </p>
           <div class="welcome-badges">
             <span class="badge">Doanh nghiệp: Tex-Giang</span>
             <span class="badge badge-success">Mã tài liệu: L 02</span>
             <span class="badge badge-info">Ngày ban hành: 29/09/2017</span>
           </div>
         </div>
-
-
       </section>
 
       <!-- Charts Section -->
@@ -65,8 +82,8 @@
         <div class="section-header">
           <h3>Biểu Đồ Xu Hướng Tỷ Lệ Hàng Hư Theo Tháng (%)</h3>
           <div class="chart-controls">
-            <button 
-              v-for="year in [selectedYear - 1, selectedYear]" 
+            <button
+              v-for="year in [selectedYear - 1, selectedYear]"
               :key="year"
               :class="['btn-tab', { active: activeChartYear === year }]"
               @click="activeChartYear = year"
@@ -75,10 +92,15 @@
             </button>
           </div>
         </div>
-        
+
         <div class="chart-container">
           <!-- Custom Interactive SVG Chart -->
-          <svg class="custom-svg-chart" viewBox="0 0 1000 350" width="100%" height="320">
+          <svg
+            class="custom-svg-chart"
+            viewBox="0 0 1000 350"
+            width="100%"
+            height="320"
+          >
             <defs>
               <linearGradient id="areaTruocGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.25" />
@@ -90,28 +112,64 @@
               </linearGradient>
             </defs>
             <!-- Grid Lines -->
-            <line v-for="grid in yGridLines" :key="grid.y" x1="60" :y1="grid.y" x2="960" :y2="grid.y" class="grid-line" />
-            
+            <line
+              v-for="grid in yGridLines"
+              :key="grid.y"
+              x1="60"
+              :y1="grid.y"
+              x2="960"
+              :y2="grid.y"
+              class="grid-line"
+            />
+
             <!-- X Axis Labels (Months) -->
-            <text v-for="m in 12" :key="m" :x="getXCoordinate(m)" y="330" class="axis-text text-center">{{ 'T' + m }}</text>
-            
+            <text
+              v-for="m in 12"
+              :key="m"
+              :x="getXCoordinate(m)"
+              y="330"
+              class="axis-text text-center"
+            >
+              {{ "T" + m }}
+            </text>
+
             <!-- Y Axis Labels -->
-            <text v-for="grid in yGridLines" :key="grid.label" x="45" :y="grid.y + 4" class="axis-text text-right">{{ grid.label }}%</text>
+            <text
+              v-for="grid in yGridLines"
+              :key="grid.label"
+              x="45"
+              :y="grid.y + 4"
+              class="axis-text text-right"
+            >
+              {{ grid.label }}%
+            </text>
 
             <!-- Line 1: Trước Ủi -->
-            <path :d="getChartPath(activeChartYear, 0)" class="chart-path path-truoc" />
+            <path
+              :d="getChartPath(activeChartYear, 0)"
+              class="chart-path path-truoc"
+            />
             <!-- Line 2: Sau Ủi -->
-            <path :d="getChartPath(activeChartYear, 1)" class="chart-path path-sau" />
+            <path
+              :d="getChartPath(activeChartYear, 1)"
+              class="chart-path path-sau"
+            />
 
             <!-- Area under lines for premium look -->
-            <path :d="getChartAreaPath(activeChartYear, 0)" class="chart-area-path area-truoc" />
-            <path :d="getChartAreaPath(activeChartYear, 1)" class="chart-area-path area-sau" />
+            <path
+              :d="getChartAreaPath(activeChartYear, 0)"
+              class="chart-area-path area-truoc"
+            />
+            <path
+              :d="getChartAreaPath(activeChartYear, 1)"
+              class="chart-area-path area-sau"
+            />
 
             <!-- Interactive Dots & Hover areas for Truoc Ui -->
             <g>
-              <circle 
-                v-for="(val, idx) in getYearRowData(activeChartYear, 0)" 
-                :key="'t-dot-'+idx"
+              <circle
+                v-for="(val, idx) in getYearRowData(activeChartYear, 0)"
+                :key="'t-dot-' + idx"
                 :cx="getXCoordinate(idx + 1)"
                 :cy="getYCoordinate(val)"
                 r="6"
@@ -123,9 +181,9 @@
 
             <!-- Interactive Dots & Hover areas for Sau Ui -->
             <g>
-              <circle 
-                v-for="(val, idx) in getYearRowData(activeChartYear, 1)" 
-                :key="'s-dot-'+idx"
+              <circle
+                v-for="(val, idx) in getYearRowData(activeChartYear, 1)"
+                :key="'s-dot-' + idx"
                 :cx="getXCoordinate(idx + 1)"
                 :cy="getYCoordinate(val)"
                 r="6"
@@ -149,10 +207,17 @@
           </div>
 
           <!-- Tooltip Element -->
-          <div v-if="tooltip.visible" class="chart-tooltip" :style="tooltip.style">
-            <div class="tooltip-title">Tháng {{ tooltip.month }} ({{ tooltip.year }})</div>
+          <div
+            v-if="tooltip.visible"
+            class="chart-tooltip"
+            :style="tooltip.style"
+          >
+            <div class="tooltip-title">
+              Tháng {{ tooltip.month }} ({{ tooltip.year }})
+            </div>
             <div class="tooltip-content">
-              <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }}%</span>
+              <strong>{{ tooltip.label }}:</strong>
+              <span class="text-highlight">{{ tooltip.value }}%</span>
             </div>
           </div>
         </div>
@@ -164,37 +229,45 @@
         <div class="table-card card-box">
           <div class="table-title-container">
             <h4>{{ data2024.title }}</h4>
-            <span class="table-subtitle">Nhấp đúp chuột vào bất kỳ ô số liệu nào để chỉnh sửa nhanh</span>
+            <span class="table-subtitle"
+              >Nhấp đúp chuột vào bất kỳ ô số liệu nào để chỉnh sửa nhanh</span
+            >
           </div>
           <div class="responsive-table-wrapper">
             <table class="dashboard-table">
               <thead>
                 <tr>
                   <th class="col-xn">{{ data2024.col1Header }}</th>
-                  <th v-for="m in 12" :key="'h1-'+m">Tháng {{ m }}</th>
+                  <th v-for="m in 12" :key="'h1-' + m">Tháng {{ m }}</th>
                   <th class="col-avg">Trung Bình</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(row, rIdx) in data2024.rows" :key="'r24-'+rIdx">
+                <tr v-for="(row, rIdx) in data2024.rows" :key="'r24-' + rIdx">
                   <td class="row-label">{{ row.label }}</td>
-                  <td 
-                    v-for="(val, mIdx) in row.months" 
-                    :key="'cell24-'+rIdx+'-'+mIdx"
-                    :class="['cell-editable', { editing: isEditing(2024, rIdx, mIdx) }]"
+                  <td
+                    v-for="(val, mIdx) in row.months"
+                    :key="'cell24-' + rIdx + '-' + mIdx"
+                    :class="[
+                      'cell-editable',
+                      { editing: isEditing(2024, rIdx, mIdx) },
+                    ]"
                     @dblclick="startEdit(2024, rIdx, mIdx, val)"
                   >
                     <!-- Read Mode -->
-                    <span v-if="!isEditing(2024, rIdx, mIdx)" class="cell-value-text">
+                    <span
+                      v-if="!isEditing(2024, rIdx, mIdx)"
+                      class="cell-value-text"
+                    >
                       {{ formatPercentage(val) }}
                     </span>
                     <!-- Edit Mode -->
-                    <input 
+                    <input
                       v-else
                       :ref="'input-2024-' + rIdx + '-' + mIdx"
-                      type="number" 
-                      step="0.01" 
-                      min="0" 
+                      type="number"
+                      step="0.01"
+                      min="0"
                       max="100"
                       class="cell-input"
                       v-model.number="editState.value"
@@ -203,7 +276,9 @@
                       @keydown.escape="cancelEdit"
                     />
                   </td>
-                  <td class="cell-avg-val">{{ calculateAverage(row, 2024) }}</td>
+                  <td class="cell-avg-val">
+                    {{ calculateAverage(row, 2024) }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -214,37 +289,45 @@
         <div class="table-card card-box">
           <div class="table-title-container">
             <h4>{{ data2025.title }}</h4>
-            <span class="table-subtitle">Nhấp đúp chuột vào bất kỳ ô số liệu nào để chỉnh sửa nhanh</span>
+            <span class="table-subtitle"
+              >Nhấp đúp chuột vào bất kỳ ô số liệu nào để chỉnh sửa nhanh</span
+            >
           </div>
           <div class="responsive-table-wrapper">
             <table class="dashboard-table">
               <thead>
                 <tr>
                   <th class="col-xn">{{ data2025.col1Header }}</th>
-                  <th v-for="m in 12" :key="'h2-'+m">Tháng {{ m }}</th>
+                  <th v-for="m in 12" :key="'h2-' + m">Tháng {{ m }}</th>
                   <th class="col-avg">Trung Bình</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(row, rIdx) in data2025.rows" :key="'r25-'+rIdx">
+                <tr v-for="(row, rIdx) in data2025.rows" :key="'r25-' + rIdx">
                   <td class="row-label">{{ row.label }}</td>
-                  <td 
-                    v-for="(val, mIdx) in row.months" 
-                    :key="'cell25-'+rIdx+'-'+mIdx"
-                    :class="['cell-editable', { editing: isEditing(2025, rIdx, mIdx) }]"
+                  <td
+                    v-for="(val, mIdx) in row.months"
+                    :key="'cell25-' + rIdx + '-' + mIdx"
+                    :class="[
+                      'cell-editable',
+                      { editing: isEditing(2025, rIdx, mIdx) },
+                    ]"
                     @dblclick="startEdit(2025, rIdx, mIdx, val)"
                   >
                     <!-- Read Mode -->
-                    <span v-if="!isEditing(2025, rIdx, mIdx)" class="cell-value-text">
+                    <span
+                      v-if="!isEditing(2025, rIdx, mIdx)"
+                      class="cell-value-text"
+                    >
                       {{ formatPercentage(val) }}
                     </span>
                     <!-- Edit Mode -->
-                    <input 
+                    <input
                       v-else
                       :ref="'input-2025-' + rIdx + '-' + mIdx"
-                      type="number" 
-                      step="0.01" 
-                      min="0" 
+                      type="number"
+                      step="0.01"
+                      min="0"
                       max="100"
                       class="cell-input"
                       v-model.number="editState.value"
@@ -253,7 +336,9 @@
                       @keydown.escape="cancelEdit"
                     />
                   </td>
-                  <td class="cell-avg-val">{{ calculateAverage(row, 2025) }}</td>
+                  <td class="cell-avg-val">
+                    {{ calculateAverage(row, 2025) }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -267,22 +352,42 @@
         <div class="insights-content">
           <div class="insight-item">
             <div class="insight-bullet">1</div>
-            <p><strong>Hiệu quả cải tiến:</strong> Tỷ lệ hàng hư trung bình năm 2025 là <strong>{{ overallAvg2025 }}%</strong>, {{ improvementText2025Vs2024 }}. Đây là tín hiệu {{ isImproving ? 'tích cực' : 'cần lưu ý' }} cho hoạt động kiểm soát lỗi của Xí nghiệp 3.</p>
+            <p>
+              <strong>Hiệu quả cải tiến:</strong> Tỷ lệ hàng hư trung bình năm
+              2025 là <strong>{{ overallAvg2025 }}%</strong>,
+              {{ improvementText2025Vs2024 }}. Đây là tín hiệu
+              {{ isImproving ? "tích cực" : "cần lưu ý" }} cho hoạt động kiểm
+              soát lỗi của Xí nghiệp 3.
+            </p>
           </div>
           <div class="insight-item">
             <div class="insight-bullet">2</div>
-            <p><strong>Ảnh hưởng của công đoạn Ủi:</strong> Trong năm 2025, tỷ lệ lỗi trung bình công đoạn <em>Sau ủi</em> ({{ avgSauUi2025 }}%) so với công đoạn <em>Trước ủi</em> ({{ avgTruocUi2025 }}%) có độ lệch là <strong>{{ ironingDiff }}%</strong>. {{ ironingImpactText }}</p>
+            <p>
+              <strong>Ảnh hưởng của công đoạn Ủi:</strong> Trong năm 2025, tỷ lệ
+              lỗi trung bình công đoạn <em>Sau ủi</em> ({{ avgSauUi2025 }}%) so
+              với công đoạn <em>Trước ủi</em> ({{ avgTruocUi2025 }}%) có độ lệch
+              là <strong>{{ ironingDiff }}%</strong>. {{ ironingImpactText }}
+            </p>
           </div>
           <div class="insight-item">
             <div class="insight-bullet">3</div>
-            <p><strong>Điểm nóng cần chú ý:</strong> Tháng <strong>{{ peakMonth.month }}</strong> có tỷ lệ lỗi cao nhất đạt <strong>{{ peakMonth.value }}%</strong> ở công đoạn {{ peakMonth.label }}. Ban Giám đốc nên tập trung đánh giá quy trình sản xuất và nguyên vật liệu của tháng này.</p>
+            <p>
+              <strong>Điểm nóng cần chú ý:</strong> Tháng
+              <strong>{{ peakMonth.month }}</strong> có tỷ lệ lỗi cao nhất đạt
+              <strong>{{ peakMonth.value }}%</strong> ở công đoạn
+              {{ peakMonth.label }}. Ban Giám đốc nên tập trung đánh giá quy
+              trình sản xuất và nguyên vật liệu của tháng này.
+            </p>
           </div>
         </div>
       </section>
     </main>
 
     <!-- Print / Official A4 Document View -->
-    <div v-else-if="viewMode === 'print-preview'" class="a4-document-container animate-scale-in">
+    <div
+      v-else-if="viewMode === 'print-preview'"
+      class="a4-document-container animate-scale-in"
+    >
       <div class="a4-paper-sheet">
         <!-- Document Header Table-like grid -->
         <table class="report-header-table">
@@ -293,18 +398,85 @@
                 <div class="tgi-logo-container">
                   <svg viewBox="0 0 120 70" class="tgi-logo-svg">
                     <!-- TGI Letters inside drawing -->
-                    <text x="12" y="44" font-family="'Times New Roman', Georgia, serif" font-weight="900" font-size="44" fill="#000">T</text>
+                    <text
+                      x="12"
+                      y="44"
+                      font-family="'Times New Roman', Georgia, serif"
+                      font-weight="900"
+                      font-size="44"
+                      fill="#000"
+                    >
+                      T
+                    </text>
                     <!-- Stylized G -->
-                    <circle cx="56" cy="30" r="16.5" stroke="#000" stroke-width="1.8" fill="none" />
-                    <circle cx="56" cy="30" r="13.5" stroke="#000" stroke-width="1" fill="none" />
-                    <line x1="56" y1="30" x2="68" y2="30" stroke="#000" stroke-width="2" />
-                    <text x="45" y="41" font-family="'Times New Roman', Georgia, serif" font-weight="900" font-size="34" fill="#000">G</text>
+                    <circle
+                      cx="56"
+                      cy="30"
+                      r="16.5"
+                      stroke="#000"
+                      stroke-width="1.8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="56"
+                      cy="30"
+                      r="13.5"
+                      stroke="#000"
+                      stroke-width="1"
+                      fill="none"
+                    />
+                    <line
+                      x1="56"
+                      y1="30"
+                      x2="68"
+                      y2="30"
+                      stroke="#000"
+                      stroke-width="2"
+                    />
+                    <text
+                      x="45"
+                      y="41"
+                      font-family="'Times New Roman', Georgia, serif"
+                      font-weight="900"
+                      font-size="34"
+                      fill="#000"
+                    >
+                      G
+                    </text>
                     <!-- I -->
-                    <text x="82" y="44" font-family="'Times New Roman', Georgia, serif" font-weight="900" font-size="44" fill="#000">I</text>
-                    
+                    <text
+                      x="82"
+                      y="44"
+                      font-family="'Times New Roman', Georgia, serif"
+                      font-weight="900"
+                      font-size="44"
+                      fill="#000"
+                    >
+                      I
+                    </text>
+
                     <!-- Bottom Text Box -->
-                    <rect x="3" y="52" width="114" height="15" fill="none" stroke="#000" stroke-width="1" />
-                    <text x="60" y="63" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="9.5" text-anchor="middle" letter-spacing="1" fill="#000">TEX-GIANG</text>
+                    <rect
+                      x="3"
+                      y="52"
+                      width="114"
+                      height="15"
+                      fill="none"
+                      stroke="#000"
+                      stroke-width="1"
+                    />
+                    <text
+                      x="60"
+                      y="63"
+                      font-family="Arial, Helvetica, sans-serif"
+                      font-weight="bold"
+                      font-size="9.5"
+                      text-anchor="middle"
+                      letter-spacing="1"
+                      fill="#000"
+                    >
+                      TEX-GIANG
+                    </text>
                   </svg>
                 </div>
               </td>
@@ -320,7 +492,9 @@
             <tr>
               <!-- Document Title -->
               <td class="header-title-cell">
-                <span class="txt-title">BÁO CÁO TỔNG KẾT CHẤT LƯỢNG XNTH NĂM 2025</span>
+                <span class="txt-title"
+                  >BÁO CÁO TỔNG KẾT CHẤT LƯỢNG XNTH NĂM 2025</span
+                >
               </td>
               <!-- Ngay -->
               <td class="header-meta-cell-bottom">
@@ -336,15 +510,21 @@
           <table class="print-data-table">
             <thead>
               <tr>
-                <th style="width: 8.5%;">{{ data2024.col1Header }}</th>
-                <th v-for="m in 12" :key="'p1-'+m" style="width: 6.8%;">Tháng {{ m }}</th>
-                <th style="width: 10%;">Trung Binh</th>
+                <th style="width: 8.5%">{{ data2024.col1Header }}</th>
+                <th v-for="m in 12" :key="'p1-' + m" style="width: 6.8%">
+                  Tháng {{ m }}
+                </th>
+                <th style="width: 10%">Trung Binh</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, rIdx) in data2024.rows" :key="'pr24-'+rIdx">
+              <tr v-for="(row, rIdx) in data2024.rows" :key="'pr24-' + rIdx">
                 <td class="cell-label">{{ row.label }}</td>
-                <td v-for="(val, mIdx) in row.months" :key="'pcell24-'+rIdx+'-'+mIdx" class="cell-val">
+                <td
+                  v-for="(val, mIdx) in row.months"
+                  :key="'pcell24-' + rIdx + '-' + mIdx"
+                  class="cell-val"
+                >
                   {{ formatPercentage(val) }}
                 </td>
                 <td class="cell-avg">{{ calculateAverage(row, 2024) }}</td>
@@ -359,15 +539,21 @@
           <table class="print-data-table">
             <thead>
               <tr>
-                <th style="width: 8.5%;">{{ data2025.col1Header }}</th>
-                <th v-for="m in 12" :key="'p2-'+m" style="width: 6.8%;">Tháng {{ m }}</th>
-                <th style="width: 10%;">Trung Binh</th>
+                <th style="width: 8.5%">{{ data2025.col1Header }}</th>
+                <th v-for="m in 12" :key="'p2-' + m" style="width: 6.8%">
+                  Tháng {{ m }}
+                </th>
+                <th style="width: 10%">Trung Binh</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, rIdx) in data2025.rows" :key="'pr25-'+rIdx">
+              <tr v-for="(row, rIdx) in data2025.rows" :key="'pr25-' + rIdx">
                 <td class="cell-label">{{ row.label }}</td>
-                <td v-for="(val, mIdx) in row.months" :key="'pcell25-'+rIdx+'-'+mIdx" class="cell-val">
+                <td
+                  v-for="(val, mIdx) in row.months"
+                  :key="'pcell25-' + rIdx + '-' + mIdx"
+                  class="cell-val"
+                >
                   {{ formatPercentage(val) }}
                 </td>
                 <td class="cell-avg">{{ calculateAverage(row, 2025) }}</td>
@@ -376,63 +562,68 @@
           </table>
         </div>
       </div>
-      
+
       <!-- Back to top floating warning (Interactive in print-preview but hidden in printing) -->
       <div class="preview-mode-banner no-print">
-        <p>💡 Đây là giao diện giả lập trang in A4 chính xác nhất. Bạn có thể nhấn <strong>In Báo Cáo</strong> để in trực tiếp hoặc lưu thành PDF.</p>
-        <button class="btn-action" @click="setViewMode('dashboard')">Quay lại bảng điều khiển</button>
+        <p>
+          💡 Đây là giao diện giả lập trang in A4 chính xác nhất. Bạn có thể
+          nhấn <strong>In Báo Cáo</strong> để in trực tiếp hoặc lưu thành PDF.
+        </p>
+        <button class="btn-action" @click="setViewMode('dashboard')">
+          Quay lại bảng điều khiển
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { exportQualityReport } from '@/utils/excelExport';
+import { exportQualityReport } from "@/utils/excelExport";
 
 export default {
-  name: 'QualityReport',
+  name: "QualityReport",
   props: {
     theme: {
       type: String,
-      default: 'dark'
+      default: "dark",
     },
     data2024: {
       type: Object,
-      required: true
+      required: true,
     },
     data2025: {
       type: Object,
-      required: true
+      required: true,
     },
     selectedYear: {
       type: Number,
-      default: 2025
-    }
+      default: 2025,
+    },
   },
   data() {
     return {
-      viewMode: 'dashboard', // 'dashboard' or 'print-preview'
+      viewMode: "dashboard", // 'dashboard' or 'print-preview'
       activeChartYear: this.selectedYear,
-      
+
       // Inline Editing state
       editState: {
         year: null,
         rowIdx: null,
         monthIdx: null,
-        value: null
+        value: null,
       },
 
       // Tooltip State for SVG charts
       tooltip: {
         visible: false,
         year: null,
-        label: '',
+        label: "",
         month: 1,
         value: 0,
         style: {
-          top: '0px',
-          left: '0px'
-        }
+          top: "0px",
+          left: "0px",
+        },
       },
 
       // SVG Chart Settings
@@ -443,8 +634,8 @@ export default {
         paddingY: 45,
         graphHeight: 250,
         graphWidth: 890,
-        maxY: 30
-      }
+        maxY: 30,
+      },
     };
   },
   computed: {
@@ -462,11 +653,17 @@ export default {
       return this.computeRawAvg(this.data2025.rows[1].months);
     },
     overallAvg2024() {
-      const allMonths = [...this.data2024.rows[0].months, ...this.data2024.rows[1].months];
+      const allMonths = [
+        ...this.data2024.rows[0].months,
+        ...this.data2024.rows[1].months,
+      ];
       return this.computeRawAvg(allMonths).toFixed(2);
     },
     overallAvg2025() {
-      const allMonths = [...this.data2025.rows[0].months, ...this.data2025.rows[1].months];
+      const allMonths = [
+        ...this.data2025.rows[0].months,
+        ...this.data2025.rows[1].months,
+      ];
       return this.computeRawAvg(allMonths).toFixed(2);
     },
     ironingDiff() {
@@ -476,7 +673,9 @@ export default {
       return parseFloat(this.overallAvg2025) < parseFloat(this.overallAvg2024);
     },
     improvementText2025Vs2024() {
-      const diff = Math.abs(parseFloat(this.overallAvg2025) - parseFloat(this.overallAvg2024)).toFixed(2);
+      const diff = Math.abs(
+        parseFloat(this.overallAvg2025) - parseFloat(this.overallAvg2024)
+      ).toFixed(2);
       if (this.isImproving) {
         return `giảm được ${diff}% so với trung bình năm 2024 (${this.overallAvg2024}%)`;
       } else {
@@ -484,21 +683,21 @@ export default {
       }
     },
     avgTrendClass() {
-      return this.isImproving ? 'text-success' : 'text-danger';
+      return this.isImproving ? "text-success" : "text-danger";
     },
     avgTrendIcon() {
-      return this.isImproving ? '📉' : '📈';
+      return this.isImproving ? "📉" : "📈";
     },
     avgTrendText() {
-      return this.isImproving ? 'Giảm' : 'Tăng';
+      return this.isImproving ? "Giảm" : "Tăng";
     },
     peakMonth() {
       let maxVal = -1;
       let maxMonth = 1;
-      let maxLabel = '';
-      
+      let maxLabel = "";
+
       // Check 2025 rows
-      this.data2025.rows.forEach(row => {
+      this.data2025.rows.forEach((row) => {
         row.months.forEach((val, idx) => {
           if (val > maxVal) {
             maxVal = val;
@@ -507,11 +706,11 @@ export default {
           }
         });
       });
-      
+
       return {
         value: maxVal.toFixed(2),
         month: maxMonth,
-        label: maxLabel
+        label: maxLabel,
       };
     },
     ironingImpactText() {
@@ -532,11 +731,11 @@ export default {
         const value = i * 5;
         lines.push({
           label: value,
-          y: this.getYCoordinate(value)
+          y: this.getYCoordinate(value),
         });
       }
       return lines;
-    }
+    },
   },
   methods: {
     exportExcel() {
@@ -544,46 +743,46 @@ export default {
     },
     setViewMode(mode) {
       this.viewMode = mode;
-      this.$emit('view-mode-change', mode);
+      this.$emit("view-mode-change", mode);
     },
     triggerPrint() {
-      this.viewMode = 'print-preview';
-      this.$emit('view-mode-change', 'print-preview');
+      this.viewMode = "print-preview";
+      this.$emit("view-mode-change", "print-preview");
       this.$nextTick(() => {
         window.print();
       });
     },
     resetData() {
-      this.$emit('reset-data');
+      this.$emit("reset-data");
     },
     formatPercentage(val) {
-      if (val === undefined || val === null) return '';
-      return val.toFixed(2) + '%';
+      if (val === undefined || val === null) return "";
+      return val.toFixed(2) + "%";
     },
     computeRawAvg(months) {
       const sum = months.reduce((a, b) => a + Number(b || 0), 0);
       return sum / 12;
     },
-    calculateAverage(row, year) {
+    calculateAverage(row) {
       if (row.average !== undefined && row.average !== null) {
-        const precision = year === 2024 ? 1 : 2;
-        return row.average.toFixed(precision) + '%';
+        return row.average.toFixed(2) + "%";
       }
       const avg = this.computeRawAvg(row.months);
-      const precision = year === 2024 ? 1 : 2;
-      return avg.toFixed(precision) + '%';
+      return avg.toFixed(2) + "%";
     },
     isEditing(year, rowIdx, monthIdx) {
-      return this.editState.year === year && 
-             this.editState.rowIdx === rowIdx && 
-             this.editState.monthIdx === monthIdx;
+      return (
+        this.editState.year === year &&
+        this.editState.rowIdx === rowIdx &&
+        this.editState.monthIdx === monthIdx
+      );
     },
     startEdit(year, rowIdx, monthIdx, currentVal) {
       this.editState.year = year;
       this.editState.rowIdx = rowIdx;
       this.editState.monthIdx = monthIdx;
       this.editState.value = currentVal;
-      
+
       this.$nextTick(() => {
         const refName = `input-${year}-${rowIdx}-${monthIdx}`;
         const inputEl = this.$refs[refName];
@@ -595,20 +794,20 @@ export default {
     },
     saveEdit() {
       if (this.editState.year === null) return;
-      
+
       let parsedValue = parseFloat(this.editState.value);
       if (isNaN(parsedValue)) {
         parsedValue = 0;
       }
       parsedValue = Math.max(0, Math.min(100, parsedValue));
-      
-      this.$emit('update-data', {
+
+      this.$emit("update-data", {
         year: this.editState.year,
         rowIdx: this.editState.rowIdx,
         monthIdx: this.editState.monthIdx,
-        value: parsedValue
+        value: parsedValue,
       });
-      
+
       this.cancelEdit();
     },
     cancelEdit() {
@@ -619,11 +818,15 @@ export default {
     },
     getXCoordinate(monthIndex) {
       const space = this.chartConfig.graphWidth / 11;
-      return this.chartConfig.paddingX + ((monthIndex - 1) * space);
+      return this.chartConfig.paddingX + (monthIndex - 1) * space;
     },
     getYCoordinate(value) {
       const ratio = value / this.chartConfig.maxY;
-      return this.chartConfig.paddingY + this.chartConfig.graphHeight - (ratio * this.chartConfig.graphHeight);
+      return (
+        this.chartConfig.paddingY +
+        this.chartConfig.graphHeight -
+        ratio * this.chartConfig.graphHeight
+      );
     },
     getYearRowData(year, rowIdx) {
       const sourceTable = year === 2024 ? this.data2024 : this.data2025;
@@ -631,7 +834,7 @@ export default {
     },
     getChartPath(year, rowIdx) {
       const data = this.getYearRowData(year, rowIdx);
-      let path = '';
+      let path = "";
       data.forEach((val, idx) => {
         const x = this.getXCoordinate(idx + 1);
         const y = this.getYCoordinate(val);
@@ -649,16 +852,17 @@ export default {
       data.forEach((val, idx) => {
         points.push({
           x: this.getXCoordinate(idx + 1),
-          y: this.getYCoordinate(val)
+          y: this.getYCoordinate(val),
         });
       });
-      
+
       const startX = this.getXCoordinate(1);
       const endX = this.getXCoordinate(12);
-      const baselineY = this.chartConfig.paddingY + this.chartConfig.graphHeight;
-      
+      const baselineY =
+        this.chartConfig.paddingY + this.chartConfig.graphHeight;
+
       let path = `M ${startX} ${baselineY}`;
-      points.forEach(p => {
+      points.forEach((p) => {
         path += ` L ${p.x} ${p.y}`;
       });
       path += ` L ${endX} ${baselineY} Z`;
@@ -667,33 +871,34 @@ export default {
     showTooltip(event, year, rowIdx, idx, val) {
       const sourceTable = year === 2024 ? this.data2024 : this.data2025;
       const rowLabel = sourceTable.rows[rowIdx].label;
-      const chartContainer = event.target.closest('.chart-container');
-      
+      const chartContainer = event.target.closest(".chart-container");
+
       if (!chartContainer) return;
-      
+
       const rect = chartContainer.getBoundingClientRect();
       const clientX = event.clientX - rect.left;
       const clientY = event.clientY - rect.top;
 
       this.tooltip.year = year;
       this.tooltip.month = idx + 1;
-      this.tooltip.label = rowLabel.split(' ')[0] + ' ' + rowLabel.split(' ')[1];
+      this.tooltip.label =
+        rowLabel.split(" ")[0] + " " + rowLabel.split(" ")[1];
       this.tooltip.value = val.toFixed(2);
       this.tooltip.style = {
         top: `${clientY - 75}px`,
-        left: `${clientX - 60}px`
+        left: `${clientX - 60}px`,
       };
       this.tooltip.visible = true;
     },
     hideTooltip() {
       this.tooltip.visible = false;
-    }
+    },
   },
   watch: {
     selectedYear(newYear) {
       this.activeChartYear = newYear;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -853,9 +1058,15 @@ export default {
   font-size: 24px;
 }
 
-.icon-blue { background-color: rgba(59, 130, 246, 0.1); }
-.icon-red { background-color: rgba(239, 68, 68, 0.1); }
-.icon-purple { background-color: rgba(139, 92, 246, 0.1); }
+.icon-blue {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+.icon-red {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+.icon-purple {
+  background-color: rgba(139, 92, 246, 0.1);
+}
 
 .stat-info {
   flex-grow: 1;
@@ -888,8 +1099,12 @@ export default {
   gap: 4px;
 }
 
-.text-success { color: #10b981; }
-.text-danger { color: #ef4444; }
+.text-success {
+  color: #10b981;
+}
+.text-danger {
+  color: #ef4444;
+}
 
 /* Charts styles */
 .section-header {
@@ -953,8 +1168,12 @@ export default {
   font-weight: 500;
 }
 
-.text-right { text-anchor: end; }
-.text-center { text-anchor: middle; }
+.text-right {
+  text-anchor: end;
+}
+.text-center {
+  text-anchor: middle;
+}
 
 .chart-path {
   fill: none;
@@ -1032,8 +1251,12 @@ export default {
   border-radius: 3px;
 }
 
-.color-truoc { background: #06b6d4; }
-.color-sau { background: #ff5a00; }
+.color-truoc {
+  background: #06b6d4;
+}
+.color-sau {
+  background: #ff5a00;
+}
 
 .chart-tooltip {
   position: absolute;
@@ -1103,7 +1326,7 @@ export default {
   font-size: 13px;
 }
 
-.dashboard-table th, 
+.dashboard-table th,
 .dashboard-table td {
   padding: 14px 10px;
   text-align: right;
@@ -1244,7 +1467,7 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .report-header-table {
@@ -1409,13 +1632,25 @@ export default {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Standard Buttons inside component actions */

@@ -4,21 +4,23 @@
     <header class="page-action-header no-print">
       <div class="page-title-badge">
         <span class="pulse-dot"></span>
-        <h2>Trang 2: Biểu Đồ So Sánh {{ selectedYear - 1 }} - {{ selectedYear }}</h2>
+        <h2>
+          Trang 2: Biểu Đồ So Sánh {{ selectedYear - 1 }} - {{ selectedYear }}
+        </h2>
       </div>
-      
+
       <div class="page-actions">
         <!-- View Mode Selector -->
         <div class="mode-selector">
-          <button 
-            :class="['btn-mode', { active: viewMode === 'dashboard' }]" 
+          <button
+            :class="['btn-mode', { active: viewMode === 'dashboard' }]"
             @click="setViewMode('dashboard')"
             title="Xem bảng điều khiển và biểu đồ so sánh trực quan"
           >
             <span class="icon">📊</span> Bảng Điều Khiển
           </button>
-          <button 
-            :class="['btn-mode', { active: viewMode === 'print-preview' }]" 
+          <button
+            :class="['btn-mode', { active: viewMode === 'print-preview' }]"
             @click="setViewMode('print-preview')"
             title="Xem giao diện chuẩn khổ giấy báo cáo thực tế"
           >
@@ -27,34 +29,60 @@
         </div>
 
         <!-- Export Excel Action -->
-        <button class="btn-action btn-excel" @click="exportExcel" title="Xuất dữ liệu báo cáo ra file Excel">
+        <button
+          class="btn-action btn-excel"
+          @click="exportExcel"
+          title="Xuất dữ liệu báo cáo ra file Excel"
+        >
           <span class="icon">📥</span> Xuất Excel
         </button>
 
         <!-- Print Action -->
-        <button class="btn-action btn-print" @click="triggerPrint" title="In báo cáo này ra giấy hoặc PDF">
+        <button
+          class="btn-action btn-print"
+          @click="triggerPrint"
+          title="In báo cáo này ra giấy hoặc PDF"
+        >
           <span class="icon">🖨️</span> In Báo Cáo
         </button>
 
         <!-- Reset Data -->
-        <button class="btn-action btn-secondary" @click="resetData" title="Khôi phục số liệu gốc theo ảnh">
+        <button
+          class="btn-action btn-secondary"
+          @click="resetData"
+          title="Khôi phục số liệu gốc theo ảnh"
+        >
           <span class="icon">🔄</span> Khôi Phục
         </button>
       </div>
     </header>
 
     <!-- Interactive Dashboard View -->
-    <main v-if="viewMode === 'dashboard'" class="dashboard-content animate-fade-in no-print">
+    <main
+      v-if="viewMode === 'dashboard'"
+      class="dashboard-content animate-fade-in no-print"
+    >
       <section class="charts-comparison-grid">
         <!-- Chart 1: Trước Ủi -->
         <div class="chart-card card-box">
           <div class="table-title-container">
-            <h4>So Sánh Tỷ Lệ Hàng Hư TRƯỚC ỦI ({{ selectedYear - 1 }} vs {{ selectedYear }})</h4>
-            <span class="table-subtitle">Biểu đồ so sánh tỷ lệ trước ủi theo từng tháng và trung bình cả năm</span>
+            <h4>
+              So Sánh Tỷ Lệ Hàng Hư TRƯỚC ỦI ({{ selectedYear - 1 }} vs
+              {{ selectedYear }})
+            </h4>
+            <span class="table-subtitle"
+              >Biểu đồ so sánh tỷ lệ trước ủi theo từng tháng và trung bình cả
+              năm</span
+            >
           </div>
 
           <div class="chart-container">
-            <svg class="custom-svg-chart" viewBox="0 0 1000 320" width="100%" height="280">
+            <svg
+              class="custom-svg-chart"
+              viewBox="0 0 1000 320"
+              width="100%"
+              height="280"
+            >
               <defs>
                 <linearGradient id="grad1-2024" x1="0" y1="1" x2="0" y2="0">
                   <stop offset="0%" stop-color="#475569" />
@@ -66,35 +94,81 @@
                 </linearGradient>
               </defs>
               <!-- Grid Lines (0% - 16%, step 2%) -->
-              <line v-for="grid in yGridLines1" :key="'g1-'+grid.y" x1="60" :y1="grid.y" x2="960" :y2="grid.y" class="grid-line" />
+              <line
+                v-for="grid in yGridLines1"
+                :key="'g1-' + grid.y"
+                x1="60"
+                :y1="grid.y"
+                x2="960"
+                :y2="grid.y"
+                class="grid-line"
+              />
               <!-- Y Axis labels -->
-              <text v-for="grid in yGridLines1" :key="'yl1-'+grid.label" x="45" :y="grid.y + 4" class="axis-text text-right">{{ grid.label }}%</text>
+              <text
+                v-for="grid in yGridLines1"
+                :key="'yl1-' + grid.label"
+                x="45"
+                :y="grid.y + 4"
+                class="axis-text text-right"
+              >
+                {{ grid.label }}%
+              </text>
               <!-- X Axis Month labels -->
-              <text v-for="m in 12" :key="'xl1-'+m" :x="getXColumnCenter(m)" y="300" class="axis-text text-center">{{ 'T' + m }}</text>
-              <text :x="getXColumnCenter(13)" y="300" class="axis-text text-center fw-bold">TB</text>
+              <text
+                v-for="m in 12"
+                :key="'xl1-' + m"
+                :x="getXColumnCenter(m)"
+                y="300"
+                class="axis-text text-center"
+              >
+                {{ "T" + m }}
+              </text>
+              <text
+                :x="getXColumnCenter(13)"
+                y="300"
+                class="axis-text text-center fw-bold"
+              >
+                TB
+              </text>
 
               <!-- Bars rendering -->
-              <g v-for="m in 13" :key="'bars1-'+m">
+              <g v-for="m in 13" :key="'bars1-' + m">
                 <!-- Bar 2024 (Trước ủi) -->
-                <rect 
+                <rect
                   :x="getBarX(m, 0)"
                   :y="getBarY(getVal1(m, 0), 16)"
                   :width="barConfig.width"
                   :height="getBarHeight(getVal1(m, 0), 16)"
                   class="bar-rect bar-2024"
                   fill="url(#grad1-2024)"
-                  @mouseenter="showTooltip($event, selectedYear - 1, 'Trước ủi', m, getVal1(m, 0))"
+                  @mouseenter="
+                    showTooltip(
+                      $event,
+                      selectedYear - 1,
+                      'Trước ủi',
+                      m,
+                      getVal1(m, 0)
+                    )
+                  "
                   @mouseleave="hideTooltip"
                 />
                 <!-- Bar 2025 (Trước ủi) -->
-                <rect 
+                <rect
                   :x="getBarX(m, 1)"
                   :y="getBarY(getVal1(m, 1), 16)"
                   :width="barConfig.width"
                   :height="getBarHeight(getVal1(m, 1), 16)"
                   class="bar-rect bar-2025"
                   fill="url(#grad1-2025)"
-                  @mouseenter="showTooltip($event, selectedYear, 'Trước ủi', m, getVal1(m, 1))"
+                  @mouseenter="
+                    showTooltip(
+                      $event,
+                      selectedYear,
+                      'Trước ủi',
+                      m,
+                      getVal1(m, 1)
+                    )
+                  "
                   @mouseleave="hideTooltip"
                 />
               </g>
@@ -104,7 +178,9 @@
             <div class="chart-legend">
               <div class="legend-item">
                 <span class="legend-color bar-color-2024"></span>
-                <span class="legend-label">Trước ủi {{ selectedYear - 1 }}</span>
+                <span class="legend-label"
+                  >Trước ủi {{ selectedYear - 1 }}</span
+                >
               </div>
               <div class="legend-item">
                 <span class="legend-color bar-color-2025"></span>
@@ -113,10 +189,17 @@
             </div>
 
             <!-- Tooltip Element -->
-            <div v-if="tooltip.visible && tooltip.stage === 'Trước ủi'" class="chart-tooltip" :style="tooltip.style">
-              <div class="tooltip-title">{{ tooltip.month }} ({{ tooltip.year }})</div>
+            <div
+              v-if="tooltip.visible && tooltip.stage === 'Trước ủi'"
+              class="chart-tooltip"
+              :style="tooltip.style"
+            >
+              <div class="tooltip-title">
+                {{ tooltip.month }} ({{ tooltip.year }})
+              </div>
               <div class="tooltip-content">
-                <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }}%</span>
+                <strong>{{ tooltip.label }}:</strong>
+                <span class="text-highlight">{{ tooltip.value }}%</span>
               </div>
             </div>
           </div>
@@ -126,24 +209,36 @@
               <thead>
                 <tr>
                   <th class="col-xn">{{ data2024.col1Header }}</th>
-                  <th v-for="m in 12" :key="'h1-p2-'+m">T{{ m }}</th>
+                  <th v-for="m in 12" :key="'h1-p2-' + m">T{{ m }}</th>
                   <th>Trung Bình</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td class="row-label">Trước ủi {{ selectedYear - 1 }}</td>
-                  <td v-for="(val, idx) in data2024.rows[0].months" :key="'c1-24-'+idx" class="text-center">
+                  <td
+                    v-for="(val, idx) in data2024.rows[0].months"
+                    :key="'c1-24-' + idx"
+                    class="text-center"
+                  >
                     {{ val.toFixed(2) }}%
                   </td>
-                  <td class="cell-avg-val text-center">{{ calculateRowAvg(data2024.rows[0], selectedYear - 1) }}</td>
+                  <td class="cell-avg-val text-center">
+                    {{ calculateRowAvg(data2024.rows[0], selectedYear - 1) }}
+                  </td>
                 </tr>
                 <tr>
                   <td class="row-label">Trước ủi {{ selectedYear }}</td>
-                  <td v-for="(val, idx) in data2025.rows[0].months" :key="'c1-25-'+idx" class="text-center">
+                  <td
+                    v-for="(val, idx) in data2025.rows[0].months"
+                    :key="'c1-25-' + idx"
+                    class="text-center"
+                  >
                     {{ val.toFixed(2) }}%
                   </td>
-                  <td class="cell-avg-val text-center">{{ calculateRowAvg(data2025.rows[0], selectedYear) }}</td>
+                  <td class="cell-avg-val text-center">
+                    {{ calculateRowAvg(data2025.rows[0], selectedYear) }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -153,12 +248,23 @@
         <!-- Chart 2: Sau Ủi -->
         <div class="chart-card card-box">
           <div class="table-title-container">
-            <h4>So Sánh Tỷ Lệ Hàng Hư SAU ỦI ({{ selectedYear - 1 }} vs {{ selectedYear }})</h4>
-            <span class="table-subtitle">Biểu đồ so sánh tỷ lệ sau ủi theo từng tháng và trung bình cả năm</span>
+            <h4>
+              So Sánh Tỷ Lệ Hàng Hư SAU ỦI ({{ selectedYear - 1 }} vs
+              {{ selectedYear }})
+            </h4>
+            <span class="table-subtitle"
+              >Biểu đồ so sánh tỷ lệ sau ủi theo từng tháng và trung bình cả
+              năm</span
+            >
           </div>
 
           <div class="chart-container">
-            <svg class="custom-svg-chart" viewBox="0 0 1000 320" width="100%" height="280">
+            <svg
+              class="custom-svg-chart"
+              viewBox="0 0 1000 320"
+              width="100%"
+              height="280"
+            >
               <defs>
                 <linearGradient id="grad2-2024" x1="0" y1="1" x2="0" y2="0">
                   <stop offset="0%" stop-color="#475569" />
@@ -170,35 +276,81 @@
                 </linearGradient>
               </defs>
               <!-- Grid Lines (0% - 30%, step 5%) -->
-              <line v-for="grid in yGridLines2" :key="'g2-'+grid.y" x1="60" :y1="grid.y" x2="960" :y2="grid.y" class="grid-line" />
+              <line
+                v-for="grid in yGridLines2"
+                :key="'g2-' + grid.y"
+                x1="60"
+                :y1="grid.y"
+                x2="960"
+                :y2="grid.y"
+                class="grid-line"
+              />
               <!-- Y Axis labels -->
-              <text v-for="grid in yGridLines2" :key="'yl2-'+grid.label" x="45" :y="grid.y + 4" class="axis-text text-right">{{ grid.label }}%</text>
+              <text
+                v-for="grid in yGridLines2"
+                :key="'yl2-' + grid.label"
+                x="45"
+                :y="grid.y + 4"
+                class="axis-text text-right"
+              >
+                {{ grid.label }}%
+              </text>
               <!-- X Axis Month labels -->
-              <text v-for="m in 12" :key="'xl2-'+m" :x="getXColumnCenter(m)" y="300" class="axis-text text-center">{{ 'T' + m }}</text>
-              <text :x="getXColumnCenter(13)" y="300" class="axis-text text-center fw-bold">TB</text>
+              <text
+                v-for="m in 12"
+                :key="'xl2-' + m"
+                :x="getXColumnCenter(m)"
+                y="300"
+                class="axis-text text-center"
+              >
+                {{ "T" + m }}
+              </text>
+              <text
+                :x="getXColumnCenter(13)"
+                y="300"
+                class="axis-text text-center fw-bold"
+              >
+                TB
+              </text>
 
               <!-- Bars rendering -->
-              <g v-for="m in 13" :key="'bars2-'+m">
+              <g v-for="m in 13" :key="'bars2-' + m">
                 <!-- Bar 2024 (Sau ủi) -->
-                <rect 
+                <rect
                   :x="getBarX(m, 0)"
                   :y="getBarY(getVal2(m, 0), 30)"
                   :width="barConfig.width"
                   :height="getBarHeight(getVal2(m, 0), 30)"
                   class="bar-rect bar-2024"
                   fill="url(#grad2-2024)"
-                  @mouseenter="showTooltip($event, selectedYear - 1, 'Sau ủi', m, getVal2(m, 0))"
+                  @mouseenter="
+                    showTooltip(
+                      $event,
+                      selectedYear - 1,
+                      'Sau ủi',
+                      m,
+                      getVal2(m, 0)
+                    )
+                  "
                   @mouseleave="hideTooltip"
                 />
                 <!-- Bar 2025 (Sau ủi) -->
-                <rect 
+                <rect
                   :x="getBarX(m, 1)"
                   :y="getBarY(getVal2(m, 1), 30)"
                   :width="barConfig.width"
                   :height="getBarHeight(getVal2(m, 1), 30)"
                   class="bar-rect bar-2025"
                   fill="url(#grad2-2025)"
-                  @mouseenter="showTooltip($event, selectedYear, 'Sau ủi', m, getVal2(m, 1))"
+                  @mouseenter="
+                    showTooltip(
+                      $event,
+                      selectedYear,
+                      'Sau ủi',
+                      m,
+                      getVal2(m, 1)
+                    )
+                  "
                   @mouseleave="hideTooltip"
                 />
               </g>
@@ -217,10 +369,17 @@
             </div>
 
             <!-- Tooltip Element -->
-            <div v-if="tooltip.visible && tooltip.stage === 'Sau ủi'" class="chart-tooltip" :style="tooltip.style">
-              <div class="tooltip-title">{{ tooltip.month }} ({{ tooltip.year }})</div>
+            <div
+              v-if="tooltip.visible && tooltip.stage === 'Sau ủi'"
+              class="chart-tooltip"
+              :style="tooltip.style"
+            >
+              <div class="tooltip-title">
+                {{ tooltip.month }} ({{ tooltip.year }})
+              </div>
               <div class="tooltip-content">
-                <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }}%</span>
+                <strong>{{ tooltip.label }}:</strong>
+                <span class="text-highlight">{{ tooltip.value }}%</span>
               </div>
             </div>
           </div>
@@ -230,56 +389,100 @@
               <thead>
                 <tr>
                   <th class="col-xn">{{ data2024.col1Header }}</th>
-                  <th v-for="m in 12" :key="'h2-p2-'+m">T{{ m }}</th>
+                  <th v-for="m in 12" :key="'h2-p2-' + m">T{{ m }}</th>
                   <th>Trung Bình</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td class="row-label">Sau ủi {{ selectedYear - 1 }}</td>
-                  <td v-for="(val, idx) in data2024.rows[1].months" :key="'c2-24-'+idx" class="text-center">
+                  <td
+                    v-for="(val, idx) in data2024.rows[1].months"
+                    :key="'c2-24-' + idx"
+                    class="text-center"
+                  >
                     {{ val.toFixed(2) }}%
                   </td>
-                  <td class="cell-avg-val text-center">{{ calculateRowAvg(data2024.rows[1], selectedYear - 1) }}</td>
+                  <td class="cell-avg-val text-center">
+                    {{ calculateRowAvg(data2024.rows[1], selectedYear - 1) }}
+                  </td>
                 </tr>
                 <tr>
                   <td class="row-label">Sau ủi {{ selectedYear }}</td>
-                  <td v-for="(val, idx) in data2025.rows[1].months" :key="'c2-25-'+idx" class="text-center">
+                  <td
+                    v-for="(val, idx) in data2025.rows[1].months"
+                    :key="'c2-25-' + idx"
+                    class="text-center"
+                  >
                     {{ val.toFixed(2) }}%
                   </td>
-                  <td class="cell-avg-val text-center">{{ calculateRowAvg(data2025.rows[1], selectedYear) }}</td>
+                  <td class="cell-avg-val text-center">
+                    {{ calculateRowAvg(data2025.rows[1], selectedYear) }}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
       </section>
-
     </main>
 
     <!-- Print / Official A4 Document View -->
-    <div v-else-if="viewMode === 'print-preview'" class="a4-document-container animate-scale-in">
+    <div
+      v-else-if="viewMode === 'print-preview'"
+      class="a4-document-container animate-scale-in"
+    >
       <div class="a4-paper-sheet paper-comparison-sheet">
         <!-- Chart 1: Trước Ủi -->
         <div class="print-chart-block">
-          <div class="print-chart-title">TỔNG KẾT TỶ LỆ HÀNG HƯ TRUNG BÌNH NĂM {{ selectedYear - 1 }} XNTH 2</div>
-          
+          <div class="print-chart-title">
+            TỔNG KẾT TỶ LỆ HÀNG HƯ TRUNG BÌNH NĂM {{ selectedYear - 1 }} XNTH 2
+          </div>
+
           <div class="paper-chart-flex">
             <!-- SVG Y Axis Labels (Left-aligned next to chart) -->
             <div class="paper-y-axis">
-              <span v-for="grid in paperGridLines1" :key="'pl1-'+grid.label">{{ grid.label }}%</span>
+              <span v-for="grid in paperGridLines1" :key="'pl1-' + grid.label"
+                >{{ grid.label }}%</span
+              >
             </div>
-            
+
             <!-- SVG Bars Area -->
             <div class="paper-svg-container">
               <svg viewBox="0 0 840 180" class="paper-svg-chart">
                 <!-- Grid Lines -->
-                <line v-for="grid in paperGridLines1" :key="'pgl1-'+grid.y" x1="0" :y1="grid.y" x2="840" :y2="grid.y" stroke="#ccc" stroke-dasharray="3,3" stroke-width="0.8" />
-                
+                <line
+                  v-for="grid in paperGridLines1"
+                  :key="'pgl1-' + grid.y"
+                  x1="0"
+                  :y1="grid.y"
+                  x2="840"
+                  :y2="grid.y"
+                  stroke="#ccc"
+                  stroke-dasharray="3,3"
+                  stroke-width="0.8"
+                />
+
                 <!-- Bars -->
-                <g v-for="m in 13" :key="'pb1-'+m">
-                  <rect :x="getPaperBarX(m, 0)" :y="getPaperBarY(getVal1(m, 0), 16)" width="12" :height="getPaperBarHeight(getVal1(m, 0), 16)" fill="#d2d2d2" stroke="#000" stroke-width="0.8" />
-                  <rect :x="getPaperBarX(m, 1)" :y="getPaperBarY(getVal1(m, 1), 16)" width="12" :height="getPaperBarHeight(getVal1(m, 1), 16)" fill="#545454" stroke="#000" stroke-width="0.8" />
+                <g v-for="m in 13" :key="'pb1-' + m">
+                  <rect
+                    :x="getPaperBarX(m, 0)"
+                    :y="getPaperBarY(getVal1(m, 0), 16)"
+                    width="12"
+                    :height="getPaperBarHeight(getVal1(m, 0), 16)"
+                    fill="#d2d2d2"
+                    stroke="#000"
+                    stroke-width="0.8"
+                  />
+                  <rect
+                    :x="getPaperBarX(m, 1)"
+                    :y="getPaperBarY(getVal1(m, 1), 16)"
+                    width="12"
+                    :height="getPaperBarHeight(getVal1(m, 1), 16)"
+                    fill="#545454"
+                    stroke="#000"
+                    stroke-width="0.8"
+                  />
                 </g>
               </svg>
             </div>
@@ -287,7 +490,7 @@
 
           <!-- Axis Labels aligned underneath columns -->
           <div class="paper-x-axis">
-            <span v-for="m in 12" :key="'pax1-'+m">Tháng {{ m }}</span>
+            <span v-for="m in 12" :key="'pax1-' + m">Tháng {{ m }}</span>
             <span class="fw-bold">Trung Bình</span>
           </div>
 
@@ -295,22 +498,36 @@
           <table class="print-data-table margin-top-xs">
             <tbody>
               <tr>
-                <td class="cell-label cell-legend-label" style="width: 15.5%;">
-                  <span class="legend-square fill-light"></span> Trước ủi {{ selectedYear - 1 }}
+                <td class="cell-label cell-legend-label" style="width: 15.5%">
+                  <span class="legend-square fill-light"></span> Trước ủi
+                  {{ selectedYear - 1 }}
                 </td>
-                <td v-for="(val, idx) in data2024.rows[0].months" :key="'pct1-24-'+idx" class="cell-val-center">
+                <td
+                  v-for="(val, idx) in data2024.rows[0].months"
+                  :key="'pct1-24-' + idx"
+                  class="cell-val-center"
+                >
                   {{ val.toFixed(2) }}%
                 </td>
-                <td class="cell-avg-val-center">{{ calculateRowAvg(data2024.rows[0], selectedYear - 1) }}</td>
+                <td class="cell-avg-val-center">
+                  {{ calculateRowAvg(data2024.rows[0], selectedYear - 1) }}
+                </td>
               </tr>
               <tr>
-                <td class="cell-label cell-legend-label" style="width: 15.5%;">
-                  <span class="legend-square fill-dark"></span> Trước ủi {{ selectedYear }}
+                <td class="cell-label cell-legend-label" style="width: 15.5%">
+                  <span class="legend-square fill-dark"></span> Trước ủi
+                  {{ selectedYear }}
                 </td>
-                <td v-for="(val, idx) in data2025.rows[0].months" :key="'pct1-25-'+idx" class="cell-val-center">
+                <td
+                  v-for="(val, idx) in data2025.rows[0].months"
+                  :key="'pct1-25-' + idx"
+                  class="cell-val-center"
+                >
                   {{ val.toFixed(2) }}%
                 </td>
-                <td class="cell-avg-val-center">{{ calculateRowAvg(data2025.rows[0], selectedYear) }}</td>
+                <td class="cell-avg-val-center">
+                  {{ calculateRowAvg(data2025.rows[0], selectedYear) }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -318,24 +535,54 @@
 
         <!-- Chart 2: Sau Ủi -->
         <div class="print-chart-block margin-top-md">
-          <div class="print-chart-title">TỔNG KẾT TỶ LỆ HÀNG HƯ TRUNG BÌNH NĂM {{ selectedYear }} XNTH 2</div>
-          
+          <div class="print-chart-title">
+            TỔNG KẾT TỶ LỆ HÀNG HƯ TRUNG BÌNH NĂM {{ selectedYear }} XNTH 2
+          </div>
+
           <div class="paper-chart-flex">
             <!-- Y Axis labels -->
             <div class="paper-y-axis">
-              <span v-for="grid in paperGridLines2" :key="'pl2-'+grid.label">{{ grid.label }}%</span>
+              <span v-for="grid in paperGridLines2" :key="'pl2-' + grid.label"
+                >{{ grid.label }}%</span
+              >
             </div>
-            
+
             <!-- SVG Bars Area -->
             <div class="paper-svg-container">
               <svg viewBox="0 0 840 180" class="paper-svg-chart">
                 <!-- Grid Lines -->
-                <line v-for="grid in paperGridLines2" :key="'pgl2-'+grid.y" x1="0" :y1="grid.y" x2="840" :y2="grid.y" stroke="#ccc" stroke-dasharray="3,3" stroke-width="0.8" />
-                
+                <line
+                  v-for="grid in paperGridLines2"
+                  :key="'pgl2-' + grid.y"
+                  x1="0"
+                  :y1="grid.y"
+                  x2="840"
+                  :y2="grid.y"
+                  stroke="#ccc"
+                  stroke-dasharray="3,3"
+                  stroke-width="0.8"
+                />
+
                 <!-- Bars -->
-                <g v-for="m in 13" :key="'pb2-'+m">
-                  <rect :x="getPaperBarX(m, 0)" :y="getPaperBarY(getVal2(m, 0), 30)" width="12" :height="getPaperBarHeight(getVal2(m, 0), 30)" fill="#d2d2d2" stroke="#000" stroke-width="0.8" />
-                  <rect :x="getPaperBarX(m, 1)" :y="getPaperBarY(getVal2(m, 1), 30)" width="12" :height="getPaperBarHeight(getVal2(m, 1), 30)" fill="#545454" stroke="#000" stroke-width="0.8" />
+                <g v-for="m in 13" :key="'pb2-' + m">
+                  <rect
+                    :x="getPaperBarX(m, 0)"
+                    :y="getPaperBarY(getVal2(m, 0), 30)"
+                    width="12"
+                    :height="getPaperBarHeight(getVal2(m, 0), 30)"
+                    fill="#d2d2d2"
+                    stroke="#000"
+                    stroke-width="0.8"
+                  />
+                  <rect
+                    :x="getPaperBarX(m, 1)"
+                    :y="getPaperBarY(getVal2(m, 1), 30)"
+                    width="12"
+                    :height="getPaperBarHeight(getVal2(m, 1), 30)"
+                    fill="#545454"
+                    stroke="#000"
+                    stroke-width="0.8"
+                  />
                 </g>
               </svg>
             </div>
@@ -343,7 +590,7 @@
 
           <!-- Axis Labels aligned underneath columns -->
           <div class="paper-x-axis">
-            <span v-for="m in 12" :key="'pax2-'+m">Tháng {{ m }}</span>
+            <span v-for="m in 12" :key="'pax2-' + m">Tháng {{ m }}</span>
             <span class="fw-bold">Trung Bình</span>
           </div>
 
@@ -351,22 +598,36 @@
           <table class="print-data-table margin-top-xs">
             <tbody>
               <tr>
-                <td class="cell-label cell-legend-label" style="width: 15.5%;">
-                  <span class="legend-square fill-light"></span> Sau ủi {{ selectedYear - 1 }}
+                <td class="cell-label cell-legend-label" style="width: 15.5%">
+                  <span class="legend-square fill-light"></span> Sau ủi
+                  {{ selectedYear - 1 }}
                 </td>
-                <td v-for="(val, idx) in data2024.rows[1].months" :key="'pct2-24-'+idx" class="cell-val-center">
+                <td
+                  v-for="(val, idx) in data2024.rows[1].months"
+                  :key="'pct2-24-' + idx"
+                  class="cell-val-center"
+                >
                   {{ val.toFixed(2) }}%
                 </td>
-                <td class="cell-avg-val-center">{{ calculateRowAvg(data2024.rows[1], selectedYear - 1) }}</td>
+                <td class="cell-avg-val-center">
+                  {{ calculateRowAvg(data2024.rows[1], selectedYear - 1) }}
+                </td>
               </tr>
               <tr>
-                <td class="cell-label cell-legend-label" style="width: 15.5%;">
-                  <span class="legend-square fill-dark"></span> Sau ủi {{ selectedYear }}
+                <td class="cell-label cell-legend-label" style="width: 15.5%">
+                  <span class="legend-square fill-dark"></span> Sau ủi
+                  {{ selectedYear }}
                 </td>
-                <td v-for="(val, idx) in data2025.rows[1].months" :key="'pct2-25-'+idx" class="cell-val-center">
+                <td
+                  v-for="(val, idx) in data2025.rows[1].months"
+                  :key="'pct2-25-' + idx"
+                  class="cell-val-center"
+                >
                   {{ val.toFixed(2) }}%
                 </td>
-                <td class="cell-avg-val-center">{{ calculateRowAvg(data2025.rows[1], selectedYear) }}</td>
+                <td class="cell-avg-val-center">
+                  {{ calculateRowAvg(data2025.rows[1], selectedYear) }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -378,59 +639,67 @@
             <span class="fw-bold">Giám đốc XN3</span>
           </div>
           <div class="footer-sign-col text-right">
-            <span>Ngày &nbsp;&nbsp;&nbsp;&nbsp; Tháng &nbsp;&nbsp;&nbsp;&nbsp; Năm {{ selectedYear }}</span>
+            <span
+              >Ngày &nbsp;&nbsp;&nbsp;&nbsp; Tháng &nbsp;&nbsp;&nbsp;&nbsp; Năm
+              {{ selectedYear }}</span
+            >
             <span class="fw-bold margin-top-xs block">Bộ phận QLCL</span>
           </div>
         </footer>
       </div>
-      
+
       <!-- Back to top floating warning (Interactive in print-preview but hidden in printing) -->
       <div class="preview-mode-banner no-print">
-        <p>💡 Đây là giao diện giả lập Trang 2 in A4 chính xác nhất. Bạn có thể nhấn <strong>In Báo Cáo</strong> để in trực tiếp hoặc lưu thành PDF.</p>
-        <button class="btn-action" @click="setViewMode('dashboard')">Quay lại bảng điều khiển</button>
+        <p>
+          💡 Đây là giao diện giả lập Trang 2 in A4 chính xác nhất. Bạn có thể
+          nhấn <strong>In Báo Cáo</strong> để in trực tiếp hoặc lưu thành PDF.
+        </p>
+        <button class="btn-action" @click="setViewMode('dashboard')">
+          Quay lại bảng điều khiển
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { exportComparisonReport } from '@/utils/excelExport';
+import { exportComparisonReport } from "@/utils/excelExport";
 
 export default {
-  name: 'ComparisonReport',
+  name: "ComparisonReport",
   props: {
     theme: {
       type: String,
-      default: 'dark'
+      default: "dark",
     },
     data2024: {
       type: Object,
-      required: true
+      required: true,
     },
     data2025: {
       type: Object,
-      required: true
+      required: true,
     },
     selectedYear: {
       type: Number,
-      default: 2025
-    }
+      default: 2025,
+    },
   },
   data() {
     return {
-      viewMode: 'dashboard', // 'dashboard' or 'print-preview'
-      
+      viewMode: "dashboard", // 'dashboard' or 'print-preview'
+
       // Inline Tooltip State
       tooltip: {
         visible: false,
         year: null,
-        label: '',
-        month: '',
+        label: "",
+        month: "",
         value: 0,
         style: {
-          top: '0px',
-          left: '0px'
-        }
+          top: "0px",
+          left: "0px",
+        },
       },
 
       // Dashboard Chart SVG settings
@@ -440,14 +709,14 @@ export default {
         paddingX: 70,
         paddingY: 35,
         graphHeight: 230,
-        graphWidth: 890
+        graphWidth: 890,
       },
 
       // Bar Dimensions
       barConfig: {
         width: 16,
-        gap: 0
-      }
+        gap: 0,
+      },
     };
   },
   computed: {
@@ -473,7 +742,7 @@ export default {
       const lines = [];
       for (let i = 0; i <= 8; i++) {
         const val = i * 2;
-        lines.push({ label: val, y: 150 - (val * (150 / 16)) });
+        lines.push({ label: val, y: 150 - val * (150 / 16) });
       }
       return lines;
     },
@@ -481,10 +750,10 @@ export default {
       const lines = [];
       for (let i = 0; i <= 6; i++) {
         const val = i * 5;
-        lines.push({ label: val, y: 150 - (val * (150 / 30)) });
+        lines.push({ label: val, y: 150 - val * (150 / 30) });
       }
       return lines;
-    }
+    },
   },
   methods: {
     exportExcel() {
@@ -492,35 +761,33 @@ export default {
     },
     setViewMode(mode) {
       this.viewMode = mode;
-      this.$emit('view-mode-change', mode);
+      this.$emit("view-mode-change", mode);
     },
     triggerPrint() {
-      this.viewMode = 'print-preview';
-      this.$emit('view-mode-change', 'print-preview');
+      this.viewMode = "print-preview";
+      this.$emit("view-mode-change", "print-preview");
       this.$nextTick(() => {
         window.print();
       });
     },
     resetData() {
-      this.$emit('reset-data');
+      this.$emit("reset-data");
     },
 
     // Averages calculation matching years
-    calculateRowAvg(row, year) {
+    calculateRowAvg(row) {
+      // <-- Bỏ ', year' ở đây
       if (row.average !== undefined && row.average !== null) {
-        const precision = year === 2024 ? 1 : 2;
-        return row.average.toFixed(precision) + '%';
+        return row.average.toFixed(2) + "%"; // <-- Ép thẳng 2 chữ số thập phân
       }
       const sum = row.months.reduce((a, b) => a + Number(b || 0), 0);
       const avg = sum / 12;
-      const precision = year === 2024 ? 1 : 2;
-      return avg.toFixed(precision) + '%';
+      return avg.toFixed(2) + "%"; // <-- Ép thẳng 2 chữ số thập phân
     },
-
     // Math mappings for Dashboard SVG bar charts
     getXColumnCenter(mIdx) {
       const space = this.chartConfig.graphWidth / 13;
-      return this.chartConfig.paddingX + ((mIdx - 1) * space) + (space / 2);
+      return this.chartConfig.paddingX + (mIdx - 1) * space + space / 2;
     },
     getBarX(mIdx, seriesIdx) {
       const center = this.getXColumnCenter(mIdx);
@@ -531,9 +798,10 @@ export default {
       }
     },
     getBarY(value, maxY) {
-      const graphBottom = this.chartConfig.paddingY + this.chartConfig.graphHeight;
+      const graphBottom =
+        this.chartConfig.paddingY + this.chartConfig.graphHeight;
       const ratio = value / maxY;
-      return graphBottom - (ratio * this.chartConfig.graphHeight);
+      return graphBottom - ratio * this.chartConfig.graphHeight;
     },
     getBarHeight(value, maxY) {
       const ratio = value / maxY;
@@ -572,7 +840,7 @@ export default {
     getPaperBarX(mIdx, seriesIdx) {
       // columns span 840 px
       const colWidth = 840 / 13;
-      const colCenter = ((mIdx - 1) * colWidth) + (colWidth / 2);
+      const colCenter = (mIdx - 1) * colWidth + colWidth / 2;
       if (seriesIdx === 0) {
         return colCenter - 12;
       } else {
@@ -581,7 +849,7 @@ export default {
     },
     getPaperBarY(value, maxY) {
       const ratio = value / maxY;
-      return 150 - (ratio * 150); // 150px baseline
+      return 150 - ratio * 150; // 150px baseline
     },
     getPaperBarHeight(value, maxY) {
       const ratio = value / maxY;
@@ -590,28 +858,28 @@ export default {
 
     // Show tooltip hover action
     showTooltip(event, year, stage, mIdx, val) {
-      const chartContainer = event.target.closest('.chart-container');
+      const chartContainer = event.target.closest(".chart-container");
       if (!chartContainer) return;
-      
+
       const rect = chartContainer.getBoundingClientRect();
       const clientX = event.clientX - rect.left;
       const clientY = event.clientY - rect.top;
 
       this.tooltip.year = year;
-      this.tooltip.month = mIdx === 13 ? 'Trung Bình' : 'Tháng ' + mIdx;
-      this.tooltip.label = stage + ' ' + year;
+      this.tooltip.month = mIdx === 13 ? "Trung Bình" : "Tháng " + mIdx;
+      this.tooltip.label = stage + " " + year;
       this.tooltip.stage = stage;
       this.tooltip.value = val.toFixed(2);
       this.tooltip.style = {
         top: `${clientY - 75}px`,
-        left: `${clientX - 60}px`
+        left: `${clientX - 60}px`,
       };
       this.tooltip.visible = true;
     },
     hideTooltip() {
       this.tooltip.visible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -723,8 +991,12 @@ export default {
   font-weight: 500;
 }
 
-.text-right { text-anchor: end; }
-.text-center { text-anchor: middle; }
+.text-right {
+  text-anchor: end;
+}
+.text-center {
+  text-anchor: middle;
+}
 
 /* Custom bar aesthetics */
 .bar-rect {
@@ -769,8 +1041,12 @@ export default {
   border-radius: 4px;
 }
 
-.bar-color-2024 { background: linear-gradient(135deg, #475569, #64748b); }
-.bar-color-2025 { background: linear-gradient(135deg, #0891b2, #06b6d4); }
+.bar-color-2024 {
+  background: linear-gradient(135deg, #475569, #64748b);
+}
+.bar-color-2025 {
+  background: linear-gradient(135deg, #0891b2, #06b6d4);
+}
 
 /* Tooltip */
 .chart-tooltip {
@@ -802,8 +1078,12 @@ export default {
 }
 
 /* Margin helper */
-.margin-top-md { margin-top: 24px; }
-.margin-top-xs { margin-top: 8px; }
+.margin-top-md {
+  margin-top: 24px;
+}
+.margin-top-xs {
+  margin-top: 8px;
+}
 
 /* Tables styling in dashboard */
 .responsive-table-wrapper {
@@ -821,7 +1101,7 @@ export default {
   font-size: 12px;
 }
 
-.dashboard-table th, 
+.dashboard-table th,
 .dashboard-table td {
   padding: 12px 8px;
   text-align: center;
@@ -877,7 +1157,7 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .print-chart-block {
@@ -971,8 +1251,12 @@ export default {
   flex-shrink: 0;
 }
 
-.fill-light { background-color: #d2d2d2; }
-.fill-dark { background-color: #545454; }
+.fill-light {
+  background-color: #d2d2d2;
+}
+.fill-dark {
+  background-color: #545454;
+}
 
 .cell-avg-val-center {
   font-weight: bold;
@@ -999,9 +1283,16 @@ export default {
   display: block;
 }
 
-.block { display: block; }
-.fw-bold { font-weight: bold; }
-.text-right { text-anchor: end; text-align: right; }
+.block {
+  display: block;
+}
+.fw-bold {
+  font-weight: bold;
+}
+.text-right {
+  text-anchor: end;
+  text-align: right;
+}
 
 /* Buttons & Mode switches */
 .mode-selector {
@@ -1118,20 +1409,32 @@ export default {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @media print {
   .no-print {
     display: none !important;
   }
-  
+
   .a4-document-container {
     padding: 0 !important;
     background-color: white !important;
