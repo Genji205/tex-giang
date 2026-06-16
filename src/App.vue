@@ -196,6 +196,12 @@ export default {
       const activeYearData = this.getYearData(this.selectedYear);
       const metric = activeYearData.targetTracking.metrics[metricIdx];
       metric[rowKey].splice(monthIdx, 1, value);
+
+      // Persist to localStorage if editing targets
+      if (rowKey === 'target') {
+        const key = `target_tracking_targets_${this.selectedYear}_${metric.id}`;
+        localStorage.setItem(key, JSON.stringify(metric.target));
+      }
     },
     // Page 4 Sync
     onUpdateFinalData({ monthIdx, key, value }) {
@@ -233,6 +239,8 @@ export default {
         this.ensureFallbackData(currentYear);
         this.ensureFallbackData(prevYear);
       }
+      this.applyPersistedTargets(currentYear);
+      this.applyPersistedTargets(prevYear);
     },
     async fetchYearDataFromDb(year) {
       const responseQuality = await axios.get(`http://localhost:5000/api/reports/quality?year=${year}`);
@@ -265,6 +273,21 @@ export default {
 
     // Handles restorations
     onResetData() {
+      const currentYear = this.selectedYear;
+      const prevYear = currentYear - 1;
+      
+      const clearKeysForYear = (year) => {
+        const data = this.dataStore[year];
+        if (data && data.targetTracking) {
+          data.targetTracking.metrics.forEach(metric => {
+            localStorage.removeItem(`target_tracking_targets_${year}_${metric.id}`);
+          });
+        }
+      };
+      
+      clearKeysForYear(currentYear);
+      clearKeysForYear(prevYear);
+
       this.dataStore = {};
       this.initBaselineDataStore();
       this.selectedYear = 2025;
@@ -279,8 +302,24 @@ export default {
           targetTracking: this.generateTargetTrackingData(year),
           finalReport: this.generateFinalReportData(year)
         };
+        this.applyPersistedTargets(year);
       }
       return this.dataStore[year];
+    },
+    applyPersistedTargets(year) {
+      if (this.dataStore[year] && this.dataStore[year].targetTracking) {
+        this.dataStore[year].targetTracking.metrics.forEach(metric => {
+          const key = `target_tracking_targets_${year}_${metric.id}`;
+          const saved = localStorage.getItem(key);
+          if (saved) {
+            try {
+              metric.target = JSON.parse(saved);
+            } catch (e) {
+              console.error('Error parsing saved targets', e);
+            }
+          }
+        });
+      }
     },
 
     initBaselineDataStore() {
@@ -596,6 +635,11 @@ body {
 .app-container {
   display: flex;
   min-height: 100vh;
+  color: var(--text-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: inherit;
 }
 
 /* Sidebar Drawer Style */
@@ -612,6 +656,7 @@ body {
   z-index: 100;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 4px 0 10px var(--shadow-color);
+  overflow-x: hidden;
 }
 
 .sidebar-brand {
@@ -651,6 +696,7 @@ body {
   flex-grow: 1;
   padding: 24px 12px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .nav-list {

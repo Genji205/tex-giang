@@ -6,19 +6,19 @@
         <span class="pulse-dot"></span>
         <h2>Trang 3: Theo Dõi Mục Tiêu Chất Lượng {{ selectedYear }}</h2>
       </div>
-      
+
       <div class="page-actions">
         <!-- View Mode Selector -->
         <div class="mode-selector">
-          <button 
-            :class="['btn-mode', { active: viewMode === 'dashboard' }]" 
+          <button
+            :class="['btn-mode', { active: viewMode === 'dashboard' }]"
             @click="setViewMode('dashboard')"
             title="Xem bảng điều khiển và biểu đồ mục tiêu trực quan"
           >
             <span class="icon">📊</span> Bảng Điều Khiển
           </button>
-          <button 
-            :class="['btn-mode', { active: viewMode === 'print-preview' }]" 
+          <button
+            :class="['btn-mode', { active: viewMode === 'print-preview' }]"
             @click="setViewMode('print-preview')"
             title="Xem giao diện chuẩn khổ giấy báo cáo thực tế"
           >
@@ -27,70 +27,109 @@
         </div>
 
         <!-- Export Excel Action -->
-        <button class="btn-action btn-excel" @click="exportExcel" title="Xuất dữ liệu báo cáo ra file Excel">
+        <button
+          class="btn-action btn-excel"
+          @click="exportExcel"
+          title="Xuất dữ liệu báo cáo ra file Excel"
+        >
           <span class="icon">📥</span> Xuất Excel
         </button>
 
         <!-- Print Action -->
-        <button class="btn-action btn-print" @click="triggerPrint" title="In báo cáo này ra giấy hoặc PDF">
+        <button
+          class="btn-action btn-print"
+          @click="triggerPrint"
+          title="In báo cáo này ra giấy hoặc PDF"
+        >
           <span class="icon">🖨️</span> In Báo Cáo
         </button>
 
         <!-- Reset Data -->
-        <button class="btn-action btn-secondary" @click="resetData" title="Khôi phục số liệu gốc theo ảnh">
+        <button
+          class="btn-action btn-secondary"
+          @click="resetData"
+          title="Khôi phục số liệu gốc theo ảnh"
+        >
           <span class="icon">🔄</span> Khôi Phục
         </button>
       </div>
     </header>
 
     <!-- Interactive Dashboard View -->
-    <main v-if="viewMode === 'dashboard'" class="dashboard-content animate-fade-in no-print">
+    <main
+      v-if="viewMode === 'dashboard'"
+      class="dashboard-content animate-fade-in no-print"
+    >
       <section class="metrics-dashboard-list">
-        <div 
-          v-for="(metric, mIdx) in targetTrackingData.metrics" 
+        <div
+          v-for="(metric, mIdx) in targetTrackingData.metrics"
           :key="metric.id"
           class="metric-card card-box"
         >
           <div class="table-title-container">
             <h4>{{ metric.name }}</h4>
-            <span class="table-subtitle">Nhập đúp chuột vào bất kỳ ô số liệu nào dưới đây để chỉnh sửa</span>
+            <span class="table-subtitle"
+              >Nhập đúp chuột vào bất kỳ ô số liệu nào dưới đây để chỉnh
+              sửa</span
+            >
           </div>
 
           <!-- SVG Chart Area -->
           <div class="chart-container">
-            <svg class="custom-svg-chart" viewBox="0 0 1000 240" width="100%" height="200">
+            <svg
+              class="custom-svg-chart"
+              viewBox="0 0 1000 240"
+              width="100%"
+              height="200"
+            >
               <!-- Grid Lines -->
-              <line 
-                v-for="gridVal in getGridValues(metric)" 
-                :key="gridVal" 
-                x1="60" 
-                :y1="getYCoordinate(gridVal, metric.maxY)" 
-                x2="960" 
-                :y2="getYCoordinate(gridVal, metric.maxY)" 
-                class="grid-line" 
+              <line
+                v-for="gridVal in getGridValues(metric)"
+                :key="gridVal"
+                x1="60"
+                :y1="getYCoordinate(gridVal, metric.maxY)"
+                x2="960"
+                :y2="getYCoordinate(gridVal, metric.maxY)"
+                class="grid-line"
               />
               <!-- Y Axis labels -->
-              <text 
-                v-for="gridVal in getGridValues(metric)" 
-                :key="'yl-'+gridVal" 
-                x="45" 
-                :y="getYCoordinate(gridVal, metric.maxY) + 4" 
+              <text
+                v-for="gridVal in getGridValues(metric)"
+                :key="'yl-' + gridVal"
+                x="45"
+                :y="getYCoordinate(gridVal, metric.maxY) + 4"
                 class="axis-text text-right"
-              >{{ formatLabelVal(gridVal) }}%</text>
-              
+              >
+                {{ formatLabelVal(gridVal) }}%
+              </text>
+
               <!-- X Axis Month labels -->
-              <text v-for="m in 12" :key="'xl-'+m" :x="getXCoordinate(m)" y="225" class="axis-text text-center">{{ 'T' + m }}</text>
+              <text
+                v-for="m in 12"
+                :key="'xl-' + m"
+                :x="getXCoordinate(m)"
+                y="225"
+                class="axis-text text-center"
+              >
+                {{ "T" + m }}
+              </text>
 
               <!-- Line 1: Mục Tiêu (Target) -->
-              <path :d="getChartPath(metric, 'target')" class="chart-path path-target" />
+              <path
+                :d="getChartPath(metric, 'target')"
+                class="chart-path path-target"
+              />
               <!-- Line 2: Thực Tế (Actual) -->
-              <path :d="getChartPath(metric, 'actual')" class="chart-path path-actual" />
+              <path
+                :d="getChartPath(metric, 'actual')"
+                class="chart-path path-actual"
+              />
 
               <!-- Interactive Dots for Target -->
               <g>
-                <circle 
-                  v-for="(val, idx) in metric.target" 
-                  :key="'t-dot-'+idx"
+                <circle
+                  v-for="(val, idx) in metric.target"
+                  :key="'t-dot-' + idx"
                   :cx="getXCoordinate(idx + 1)"
                   :cy="getYCoordinate(val, metric.maxY)"
                   r="5"
@@ -102,9 +141,9 @@
 
               <!-- Interactive Dots for Actual -->
               <g>
-                <circle 
-                  v-for="(val, idx) in metric.actual" 
-                  :key="'a-dot-'+idx"
+                <circle
+                  v-for="(val, idx) in metric.actual"
+                  :key="'a-dot-' + idx"
                   :cx="getXCoordinate(idx + 1)"
                   :cy="getYCoordinate(val, metric.maxY)"
                   r="5"
@@ -134,46 +173,45 @@
               <thead>
                 <tr>
                   <th class="col-xn">Tháng</th>
-                  <th v-for="m in 12" :key="'th-'+m">T{{ m }}</th>
+                  <th v-for="m in 12" :key="'th-' + m">T{{ m }}</th>
                 </tr>
               </thead>
               <tbody>
                 <!-- Target Row -->
                 <tr>
-                  <td class="row-label">Mục tiêu (MTiêu)</td>
-                  <td 
-                    v-for="(val, idx) in metric.target" 
-                    :key="'cell-t-'+idx"
-                    :class="['cell-editable', { editing: isEditing(mIdx, 'target', idx) }]"
-                    @dblclick="startEdit(mIdx, 'target', idx, val)"
+                  <td
+                    class="row-label clickable-target-label"
+                    @click="openSettingsModal(mIdx, 0)"
+                    title="Click để mở bảng cấu hình mục tiêu"
                   >
-                    <span v-if="!isEditing(mIdx, 'target', idx)">{{ formatDecimals(val) }}%</span>
-                    <input 
-                      v-else
-                      :ref="'input-' + mIdx + '-target-' + idx"
-                      type="number"
-                      step="0.1"
-                      min="0"
-                      max="1000"
-                      class="cell-input"
-                      v-model.number="editState.value"
-                      @blur="saveEdit"
-                      @keydown.enter="saveEdit"
-                      @keydown.escape="cancelEdit"
-                    />
+                    Mục tiêu (MTiêu)
+                  </td>
+                  <td
+                    v-for="(val, idx) in metric.target"
+                    :key="'cell-t-' + idx"
+                    class="cell-editable target-cell-clickable"
+                    @click="openSettingsModal(mIdx, idx)"
+                    title="Click để mở bảng cấu hình mục tiêu"
+                  >
+                    <span>{{ formatDecimals(val) }}%</span>
                   </td>
                 </tr>
                 <!-- Actual Row -->
                 <tr>
                   <td class="row-label">Thực tế (TTế)</td>
-                  <td 
-                    v-for="(val, idx) in metric.actual" 
-                    :key="'cell-a-'+idx"
-                    :class="['cell-editable', { editing: isEditing(mIdx, 'actual', idx) }]"
+                  <td
+                    v-for="(val, idx) in metric.actual"
+                    :key="'cell-a-' + idx"
+                    :class="[
+                      'cell-editable',
+                      { editing: isEditing(mIdx, 'actual', idx) },
+                    ]"
                     @dblclick="startEdit(mIdx, 'actual', idx, val)"
                   >
-                    <span v-if="!isEditing(mIdx, 'actual', idx)">{{ formatDecimals(val) }}%</span>
-                    <input 
+                    <span v-if="!isEditing(mIdx, 'actual', idx)"
+                      >{{ formatDecimals(val) }}%</span
+                    >
+                    <input
                       v-else
                       :ref="'input-' + mIdx + '-actual-' + idx"
                       type="number"
@@ -198,19 +236,27 @@
       <div v-if="tooltip.visible" class="chart-tooltip" :style="tooltip.style">
         <div class="tooltip-title">Tháng {{ tooltip.month }}</div>
         <div class="tooltip-content">
-          <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }}%</span>
+          <strong>{{ tooltip.label }}:</strong>
+          <span class="text-highlight">{{ tooltip.value }}%</span>
         </div>
       </div>
     </main>
 
     <!-- Print / Official A4 Document View -->
-    <div v-else-if="viewMode === 'print-preview'" class="a4-document-container animate-scale-in">
+    <div
+      v-else-if="viewMode === 'print-preview'"
+      class="a4-document-container animate-scale-in"
+    >
       <div class="a4-paper-sheet paper-portrait-sheet">
         <!-- Header text on portrait print page -->
         <header class="print-paper-header">
           <div class="print-company-name">CÔNG TY CỔ PHẦN TEX-GIANG</div>
-          <div class="print-report-main-title">{{ targetTrackingData.title }}</div>
-          <div class="print-report-sub-title">{{ targetTrackingData.subtitle }}</div>
+          <div class="print-report-main-title">
+            {{ targetTrackingData.title }}
+          </div>
+          <div class="print-report-sub-title">
+            {{ targetTrackingData.subtitle }}
+          </div>
         </header>
 
         <!-- Divider line -->
@@ -218,9 +264,9 @@
 
         <!-- 5 Compact Sections Stacked -->
         <div class="print-metrics-container">
-          <div 
-            v-for="metric in targetTrackingData.metrics" 
-            :key="'p-met-'+metric.id"
+          <div
+            v-for="metric in targetTrackingData.metrics"
+            :key="'p-met-' + metric.id"
             class="print-metric-section"
           >
             <!-- Title -->
@@ -229,42 +275,55 @@
             <!-- Chart Box -->
             <div class="print-svg-wrapper">
               <div class="print-axis-left">
-                <span v-for="gridVal in getGridValues(metric)" :key="'p-yl-'+gridVal">
+                <span
+                  v-for="gridVal in getGridValues(metric)"
+                  :key="'p-yl-' + gridVal"
+                >
                   {{ formatLabelVal(gridVal) }}%
                 </span>
               </div>
               <div class="print-svg-plot">
                 <svg viewBox="0 0 840 90" class="print-svg-draw">
                   <!-- Grid Lines -->
-                  <line 
-                    v-for="gridVal in getGridValues(metric)" 
-                    :key="'pgl-'+gridVal" 
-                    x1="0" 
-                    :y1="getPrintY(gridVal, metric.maxY)" 
-                    x2="840" 
-                    :y2="getPrintY(gridVal, metric.maxY)" 
-                    stroke="#bbb" 
-                    stroke-dasharray="3,3" 
-                    stroke-width="0.5" 
+                  <line
+                    v-for="gridVal in getGridValues(metric)"
+                    :key="'pgl-' + gridVal"
+                    x1="0"
+                    :y1="getPrintY(gridVal, metric.maxY)"
+                    x2="840"
+                    :y2="getPrintY(gridVal, metric.maxY)"
+                    stroke="#bbb"
+                    stroke-dasharray="3,3"
+                    stroke-width="0.5"
                   />
                   <!-- Line 1: Mục Tiêu -->
-                  <path :d="getPrintChartPath(metric, 'target')" stroke="#a5a5a5" stroke-width="1.2" fill="none" />
+                  <path
+                    :d="getPrintChartPath(metric, 'target')"
+                    stroke="#a5a5a5"
+                    stroke-width="1.2"
+                    fill="none"
+                  />
                   <!-- Line 2: Thực Tế -->
-                  <path :d="getPrintChartPath(metric, 'actual')" stroke="#000" stroke-width="1.8" fill="none" />
+                  <path
+                    :d="getPrintChartPath(metric, 'actual')"
+                    stroke="#000"
+                    stroke-width="1.8"
+                    fill="none"
+                  />
 
                   <!-- Nodes for actual values -->
-                  <circle 
-                    v-for="(val, idx) in metric.actual" 
-                    :key="'pa-dot-'+idx"
+                  <circle
+                    v-for="(val, idx) in metric.actual"
+                    :key="'pa-dot-' + idx"
                     :cx="getPrintX(idx + 1)"
                     :cy="getPrintY(val, metric.maxY)"
                     r="2.5"
                     fill="#000"
                     stroke="#000"
                   />
-                  <circle 
-                    v-for="(val, idx) in metric.target" 
-                    :key="'pt-dot-'+idx"
+                  <circle
+                    v-for="(val, idx) in metric.target"
+                    :key="'pt-dot-' + idx"
                     :cx="getPrintX(idx + 1)"
                     :cy="getPrintY(val, metric.maxY)"
                     r="1.5"
@@ -277,25 +336,33 @@
 
             <!-- X Axis Monthly Label row -->
             <div class="print-x-axis">
-              <span v-for="m in 12" :key="'p-xl-'+m">tháng {{ m }}</span>
+              <span v-for="m in 12" :key="'p-xl-' + m">tháng {{ m }}</span>
             </div>
 
             <!-- Table -->
             <table class="print-data-table print-compact-table">
               <tbody>
                 <tr>
-                  <td class="cell-label" style="width: 15.5%;">Tháng</td>
-                  <td v-for="m in 12" :key="'p-td-m-'+m" class="fw-bold">{{ m }}</td>
+                  <td class="cell-label" style="width: 15.5%">Tháng</td>
+                  <td v-for="m in 12" :key="'p-td-m-' + m" class="fw-bold">
+                    {{ m }}
+                  </td>
                 </tr>
                 <tr>
                   <td class="cell-label">MTiêu</td>
-                  <td v-for="(val, idx) in metric.target" :key="'p-td-t-'+idx">
+                  <td
+                    v-for="(val, idx) in metric.target"
+                    :key="'p-td-t-' + idx"
+                  >
                     {{ formatDecimals(val) }}%
                   </td>
                 </tr>
                 <tr>
                   <td class="cell-label">TTế</td>
-                  <td v-for="(val, idx) in metric.actual" :key="'p-td-a-'+idx">
+                  <td
+                    v-for="(val, idx) in metric.actual"
+                    :key="'p-td-a-' + idx"
+                  >
                     {{ formatDecimals(val) }}%
                   </td>
                 </tr>
@@ -307,62 +374,123 @@
         <!-- Signing Signatures Footer -->
         <footer class="print-report-footer">
           <div class="footer-sign-col text-right">
-            <span>Ngày &nbsp;&nbsp;&nbsp;&nbsp; Tháng &nbsp;&nbsp;&nbsp;&nbsp; Năm {{ selectedYear }}</span>
+            <span
+              >Ngày &nbsp;&nbsp;&nbsp;&nbsp; Tháng &nbsp;&nbsp;&nbsp;&nbsp; Năm
+              {{ selectedYear }}</span
+            >
             <span class="fw-bold margin-top-xs block">Người theo dõi</span>
           </div>
         </footer>
       </div>
-      
+
       <!-- Back to top floating warning (Interactive in print-preview but hidden in printing) -->
       <div class="preview-mode-banner no-print">
-        <p>💡 Đây là giao diện giả lập Trang 3 in A4 Portrait chính xác nhất. Bạn có thể nhấn <strong>In Báo Cáo</strong> để in trực tiếp hoặc lưu thành PDF.</p>
-        <button class="btn-action" @click="setViewMode('dashboard')">Quay lại bảng điều khiển</button>
+        <p>
+          💡 Đây là giao diện giả lập Trang 3 in A4 Portrait chính xác nhất. Bạn
+          có thể nhấn <strong>In Báo Cáo</strong> để in trực tiếp hoặc lưu thành
+          PDF.
+        </p>
+        <button class="btn-action" @click="setViewMode('dashboard')">
+          Quay lại bảng điều khiển
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Popup for Quality Target Configuration -->
+    <div v-if="isModalOpen" class="target-modal-overlay no-print animate-fade-in-overlay" @click.self="closeModal">
+      <div class="target-modal-content animate-scale-in-content">
+        <header class="modal-header">
+          <h3>Cấu Hình Mục Tiêu: {{ activeModalMetric ? activeModalMetric.name : '' }}</h3>
+          <button class="btn-close-modal" @click="closeModal" title="Đóng">&times;</button>
+        </header>
+        <div class="modal-body">
+          <!-- Thiết lập nhanh -->
+          <div class="modal-quick-apply">
+            <label>Thiết lập nhanh cả năm:</label>
+            <input type="number" step="0.1" v-model.number="tempQuickTargetValue" @keydown.enter="applyTempQuickTarget" />
+            <button @click="applyTempQuickTarget">Áp dụng</button>
+          </div>
+          <!-- Bảng 12 tháng -->
+          <div class="modal-config-table-wrapper">
+            <table class="modal-config-table">
+              <thead>
+                <tr>
+                  <th v-for="m in 12" :key="m">Tháng {{ m }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td v-for="(val, idx) in tempTargetValues" :key="idx">
+                    <input
+                      :ref="'cfg-input-' + idx"
+                      type="number"
+                      step="0.1"
+                      v-model.number="tempTargetValues[idx]"
+                      @keydown.enter="saveModalChanges"
+                      @keydown.escape="closeModal"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <footer class="modal-footer">
+          <button class="btn-cancel" @click="closeModal">Hủy</button>
+          <button class="btn-save" @click="saveModalChanges">Lưu thay đổi</button>
+        </footer>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { exportTargetTracking } from '@/utils/excelExport';
+import { exportTargetTracking } from "@/utils/excelExport";
 
 export default {
-  name: 'TargetTracking',
+  name: "TargetTracking",
   props: {
     theme: {
       type: String,
-      default: 'dark'
+      default: "dark",
     },
     targetTrackingData: {
       type: Object,
-      required: true
+      required: true,
     },
     selectedYear: {
       type: Number,
-      default: 2025
-    }
+      default: 2025,
+    },
   },
   data() {
     return {
-      viewMode: 'dashboard',
-      
-      // Inline Editing state
+      viewMode: "dashboard",
+
+      // Modal State
+      isModalOpen: false,
+      activeModalMetricIdx: null,
+      tempTargetValues: [],
+      tempQuickTargetValue: 5.0,
+
+      // Inline Editing state (actual values only now)
       editState: {
         metricIdx: null,
         rowKey: null, // 'target' or 'actual'
         monthIdx: null,
-        value: null
+        value: null,
       },
 
       // Tooltip State for SVG charts
       tooltip: {
         visible: false,
-        label: '',
+        label: "",
         month: 1,
         value: 0,
         style: {
-          top: '0px',
-          left: '0px'
-        }
+          top: "0px",
+          left: "0px",
+        },
       },
 
       // Dashboard Chart SVG settings
@@ -372,27 +500,88 @@ export default {
         paddingX: 70,
         paddingY: 30,
         graphHeight: 160,
-        graphWidth: 890
-      }
+        graphWidth: 890,
+      },
     };
   },
+  computed: {
+    activeModalMetric() {
+      if (this.activeModalMetricIdx === null || !this.targetTrackingData || !this.targetTrackingData.metrics) {
+        return null;
+      }
+      return this.targetTrackingData.metrics[this.activeModalMetricIdx];
+    },
+  },
   methods: {
+    openSettingsModal(metricIdx, monthIdx = null) {
+      this.activeModalMetricIdx = metricIdx;
+      const metric = this.targetTrackingData.metrics[metricIdx];
+      if (!metric) return;
+      
+      this.tempTargetValues = [...metric.target];
+      this.tempQuickTargetValue = metric.target[monthIdx !== null ? monthIdx : 0] || 5.0;
+      this.isModalOpen = true;
+
+      this.$nextTick(() => {
+        const inputId = monthIdx !== null ? monthIdx : 0;
+        const refName = `cfg-input-${inputId}`;
+        const inputEl = this.$refs[refName];
+        if (inputEl) {
+          const targetEl = Array.isArray(inputEl) ? inputEl[0] : inputEl;
+          if (targetEl && targetEl.focus) {
+            targetEl.focus();
+            if (targetEl.select) targetEl.select();
+          }
+        }
+      });
+    },
+    closeModal() {
+      this.isModalOpen = false;
+      this.activeModalMetricIdx = null;
+      this.tempTargetValues = [];
+    },
+    applyTempQuickTarget() {
+      let val = parseFloat(this.tempQuickTargetValue);
+      if (isNaN(val)) val = 0;
+      val = Math.max(0, Math.min(1000, val));
+      this.tempTargetValues = Array(12).fill(val);
+    },
+    saveModalChanges() {
+      if (this.activeModalMetricIdx === null) return;
+      
+      this.tempTargetValues.forEach((val, idx) => {
+        let parsedValue = parseFloat(val);
+        if (isNaN(parsedValue)) {
+          parsedValue = 0;
+        }
+        parsedValue = Math.max(0, Math.min(1000, parsedValue));
+        
+        this.$emit("update-target-data", {
+          metricIdx: this.activeModalMetricIdx,
+          rowKey: "target",
+          monthIdx: idx,
+          value: parsedValue,
+        });
+      });
+      
+      this.closeModal();
+    },
     exportExcel() {
       exportTargetTracking(this.selectedYear, this.targetTrackingData);
     },
     setViewMode(mode) {
       this.viewMode = mode;
-      this.$emit('view-mode-change', mode);
+      this.$emit("view-mode-change", mode);
     },
     triggerPrint() {
-      this.viewMode = 'print-preview';
-      this.$emit('view-mode-change', 'print-preview');
+      this.viewMode = "print-preview";
+      this.$emit("view-mode-change", "print-preview");
       this.$nextTick(() => {
         window.print();
       });
     },
     resetData() {
-      this.$emit('reset-data');
+      this.$emit("reset-data");
     },
 
     // Generates Y axis values for metric scales
@@ -407,31 +596,32 @@ export default {
 
     // Formatting decimal presentation
     formatDecimals(val) {
-      if (val === undefined || val === null) return '0';
-      if (val === 100.0) return '100';
-      if (val === 0.0) return '0';
+      if (val === undefined || val === null) return "0";
+      if (val === 100.0) return "100";
+      if (val === 0.0) return "0";
       // keep original format matching the table (e.g. 7.30 or 7.0)
-      return val.toFixed(1).replace('.0', '');
+      return val.toFixed(1).replace(".0", "");
     },
     formatLabelVal(val) {
-      return val.toString().replace('.0', '');
+      return val.toString().replace(".0", "");
     },
 
     // Dashboard Coordinate Mappings
     getXCoordinate(mIdx) {
       const space = this.chartConfig.graphWidth / 11;
-      return this.chartConfig.paddingX + ((mIdx - 1) * space);
+      return this.chartConfig.paddingX + (mIdx - 1) * space;
     },
     getYCoordinate(value, maxY) {
-      const graphBottom = this.chartConfig.paddingY + this.chartConfig.graphHeight;
+      const graphBottom =
+        this.chartConfig.paddingY + this.chartConfig.graphHeight;
       const ratio = value / maxY;
-      return graphBottom - (ratio * this.chartConfig.graphHeight);
+      return graphBottom - ratio * this.chartConfig.graphHeight;
     },
 
     // SVG Line path calculations for Dashboard
     getChartPath(metric, key) {
       const values = metric[key];
-      let path = '';
+      let path = "";
       values.forEach((v, idx) => {
         const x = this.getXCoordinate(idx + 1);
         const y = this.getYCoordinate(v, metric.maxY);
@@ -447,16 +637,16 @@ export default {
     // SVG coordinate math for print A4 portrait view (compact scale)
     getPrintX(mIdx) {
       // 840px graph area width
-      return ((mIdx - 1) * (840 / 11));
+      return (mIdx - 1) * (840 / 11);
     },
     getPrintY(value, maxY) {
       // 90px graph area height
       const ratio = value / maxY;
-      return 90 - (ratio * 90);
+      return 90 - ratio * 90;
     },
     getPrintChartPath(metric, key) {
       const values = metric[key];
-      let path = '';
+      let path = "";
       values.forEach((v, idx) => {
         const x = this.getPrintX(idx + 1);
         const y = this.getPrintY(v, metric.maxY);
@@ -471,16 +661,18 @@ export default {
 
     // Inline edit hooks
     isEditing(metricIdx, rowKey, monthIdx) {
-      return this.editState.metricIdx === metricIdx && 
-             this.editState.rowKey === rowKey && 
-             this.editState.monthIdx === monthIdx;
+      return (
+        this.editState.metricIdx === metricIdx &&
+        this.editState.rowKey === rowKey &&
+        this.editState.monthIdx === monthIdx
+      );
     },
     startEdit(metricIdx, rowKey, monthIdx, currentVal) {
       this.editState.metricIdx = metricIdx;
       this.editState.rowKey = rowKey;
       this.editState.monthIdx = monthIdx;
       this.editState.value = currentVal;
-      
+
       this.$nextTick(() => {
         const refName = `input-${metricIdx}-${rowKey}-${monthIdx}`;
         const inputEl = this.$refs[refName];
@@ -492,20 +684,20 @@ export default {
     },
     saveEdit() {
       if (this.editState.metricIdx === null) return;
-      
+
       let parsedValue = parseFloat(this.editState.value);
       if (isNaN(parsedValue)) {
         parsedValue = 0;
       }
       parsedValue = Math.max(0, Math.min(1000, parsedValue));
-      
-      this.$emit('update-target-data', {
+
+      this.$emit("update-target-data", {
         metricIdx: this.editState.metricIdx,
         rowKey: this.editState.rowKey,
         monthIdx: this.editState.monthIdx,
-        value: parsedValue
+        value: parsedValue,
       });
-      
+
       this.cancelEdit();
     },
     cancelEdit() {
@@ -517,9 +709,9 @@ export default {
 
     // Tooltip trigger
     showTooltip(event, label, mIdx, val) {
-      const chartContainer = event.target.closest('.chart-container');
+      const chartContainer = event.target.closest(".chart-container");
       if (!chartContainer) return;
-      
+
       const rect = chartContainer.getBoundingClientRect();
       const clientX = event.clientX - rect.left;
       const clientY = event.clientY - rect.top;
@@ -529,14 +721,14 @@ export default {
       this.tooltip.value = val.toString();
       this.tooltip.style = {
         top: `${clientY - 75}px`,
-        left: `${clientX - 60}px`
+        left: `${clientX - 60}px`,
       };
       this.tooltip.visible = true;
     },
     hideTooltip() {
       this.tooltip.visible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -648,8 +840,12 @@ export default {
   font-weight: 500;
 }
 
-.text-right { text-anchor: end; }
-.text-center { text-anchor: middle; }
+.text-right {
+  text-anchor: end;
+}
+.text-center {
+  text-anchor: middle;
+}
 
 /* Line Styles */
 .chart-path {
@@ -710,8 +906,12 @@ export default {
   border-radius: 3px;
 }
 
-.color-target { background-color: #3b82f6; }
-.color-actual { background-color: #ec4899; }
+.color-target {
+  background-color: #3b82f6;
+}
+.color-actual {
+  background-color: #ec4899;
+}
 
 /* Tooltip on SVG Chart */
 .chart-tooltip {
@@ -758,7 +958,7 @@ export default {
   font-size: 12.5px;
 }
 
-.dashboard-table th, 
+.dashboard-table th,
 .dashboard-table td {
   padding: 12px 8px;
   text-align: center;
@@ -838,7 +1038,7 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
 }
 
 /* Print Header Style */
@@ -957,7 +1157,9 @@ export default {
   font-weight: bold;
 }
 
-.fw-bold { font-weight: bold; }
+.fw-bold {
+  font-weight: bold;
+}
 
 /* Footers */
 .print-report-footer {
@@ -977,11 +1179,22 @@ export default {
   display: block;
 }
 
-.block { display: block; }
-.fw-bold { font-weight: bold; }
-.text-right { text-anchor: end; text-align: right; }
-.margin-top-xs { margin-top: 8px; }
-.margin-top-sm { margin-top: 16px; }
+.block {
+  display: block;
+}
+.fw-bold {
+  font-weight: bold;
+}
+.text-right {
+  text-anchor: end;
+  text-align: right;
+}
+.margin-top-xs {
+  margin-top: 8px;
+}
+.margin-top-sm {
+  margin-top: 16px;
+}
 
 /* Button Styles */
 .mode-selector {
@@ -1098,20 +1311,32 @@ export default {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @media print {
   .no-print {
     display: none !important;
   }
-  
+
   .a4-document-container {
     padding: 0 !important;
     background-color: white !important;
@@ -1130,5 +1355,295 @@ export default {
     size: A4 portrait;
     margin: 8mm 10mm;
   }
+}
+
+/* Modal Popup Styles */
+.target-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease;
+}
+
+.target-modal-content {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  width: 92%;
+  max-width: 920px;
+  box-shadow: 0 25px 50px -12px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Animations */
+.animate-fade-in-overlay {
+  animation: fadeInOverlay 0.25s ease-out forwards;
+}
+
+.animate-scale-in-content {
+  animation: scaleInContent 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleInContent {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-close-modal {
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.btn-close-modal:hover {
+  color: var(--text-primary);
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Quick apply bar */
+.modal-quick-apply {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background-color: rgba(79, 70, 229, 0.05);
+  border: 1.5px dashed rgba(79, 70, 229, 0.3);
+  border-radius: 12px;
+}
+
+.light .modal-quick-apply {
+  background-color: rgba(59, 130, 246, 0.05);
+  border: 1.5px dashed rgba(59, 130, 246, 0.3);
+}
+
+.modal-quick-apply label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.modal-quick-apply input {
+  width: 100px;
+  height: 38px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  text-align: center;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.modal-quick-apply input:focus {
+  border-color: var(--accent-color);
+}
+
+.modal-quick-apply button {
+  padding: 8px 20px;
+  height: 38px;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.1s, box-shadow 0.15s;
+}
+
+.modal-quick-apply button:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.modal-quick-apply button:active {
+  transform: translateY(0);
+}
+
+/* Modal configuration table */
+.modal-config-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background-color: var(--bg-primary);
+}
+
+.modal-config-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.modal-config-table th,
+.modal-config-table td {
+  padding: 14px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-config-table th {
+  background-color: rgba(0, 0, 0, 0.1);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.modal-config-table td input {
+  width: 85%;
+  height: 38px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  text-align: center;
+  font-weight: 700;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.modal-config-table td input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  transform: scale(1.05);
+}
+
+.light .modal-config-table td input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.modal-footer button {
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-cancel {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-cancel:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.light .btn-cancel:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.btn-save {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+}
+
+.btn-save:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-save:active {
+  transform: translateY(0);
+}
+
+/* Clickable table elements pointer feedback */
+.clickable-target-label {
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+}
+.clickable-target-label:hover {
+  color: var(--accent-color) !important;
+  background-color: rgba(79, 70, 229, 0.08) !important;
+}
+
+.target-cell-clickable {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.target-cell-clickable:hover {
+  background-color: rgba(79, 70, 229, 0.12) !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+}
+
+.light .clickable-target-label:hover {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  color: var(--accent-color) !important;
+}
+
+.light .target-cell-clickable:hover {
+  background-color: rgba(59, 130, 246, 0.12) !important;
 }
 </style>
