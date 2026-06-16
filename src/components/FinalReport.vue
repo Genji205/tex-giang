@@ -160,8 +160,8 @@
           </div>
         </div>
 
-        <!-- Card 2: Bar Chart (Right/Bottom) -->
-        <div class="chart-card card-box margin-top-md">
+        <!-- Card 2: Bar Chart -->
+        <div class="chart-card card-box">
           <div class="table-title-container">
             <h4>Biểu Đồ Số Lần Final XN Chợ Gạo</h4>
             <span class="table-subtitle">Thể hiện trực quan số lần kiểm tra final qua 12 tháng cùng tổng số cả năm</span>
@@ -169,7 +169,7 @@
 
           <div class="chart-container">
             <div class="chart-wrapper-box">
-              <svg class="custom-svg-chart" viewBox="0 0 1000 256" width="100%" height="220">
+              <svg class="custom-svg-chart" viewBox="0 0 1000 280" width="100%" height="240">
                 <!-- Y Axis solid line -->
                 <line x1="70" y1="30" x2="70" y2="250" stroke="var(--text-secondary)" stroke-width="1.5" />
                 
@@ -184,6 +184,9 @@
 
                 <!-- X Axis ticks (pointing down, matching column boundaries) -->
                 <line v-for="c in 14" :key="'xt-'+c" :x1="70 + (c - 1) * (900 / 13)" y1="250" :x2="70 + (c - 1) * (900 / 13)" y2="256" stroke="var(--text-secondary)" stroke-width="1.5" />
+
+                <!-- X Axis Month Labels -->
+                <text v-for="m in 13" :key="'xl-month-'+m" :x="getXColumnCenter(m)" y="272" class="axis-text text-center">{{ m <= 12 ? 'T' + m : 'Tổng' }}</text>
 
                 <!-- Bars -->
                 <g v-for="m in 13" :key="'bars-'+m">
@@ -210,56 +213,72 @@
                 </g>
               </svg>
 
-              <!-- Dashboard Mini Table under chart -->
-              <table class="dashboard-compact-table" style="margin-top: -2px; table-layout: fixed; width: 100%;">
-                <thead>
-                  <tr>
-                    <th style="width: 7.0%; border: 1px solid var(--border-color); font-size: 11px; font-weight: bold; text-align: center; height: 24px; background: none;"></th>
-                    <th v-for="m in 12" :key="'d-th-'+m" style="width: 6.923%; border: 1px solid var(--border-color); font-size: 11px; font-weight: bold; text-align: center; background: none;">T{{ m }}</th>
-                    <th style="width: 6.923%; border: 1px solid var(--border-color); font-size: 11px; font-weight: bold; text-align: center; background: none;">Tổng</th>
-                    <th style="width: 3.0%; border: none; background: none;"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="cell-label" style="width: 7.0%; font-size: 11px; text-align: left; padding: 6px 8px; border: 1px solid var(--border-color);">
-                      <span class="legend-square-dash fill-final-dash"></span>
-                      <span style="vertical-align: middle;">Số lần final</span>
-                    </td>
-                    <td v-for="m in 12" :key="'d-td1-'+m" style="width: 6.923%; border: 1px solid var(--border-color); font-size: 11px; text-align: center;">{{ getBarVal(m, 0) }}</td>
-                    <td class="fw-bold" style="width: 6.923%; border: 1px solid var(--border-color); font-size: 11px; text-align: center;">{{ totalFinal }}</td>
-                    <td style="width: 3.0%; border: none;"></td>
-                  </tr>
-                  <tr>
-                    <td class="cell-label" style="font-size: 11px; text-align: left; padding: 6px 8px; border: 1px solid var(--border-color);">
-                      <span class="legend-square-dash fill-failed-dash"></span>
-                      <span style="vertical-align: middle;">Số lần không đạt</span>
-                    </td>
-                    <td v-for="m in 12" :key="'d-td2-'+m" style="border: 1px solid var(--border-color); font-size: 11px; text-align: center;">{{ getBarVal(m, 1) }}</td>
-                    <td class="fw-bold" style="border: 1px solid var(--border-color); font-size: 11px; text-align: center;">{{ totalFailed }}</td>
-                    <td style="border: none;"></td>
-                  </tr>
-                  <tr>
-                    <td class="cell-label" style="font-size: 11px; text-align: left; padding: 6px 8px; border: 1px solid var(--border-color);">
-                      <span class="legend-square-dash fill-passed-rate-dash"></span>
-                      <span style="vertical-align: middle;">% Đạt</span>
-                    </td>
-                    <td v-for="m in 12" :key="'d-td3-'+m" style="border: 1px solid var(--border-color); font-size: 11px; text-align: center;">{{ getPassedRateForMonth(m) }}%</td>
-                    <td class="fw-bold" style="border: 1px solid var(--border-color); font-size: 11px; text-align: center;">{{ totalPassedRate }}%</td>
-                    <td style="border: none;"></td>
-                  </tr>
-                  <tr>
-                    <td class="cell-label" style="font-size: 11px; text-align: left; padding: 6px 8px; border: 1px solid var(--border-color);">
-                      <span class="legend-square-dash fill-failed-rate-dash"></span>
-                      <span style="vertical-align: middle;">% Không đạt</span>
-                    </td>
-                    <td v-for="m in 12" :key="'d-td4-'+m" style="border: 1px solid var(--border-color); font-size: 11px; text-align: center;">{{ getFailedRateForMonth(m) }}%</td>
-                    <td class="fw-bold" style="border: 1px solid var(--border-color); font-size: 11px; text-align: center;">{{ totalFailedRate }}%</td>
-                    <td style="border: none;"></td>
-                  </tr>
-                </tbody>
-              </table>
+              <!-- Chart Legend -->
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <span class="legend-square-dash fill-final-dash"></span>
+                  <span>Số lần final</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-square-dash fill-failed-dash"></span>
+                  <span>Số lần không đạt</span>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Compact Summary Table (separated from chart) -->
+        <div class="table-card card-box">
+          <div class="table-title-container">
+            <h4>Bảng Tóm Tắt Số Liệu Theo Tháng</h4>
+            <span class="table-subtitle">Tổng hợp nhanh số lần final, số lần không đạt và tỷ lệ % qua từng tháng</span>
+          </div>
+
+          <div class="responsive-table-wrapper">
+            <table class="dashboard-compact-table" style="table-layout: fixed; width: 100%; min-width: 900px;">
+              <thead>
+                <tr>
+                  <th style="width: 7.0%; border: 1px solid var(--border-color); font-size: 11px; font-weight: bold; text-align: center; height: 28px; background: none;"></th>
+                  <th v-for="m in 12" :key="'d-th-'+m" style="width: 6.923%; border: 1px solid var(--border-color); font-size: 11px; font-weight: bold; text-align: center; background: none;">T{{ m }}</th>
+                  <th style="width: 6.923%; border: 1px solid var(--border-color); font-size: 11px; font-weight: bold; text-align: center; background: none;">Tổng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-label" style="width: 7.0%; font-size: 12px; text-align: left; padding: 8px 10px; border: 1px solid var(--border-color);">
+                    <span class="legend-square-dash fill-final-dash"></span>
+                    <span style="vertical-align: middle;">Số lần final</span>
+                  </td>
+                  <td v-for="m in 12" :key="'d-td1-'+m" style="width: 6.923%; border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ getBarVal(m, 0) }}</td>
+                  <td class="fw-bold" style="width: 6.923%; border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ totalFinal }}</td>
+                </tr>
+                <tr>
+                  <td class="cell-label" style="font-size: 12px; text-align: left; padding: 8px 10px; border: 1px solid var(--border-color);">
+                    <span class="legend-square-dash fill-failed-dash"></span>
+                    <span style="vertical-align: middle;">Số lần không đạt</span>
+                  </td>
+                  <td v-for="m in 12" :key="'d-td2-'+m" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ getBarVal(m, 1) }}</td>
+                  <td class="fw-bold" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ totalFailed }}</td>
+                </tr>
+                <tr>
+                  <td class="cell-label" style="font-size: 12px; text-align: left; padding: 8px 10px; border: 1px solid var(--border-color);">
+                    <span class="legend-square-dash fill-passed-rate-dash"></span>
+                    <span style="vertical-align: middle;">% Đạt</span>
+                  </td>
+                  <td v-for="m in 12" :key="'d-td3-'+m" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ getPassedRateForMonth(m) }}%</td>
+                  <td class="fw-bold" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ totalPassedRate }}%</td>
+                </tr>
+                <tr>
+                  <td class="cell-label" style="font-size: 12px; text-align: left; padding: 8px 10px; border: 1px solid var(--border-color);">
+                    <span class="legend-square-dash fill-failed-rate-dash"></span>
+                    <span style="vertical-align: middle;">% Không đạt</span>
+                  </td>
+                  <td v-for="m in 12" :key="'d-td4-'+m" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ getFailedRateForMonth(m) }}%</td>
+                  <td class="fw-bold" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ totalFailedRate }}%</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -329,7 +348,7 @@
         <!-- SVG Bar Chart area on A4 page -->
         <div class="print-chart-block" style="margin-top: 15px; width: 100%; display: flex; flex-direction: column;">
           <!-- Unified Chart SVG -->
-          <svg viewBox="0 0 1000 145" class="paper-svg-chart" style="width: 100%; display: block; overflow: visible;">
+          <svg viewBox="0 0 1000 165" class="paper-svg-chart" style="width: 100%; display: block; overflow: visible;">
             <!-- Y Axis Labels -->
             <text v-for="grid in paperGridLines" :key="'pl-'+grid.label" x="170" :y="grid.y + 3.5" class="paper-axis-text text-right">{{ grid.label }}</text>
 
@@ -344,6 +363,17 @@
 
             <!-- X Axis ticks (pointing down, matching column borders) -->
             <line v-for="c in 14" :key="'pxt-'+c" :x1="185 + (c - 1) * 62.6923" y1="145" :x2="185 + (c - 1) * 62.6923" y2="151" stroke="#000" stroke-width="1.2" />
+
+            <!-- X Axis Month Labels -->
+            <text 
+              v-for="m in 13" 
+              :key="'pxl-'+m" 
+              :x="185 + (m - 1) * 62.6923 + 62.6923 / 2" 
+              y="160" 
+              class="paper-axis-text text-center"
+            >
+              {{ m <= 12 ? 'T' + m : 'Tổng' }}
+            </text>
 
             <!-- Bars (Double series for final & failed) -->
             <g v-for="m in 13" :key="'pb-'+m">
@@ -883,11 +913,27 @@ export default {
 .chart-wrapper-box {
   background-color: var(--bg-primary);
   border-radius: 12px;
-  padding: 16px 12px 12px 12px;
+  padding: 16px 12px 20px 12px;
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   gap: 0;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .custom-svg-chart {
@@ -899,7 +945,6 @@ export default {
   width: 100%;
   border-collapse: collapse;
   background-color: var(--bg-primary);
-  margin-top: -2px;
 }
 
 .dashboard-compact-table th,
