@@ -57,39 +57,7 @@
           </div>
         </div>
 
-        <div class="stats-grid">
-          <!-- Card 1: Overall Average -->
-          <div class="stat-card">
-            <div class="stat-icon icon-blue">📈</div>
-            <div class="stat-info">
-              <span class="stat-label">Trung Bình Lỗi 2025</span>
-              <h3 class="stat-value">{{ overallAvg2025 }}%</h3>
-              <p class="stat-trend" :class="avgTrendClass">
-                <span>{{ avgTrendIcon }}</span> {{ avgTrendText }} so với 2024
-              </p>
-            </div>
-          </div>
 
-          <!-- Card 2: Peak Month -->
-          <div class="stat-card">
-            <div class="stat-icon icon-red">⚠️</div>
-            <div class="stat-info">
-              <span class="stat-label">Tỷ Lệ Lỗi Cao Nhất</span>
-              <h3 class="stat-value text-danger">{{ peakMonth.value }}%</h3>
-              <p class="stat-desc">Tháng {{ peakMonth.month }}, {{ peakMonth.label }}</p>
-            </div>
-          </div>
-
-          <!-- Card 3: Ironing Impact -->
-          <div class="stat-card">
-            <div class="stat-icon icon-purple">⚡</div>
-            <div class="stat-info">
-              <span class="stat-label">Chênh Lệch Trước/Sau Ủi</span>
-              <h3 class="stat-value">{{ ironingDiff }}%</h3>
-              <p class="stat-desc">Độ lệch trung bình năm 2025</p>
-            </div>
-          </div>
-        </div>
       </section>
 
       <!-- Charts Section -->
@@ -790,7 +758,7 @@ export default {
 /* Welcome Card */
 .summary-section {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: 1fr;
   gap: 24px;
 }
 
