@@ -5,7 +5,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 const config = {
   user: process.env.DB_USER || 'sa',
   password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER || 'DESKTOP-QP8UP62',
+  server: process.env.DB_SERVER || 'DESKTOP-5FQN74S',
   database: process.env.DB_NAME || 'PMS_TGI_TH_XNM_1804',
   port: parseInt(process.env.DB_PORT, 10) || 1433,
   options: {
