@@ -74,119 +74,9 @@
             >
           </div>
 
-          <!-- SVG Chart Area -->
+          <!-- ECharts Chart Area -->
           <div class="chart-container">
-            <svg
-              class="custom-svg-chart"
-              viewBox="0 0 1000 240"
-              width="100%"
-              height="200"
-            >
-              <defs>
-                <linearGradient :id="'areaActualGrad-' + mIdx" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.22" />
-                  <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.00" />
-                </linearGradient>
-              </defs>
-              <!-- Grid Lines -->
-              <line
-                v-for="gridVal in getGridValues(metric)"
-                :key="gridVal"
-                x1="60"
-                :y1="getYCoordinate(gridVal, metric.maxY)"
-                x2="960"
-                :y2="getYCoordinate(gridVal, metric.maxY)"
-                class="grid-line"
-              />
-              <!-- Y Axis labels -->
-              <text
-                v-for="gridVal in getGridValues(metric)"
-                :key="'yl-' + gridVal"
-                x="45"
-                :y="getYCoordinate(gridVal, metric.maxY) + 4"
-                class="axis-text text-right"
-              >
-                {{ formatLabelVal(gridVal) }}%
-              </text>
-
-              <!-- X Axis Month labels -->
-              <text
-                v-for="m in 12"
-                :key="'xl-' + m"
-                :x="getXCoordinate(m)"
-                y="225"
-                class="axis-text text-center"
-              >
-                {{ "T" + m }}
-              </text>
-
-              <!-- Line 1: Mục Tiêu (Target) -->
-              <path
-                :d="getChartPath(metric, 'target')"
-                class="chart-path path-target"
-              />
-              <!-- Line 2: Thực Tế (Actual) -->
-              <path
-                :d="getChartPath(metric, 'actual')"
-                class="chart-path path-actual"
-              />
-
-              <!-- Area under actual line -->
-              <path
-                :d="getChartAreaPath(metric, 'actual')"
-                class="chart-area-path"
-                :fill="'url(#areaActualGrad-' + mIdx + ')'"
-              />
-
-              <!-- Interactive Dots for Target -->
-              <g>
-                <circle
-                  v-for="(val, idx) in metric.target"
-                  :key="'t-dot-' + idx"
-                  :cx="getXCoordinate(idx + 1)"
-                  :cy="getYCoordinate(val, metric.maxY)"
-                  r="5"
-                  class="chart-dot dot-target"
-                  @mouseenter="showTooltip($event, 'Mục tiêu', idx + 1, val, mIdx)"
-                  @mouseleave="hideTooltip"
-                />
-              </g>
-
-              <!-- Interactive Dots for Actual -->
-              <g>
-                <circle
-                  v-for="(val, idx) in metric.actual"
-                  :key="'a-dot-' + idx"
-                  :cx="getXCoordinate(idx + 1)"
-                  :cy="getYCoordinate(val, metric.maxY)"
-                  r="5"
-                  class="chart-dot dot-actual"
-                  @mouseenter="showTooltip($event, 'Thực tế', idx + 1, val, mIdx)"
-                  @mouseleave="hideTooltip"
-                />
-              </g>
-            </svg>
-
-            <!-- Legend inside chart card -->
-            <div class="chart-legend">
-              <div class="legend-item">
-                <span class="legend-color color-target"></span>
-                <span class="legend-label">Mục tiêu</span>
-              </div>
-              <div class="legend-item">
-                <span class="legend-color color-actual"></span>
-                <span class="legend-label">Thực tế</span>
-              </div>
-            </div>
-
-            <!-- Tooltip Element -->
-            <div v-if="tooltip.visible && tooltip.metricIdx === mIdx" class="chart-tooltip" :style="tooltip.style">
-              <div class="tooltip-title">Tháng {{ tooltip.month }}</div>
-              <div class="tooltip-content">
-                <strong>{{ tooltip.label }}:</strong>
-                <span class="text-highlight">{{ tooltip.value }}%</span>
-              </div>
-            </div>
+            <v-chart class="chart" :option="getChartOption(metric)" autoresize />
           </div>
 
           <!-- Data table -->
@@ -598,15 +488,71 @@ export default {
       this.$emit("reset-data");
     },
 
-    // Generates Y axis values for metric scales
-    getGridValues(metric) {
-      const vals = [];
-      const stepSize = metric.maxY / metric.yGridSteps;
-      for (let i = 0; i <= metric.yGridSteps; i++) {
-        vals.push(i * stepSize);
-      }
-      return vals.reverse(); // top labels first
+    getChartOption(metric) {
+      const isDark = this.theme === 'dark';
+      const textColor = isDark ? '#888' : '#666';
+      const splitLineColor = isDark ? '#222' : '#ddd';
+      const colorTarget = '#64748b'; // Slate (Mục tiêu)
+      const colorActual = '#06b6d4'; // Cyan (Thực tế)
+      
+      return {
+        backgroundColor: 'transparent',
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'cross', crossStyle: { color: textColor } },
+          backgroundColor: isDark ? '#050505' : '#fff',
+          borderColor: isDark ? '#333' : '#ccc',
+          textStyle: { color: isDark ? '#f5f5f5' : '#111' },
+          borderWidth: 1,
+          borderRadius: 0,
+        },
+        legend: {
+          data: ['Mục tiêu', 'Thực tế'],
+          textStyle: { color: textColor },
+          icon: 'rect',
+          bottom: 0
+        },
+        grid: { left: '2%', right: '4%', bottom: '15%', top: '10%', containLabel: true },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+          axisLabel: { color: textColor },
+          axisLine: { lineStyle: { color: splitLineColor } },
+        },
+        yAxis: {
+          type: 'value',
+          max: metric.maxY,
+          axisLabel: { color: textColor, formatter: '{value}%' },
+          splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+        },
+        series: [
+          {
+            name: 'Mục tiêu',
+            type: 'line',
+            data: metric.target,
+            itemStyle: { color: colorTarget },
+            lineStyle: { type: 'dashed', width: 2 },
+            symbolSize: 6,
+          },
+          {
+            name: 'Thực tế',
+            type: 'line',
+            data: metric.actual,
+            itemStyle: { color: colorActual },
+            lineStyle: { width: 3, shadowColor: colorActual, shadowBlur: 8 },
+            symbolSize: 8,
+            areaStyle: {
+              color: {
+                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                colorStops: [{ offset: 0, color: 'rgba(6,182,212,0.4)' }, { offset: 1, color: 'rgba(6,182,212,0)' }]
+              }
+            }
+          }
+        ]
+      };
     },
+    // Formatting decimal presentation
 
     // Formatting decimal presentation
     formatDecimals(val) {
@@ -620,53 +566,7 @@ export default {
       return val.toString().replace(".0", "");
     },
 
-    // Dashboard Coordinate Mappings
-    getXCoordinate(mIdx) {
-      const space = this.chartConfig.graphWidth / 11;
-      return this.chartConfig.paddingX + (mIdx - 1) * space;
-    },
-    getYCoordinate(value, maxY) {
-      const graphBottom =
-        this.chartConfig.paddingY + this.chartConfig.graphHeight;
-      const ratio = value / maxY;
-      return graphBottom - ratio * this.chartConfig.graphHeight;
-    },
-
-    // SVG Line path calculations for Dashboard
-    getChartPath(metric, key) {
-      const values = metric[key];
-      let path = "";
-      values.forEach((v, idx) => {
-        const x = this.getXCoordinate(idx + 1);
-        const y = this.getYCoordinate(v, metric.maxY);
-        if (idx === 0) {
-          path += `M ${x} ${y}`;
-        } else {
-          path += ` L ${x} ${y}`;
-        }
-      });
-      return path;
-    },
-    getChartAreaPath(metric, key) {
-      const values = metric[key];
-      let path = "";
-      values.forEach((v, idx) => {
-        const x = this.getXCoordinate(idx + 1);
-        const y = this.getYCoordinate(v, metric.maxY);
-        if (idx === 0) {
-          path += `M ${x} ${y}`;
-        } else {
-          path += ` L ${x} ${y}`;
-        }
-      });
-      if (values.length > 0) {
-        const firstX = this.getXCoordinate(1);
-        const lastX = this.getXCoordinate(values.length);
-        const graphBottom = this.chartConfig.paddingY + this.chartConfig.graphHeight;
-        path += ` L ${lastX} ${graphBottom} L ${firstX} ${graphBottom} Z`;
-      }
-      return path;
-    },
+    // Formatting decimal presentation
 
     // SVG coordinate math for print A4 portrait view (compact scale)
     getPrintX(mIdx) {
@@ -741,25 +641,6 @@ export default {
       this.editState.value = null;
     },
 
-    // Tooltip trigger
-    showTooltip(event, label, mIdx, val, metricIdx) {
-      const chartContainer = event.target.closest(".chart-container");
-      if (!chartContainer) return;
-
-      const rect = chartContainer.getBoundingClientRect();
-      const clientX = event.clientX - rect.left;
-      const clientY = event.clientY - rect.top;
-
-      this.tooltip.month = mIdx;
-      this.tooltip.label = label;
-      this.tooltip.value = val.toString();
-      this.tooltip.metricIdx = metricIdx;
-      this.tooltip.style = {
-        top: `${clientY - 75}px`,
-        left: `${clientX - 60}px`,
-      };
-      this.tooltip.visible = true;
-    },
     hideTooltip() {
       this.tooltip.visible = false;
     },
@@ -828,7 +709,7 @@ export default {
 
 .card-box {
   background-color: var(--bg-secondary);
-  border-radius: 16px;
+  border-radius: 0px;
   border: 1px solid var(--border-color);
   padding: 24px;
   box-shadow: 0 10px 15px -3px var(--shadow-color);
@@ -857,130 +738,9 @@ export default {
   width: 100%;
 }
 
-.custom-svg-chart {
-  background-color: var(--bg-primary);
-  border-radius: 12px;
-  padding: 12px;
-  overflow: visible;
-}
-
-.grid-line {
-  stroke: var(--chart-grid);
-  stroke-width: 1;
-}
-
-.axis-text {
-  font-size: 11px;
-  fill: var(--text-secondary);
-  font-weight: 500;
-}
-
-.text-right {
-  text-anchor: end;
-}
-.text-center {
-  text-anchor: middle;
-}
-
-/* Line Styles */
-.chart-path {
-  fill: none;
-  stroke-width: 3.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.path-target {
-  stroke: #64748b; /* slate gray target */
-  stroke-dasharray: 6,4; /* dashed target line */
-}
-
-.path-actual {
-  stroke: #06b6d4; /* cyan actual line */
-}
-
-.chart-area-path {
-  stroke: none;
-  transition: d 0.4s ease;
-}
-
-.chart-dot {
-  stroke-width: 2.5;
-  cursor: pointer;
-  transition: r 0.2s ease, stroke-width 0.2s ease;
-}
-
-.dot-target {
-  fill: var(--bg-primary);
-  stroke: #64748b;
-}
-
-.dot-actual {
-  fill: var(--bg-primary);
-  stroke: #06b6d4;
-}
-
-.chart-dot:hover {
-  r: 7px;
-  stroke-width: 3.5px;
-}
-
-.chart-legend {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-top: 16px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-}
-
-.color-target {
-  background-color: #64748b;
-}
-.color-actual {
-  background-color: #06b6d4;
-}
-
-/* Tooltip on SVG Chart */
-.chart-tooltip {
-  position: absolute;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 12px;
-  pointer-events: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-  transition: top 0.1s ease, left 0.1s ease;
-}
-
-.tooltip-title {
-  font-weight: 700;
-  margin-bottom: 4px;
-  color: var(--text-primary);
-}
-
-.tooltip-content {
-  color: var(--text-secondary);
-}
-
-.text-highlight {
-  color: var(--text-primary);
-  font-weight: 700;
+.chart {
+  width: 100%;
+  height: 250px;
 }
 
 /* Tables styling in dashboard */

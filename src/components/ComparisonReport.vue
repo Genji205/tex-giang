@@ -77,131 +77,7 @@
           </div>
 
           <div class="chart-container">
-            <svg
-              class="custom-svg-chart"
-              viewBox="0 0 1000 320"
-              width="100%"
-              height="280"
-            >
-              <defs>
-                <linearGradient id="grad1-2024" x1="0" y1="1" x2="0" y2="0">
-                  <stop offset="0%" stop-color="#475569" />
-                  <stop offset="100%" stop-color="#64748b" />
-                </linearGradient>
-                <linearGradient id="grad1-2025" x1="0" y1="1" x2="0" y2="0">
-                  <stop offset="0%" stop-color="#0891b2" />
-                  <stop offset="100%" stop-color="#06b6d4" />
-                </linearGradient>
-              </defs>
-              <!-- Grid Lines (0% - 16%, step 2%) -->
-              <line
-                v-for="grid in yGridLines1"
-                :key="'g1-' + grid.y"
-                x1="60"
-                :y1="grid.y"
-                x2="960"
-                :y2="grid.y"
-                class="grid-line"
-              />
-              <!-- Y Axis labels -->
-              <text
-                v-for="grid in yGridLines1"
-                :key="'yl1-' + grid.label"
-                x="45"
-                :y="grid.y + 4"
-                class="axis-text text-right"
-              >
-                {{ grid.label }}%
-              </text>
-              <!-- X Axis Month labels -->
-              <text
-                v-for="m in 12"
-                :key="'xl1-' + m"
-                :x="getXColumnCenter(m)"
-                y="300"
-                class="axis-text text-center"
-              >
-                {{ "T" + m }}
-              </text>
-              <text
-                :x="getXColumnCenter(13)"
-                y="300"
-                class="axis-text text-center fw-bold"
-              >
-                TB
-              </text>
-
-              <!-- Bars rendering -->
-              <g v-for="m in 13" :key="'bars1-' + m">
-                <!-- Bar 2024 (Trước ủi) -->
-                <rect
-                  :x="getBarX(m, 0)"
-                  :y="getBarY(getVal1(m, 0), 16)"
-                  :width="barConfig.width"
-                  :height="getBarHeight(getVal1(m, 0), 16)"
-                  class="bar-rect bar-2024"
-                  fill="url(#grad1-2024)"
-                  @mouseenter="
-                    showTooltip(
-                      $event,
-                      selectedYear - 1,
-                      'Trước ủi',
-                      m,
-                      getVal1(m, 0)
-                    )
-                  "
-                  @mouseleave="hideTooltip"
-                />
-                <!-- Bar 2025 (Trước ủi) -->
-                <rect
-                  :x="getBarX(m, 1)"
-                  :y="getBarY(getVal1(m, 1), 16)"
-                  :width="barConfig.width"
-                  :height="getBarHeight(getVal1(m, 1), 16)"
-                  class="bar-rect bar-2025"
-                  fill="url(#grad1-2025)"
-                  @mouseenter="
-                    showTooltip(
-                      $event,
-                      selectedYear,
-                      'Trước ủi',
-                      m,
-                      getVal1(m, 1)
-                    )
-                  "
-                  @mouseleave="hideTooltip"
-                />
-              </g>
-            </svg>
-
-            <!-- Legend inside chart card -->
-            <div class="chart-legend">
-              <div class="legend-item">
-                <span class="legend-color bar-color-2024"></span>
-                <span class="legend-label"
-                  >Trước ủi {{ selectedYear - 1 }}</span
-                >
-              </div>
-              <div class="legend-item">
-                <span class="legend-color bar-color-2025"></span>
-                <span class="legend-label">Trước ủi {{ selectedYear }}</span>
-              </div>
-            </div>
-
-            <!-- Tooltip Element -->
-            <div
-              v-if="tooltip.visible && tooltip.stage === 'Trước ủi'"
-              class="chart-tooltip"
-              :style="tooltip.style"
-            >
-              <div class="tooltip-title">
-                {{ tooltip.month }} ({{ tooltip.year }})
-              </div>
-              <div class="tooltip-content">
-                <strong>{{ tooltip.label }}:</strong>
-                <span class="text-highlight">{{ tooltip.value }}%</span>
-              </div>
-            </div>
+            <v-chart class="chart" :option="chartOptionTruocUi" autoresize />
           </div>
 
           <div class="responsive-table-wrapper margin-top-md">
@@ -259,129 +135,7 @@
           </div>
 
           <div class="chart-container">
-            <svg
-              class="custom-svg-chart"
-              viewBox="0 0 1000 320"
-              width="100%"
-              height="280"
-            >
-              <defs>
-                <linearGradient id="grad2-2024" x1="0" y1="1" x2="0" y2="0">
-                  <stop offset="0%" stop-color="#475569" />
-                  <stop offset="100%" stop-color="#64748b" />
-                </linearGradient>
-                <linearGradient id="grad2-2025" x1="0" y1="1" x2="0" y2="0">
-                  <stop offset="0%" stop-color="#0891b2" />
-                  <stop offset="100%" stop-color="#06b6d4" />
-                </linearGradient>
-              </defs>
-              <!-- Grid Lines (0% - 30%, step 5%) -->
-              <line
-                v-for="grid in yGridLines2"
-                :key="'g2-' + grid.y"
-                x1="60"
-                :y1="grid.y"
-                x2="960"
-                :y2="grid.y"
-                class="grid-line"
-              />
-              <!-- Y Axis labels -->
-              <text
-                v-for="grid in yGridLines2"
-                :key="'yl2-' + grid.label"
-                x="45"
-                :y="grid.y + 4"
-                class="axis-text text-right"
-              >
-                {{ grid.label }}%
-              </text>
-              <!-- X Axis Month labels -->
-              <text
-                v-for="m in 12"
-                :key="'xl2-' + m"
-                :x="getXColumnCenter(m)"
-                y="300"
-                class="axis-text text-center"
-              >
-                {{ "T" + m }}
-              </text>
-              <text
-                :x="getXColumnCenter(13)"
-                y="300"
-                class="axis-text text-center fw-bold"
-              >
-                TB
-              </text>
-
-              <!-- Bars rendering -->
-              <g v-for="m in 13" :key="'bars2-' + m">
-                <!-- Bar 2024 (Sau ủi) -->
-                <rect
-                  :x="getBarX(m, 0)"
-                  :y="getBarY(getVal2(m, 0), 30)"
-                  :width="barConfig.width"
-                  :height="getBarHeight(getVal2(m, 0), 30)"
-                  class="bar-rect bar-2024"
-                  fill="url(#grad2-2024)"
-                  @mouseenter="
-                    showTooltip(
-                      $event,
-                      selectedYear - 1,
-                      'Sau ủi',
-                      m,
-                      getVal2(m, 0)
-                    )
-                  "
-                  @mouseleave="hideTooltip"
-                />
-                <!-- Bar 2025 (Sau ủi) -->
-                <rect
-                  :x="getBarX(m, 1)"
-                  :y="getBarY(getVal2(m, 1), 30)"
-                  :width="barConfig.width"
-                  :height="getBarHeight(getVal2(m, 1), 30)"
-                  class="bar-rect bar-2025"
-                  fill="url(#grad2-2025)"
-                  @mouseenter="
-                    showTooltip(
-                      $event,
-                      selectedYear,
-                      'Sau ủi',
-                      m,
-                      getVal2(m, 1)
-                    )
-                  "
-                  @mouseleave="hideTooltip"
-                />
-              </g>
-            </svg>
-
-            <!-- Legend inside chart card -->
-            <div class="chart-legend">
-              <div class="legend-item">
-                <span class="legend-color bar-color-2024"></span>
-                <span class="legend-label">Sau ủi {{ selectedYear - 1 }}</span>
-              </div>
-              <div class="legend-item">
-                <span class="legend-color bar-color-2025"></span>
-                <span class="legend-label">Sau ủi {{ selectedYear }}</span>
-              </div>
-            </div>
-
-            <!-- Tooltip Element -->
-            <div
-              v-if="tooltip.visible && tooltip.stage === 'Sau ủi'"
-              class="chart-tooltip"
-              :style="tooltip.style"
-            >
-              <div class="tooltip-title">
-                {{ tooltip.month }} ({{ tooltip.year }})
-              </div>
-              <div class="tooltip-content">
-                <strong>{{ tooltip.label }}:</strong>
-                <span class="text-highlight">{{ tooltip.value }}%</span>
-              </div>
-            </div>
+            <v-chart class="chart" :option="chartOptionSauUi" autoresize />
           </div>
 
           <div class="responsive-table-wrapper margin-top-md">
@@ -711,31 +465,120 @@ export default {
         graphHeight: 230,
         graphWidth: 890,
       },
-
-      // Bar Dimensions
-      barConfig: {
-        width: 16,
-        gap: 0,
-      },
     };
   },
   computed: {
-    // Computed gridline mappings for dashboard
-    yGridLines1() {
-      const lines = [];
-      for (let i = 0; i <= 8; i++) {
-        const val = i * 2; // 0% to 16%
-        lines.push({ label: val, y: this.getBarY(val, 16) });
-      }
-      return lines;
+    chartOptionTruocUi() {
+      const isDark = this.theme === 'dark';
+      const textColor = isDark ? '#888' : '#666';
+      const splitLineColor = isDark ? '#222' : '#ddd';
+      const color1 = '#64748b'; // Slate (2024)
+      const color2 = '#06b6d4'; // Cyan (2025)
+      
+      const truocUi2024 = Array.from({length: 13}, (_, i) => this.getVal1(i + 1, 0));
+      const truocUi2025 = Array.from({length: 13}, (_, i) => this.getVal1(i + 1, 1));
+      
+      return {
+        backgroundColor: 'transparent',
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          backgroundColor: isDark ? '#050505' : '#fff',
+          borderColor: isDark ? '#333' : '#ccc',
+          textStyle: { color: isDark ? '#f5f5f5' : '#111' },
+          borderWidth: 1,
+          borderRadius: 0,
+        },
+        legend: {
+          data: [`Trước ủi ${this.selectedYear - 1}`, `Trước ủi ${this.selectedYear}`],
+          textStyle: { color: textColor },
+          icon: 'rect',
+          bottom: 0
+        },
+        grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+        xAxis: {
+          type: 'category',
+          data: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'TB'],
+          axisLabel: { color: textColor },
+          axisLine: { lineStyle: { color: splitLineColor } },
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: { color: textColor, formatter: '{value}%' },
+          splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+        },
+        series: [
+          {
+            name: `Trước ủi ${this.selectedYear - 1}`,
+            type: 'bar',
+            data: truocUi2024,
+            itemStyle: { color: color1 },
+            barGap: '10%'
+          },
+          {
+            name: `Trước ủi ${this.selectedYear}`,
+            type: 'bar',
+            data: truocUi2025,
+            itemStyle: { color: color2 },
+          }
+        ]
+      };
     },
-    yGridLines2() {
-      const lines = [];
-      for (let i = 0; i <= 6; i++) {
-        const val = i * 5; // 0% to 30%
-        lines.push({ label: val, y: this.getBarY(val, 30) });
-      }
-      return lines;
+    chartOptionSauUi() {
+      const isDark = this.theme === 'dark';
+      const textColor = isDark ? '#888' : '#666';
+      const splitLineColor = isDark ? '#222' : '#ddd';
+      const color1 = '#64748b'; // Slate (2024)
+      const color2 = '#ff4d00'; // Signal Orange
+      
+      const sauUi2024 = Array.from({length: 13}, (_, i) => this.getVal2(i + 1, 0));
+      const sauUi2025 = Array.from({length: 13}, (_, i) => this.getVal2(i + 1, 1));
+      
+      return {
+        backgroundColor: 'transparent',
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          backgroundColor: isDark ? '#050505' : '#fff',
+          borderColor: isDark ? '#333' : '#ccc',
+          textStyle: { color: isDark ? '#f5f5f5' : '#111' },
+          borderWidth: 1,
+          borderRadius: 0,
+        },
+        legend: {
+          data: [`Sau ủi ${this.selectedYear - 1}`, `Sau ủi ${this.selectedYear}`],
+          textStyle: { color: textColor },
+          icon: 'rect',
+          bottom: 0
+        },
+        grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+        xAxis: {
+          type: 'category',
+          data: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'TB'],
+          axisLabel: { color: textColor },
+          axisLine: { lineStyle: { color: splitLineColor } },
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: { color: textColor, formatter: '{value}%' },
+          splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+        },
+        series: [
+          {
+            name: `Sau ủi ${this.selectedYear - 1}`,
+            type: 'bar',
+            data: sauUi2024,
+            itemStyle: { color: color1 },
+            barGap: '10%'
+          },
+          {
+            name: `Sau ủi ${this.selectedYear}`,
+            type: 'bar',
+            data: sauUi2025,
+            itemStyle: { color: color2 },
+          }
+        ]
+      };
     },
     // Computed gridlines for paper print view (shorter height)
     paperGridLines1() {
@@ -784,31 +627,7 @@ export default {
       const avg = sum / 12;
       return avg.toFixed(2) + "%"; // <-- Ép thẳng 2 chữ số thập phân
     },
-    // Math mappings for Dashboard SVG bar charts
-    getXColumnCenter(mIdx) {
-      const space = this.chartConfig.graphWidth / 13;
-      return this.chartConfig.paddingX + (mIdx - 1) * space + space / 2;
-    },
-    getBarX(mIdx, seriesIdx) {
-      const center = this.getXColumnCenter(mIdx);
-      if (seriesIdx === 0) {
-        return center - this.barConfig.width;
-      } else {
-        return center;
-      }
-    },
-    getBarY(value, maxY) {
-      const graphBottom =
-        this.chartConfig.paddingY + this.chartConfig.graphHeight;
-      const ratio = value / maxY;
-      return graphBottom - ratio * this.chartConfig.graphHeight;
-    },
-    getBarHeight(value, maxY) {
-      const ratio = value / maxY;
-      return ratio * this.chartConfig.graphHeight;
-    },
-
-    // Getter helper functions for values (handling 12 months + average)
+    // Helper for table data
     getVal1(mIdx, seriesIdx) {
       const table = seriesIdx === 0 ? this.data2024 : this.data2025;
       const row = table.rows[0];
@@ -944,7 +763,7 @@ export default {
 
 .card-box {
   background-color: var(--bg-secondary);
-  border-radius: 16px;
+  border-radius: 0px;
   border: 1px solid var(--border-color);
   padding: 24px;
   box-shadow: 0 10px 15px -3px var(--shadow-color);
@@ -973,108 +792,9 @@ export default {
   width: 100%;
 }
 
-.custom-svg-chart {
-  background-color: var(--bg-primary);
-  border-radius: 12px;
-  padding: 12px;
-  overflow: visible;
-}
-
-.grid-line {
-  stroke: var(--chart-grid);
-  stroke-width: 1;
-}
-
-.axis-text {
-  font-size: 11px;
-  fill: var(--text-secondary);
-  font-weight: 500;
-}
-
-.text-right {
-  text-anchor: end;
-}
-.text-center {
-  text-anchor: middle;
-}
-
-/* Custom bar aesthetics */
-.bar-rect {
-  transition: height 0.4s ease, y 0.4s ease, opacity 0.2s;
-  cursor: pointer;
-  stroke-width: 0.8px;
-  stroke: rgba(0, 0, 0, 0.15);
-  rx: 2px; /* rounded top edges */
-}
-
-.bar-rect:hover {
-  opacity: 0.85;
-}
-
-.bar-2024 {
-  fill: #3b82f6; /* Blue series */
-}
-
-.bar-2025 {
-  fill: #ec4899; /* Pink series */
-}
-
-.chart-legend {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-top: 16px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.legend-color {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-}
-
-.bar-color-2024 {
-  background: linear-gradient(135deg, #475569, #64748b);
-}
-.bar-color-2025 {
-  background: linear-gradient(135deg, #0891b2, #06b6d4);
-}
-
-/* Tooltip */
-.chart-tooltip {
-  position: absolute;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 12px;
-  pointer-events: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-  transition: top 0.1s ease, left 0.1s ease;
-}
-
-.tooltip-title {
-  font-weight: 700;
-  margin-bottom: 4px;
-  color: var(--text-primary);
-}
-
-.tooltip-content {
-  color: var(--text-secondary);
-}
-
-.text-highlight {
-  color: var(--text-primary);
-  font-weight: 700;
+.chart {
+  width: 100%;
+  height: 350px;
 }
 
 /* Margin helper */

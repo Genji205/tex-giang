@@ -789,43 +789,43 @@ body {
 /* Global design variables */
 .app-container.dark {
   color-scheme: dark;
-  --bg-primary: #0b0f19;
-  --bg-secondary: #111827;
-  --bg-card: #1f2937;
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --border-color: #374151;
-  --accent-color: #4f46e5;
-  --accent-hover: #4338ca;
-  --chart-grid: rgba(255, 255, 255, 0.07);
-  --input-bg: #1f2937;
-  --input-border: #4b5563;
-  --shadow-color: rgba(0, 0, 0, 0.4);
-  --sidebar-bg: #111827;
-  --sidebar-hover: rgba(255, 255, 255, 0.03);
+  --bg-primary: #050505;
+  --bg-secondary: #0a0a0a;
+  --bg-card: #0a0a0a;
+  --text-primary: #f5f5f5;
+  --text-secondary: #888888;
+  --border-color: #222222;
+  --accent-color: #ccff00; /* Acid Green */
+  --accent-hover: #b3e600;
+  --chart-grid: rgba(255, 255, 255, 0.03);
+  --input-bg: #050505;
+  --input-border: #333333;
+  --shadow-color: rgba(204, 255, 0, 0.05);
+  --sidebar-bg: #020202;
+  --sidebar-hover: rgba(204, 255, 0, 0.05);
 }
 
 .app-container.light {
   color-scheme: light;
-  --bg-primary: #f3f4f6;
+  --bg-primary: #f4f4f4;
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --border-color: #e5e7eb;
-  --accent-color: #3b82f6;
-  --accent-hover: #2563eb;
+  --text-primary: #111111;
+  --text-secondary: #666666;
+  --border-color: #dddddd;
+  --accent-color: #ff4d00; /* Signal Orange */
+  --accent-hover: #e64500;
   --chart-grid: rgba(0, 0, 0, 0.05);
   --input-bg: #ffffff;
-  --input-border: #d1d5db;
-  --shadow-color: rgba(0, 0, 0, 0.05);
+  --input-border: #cccccc;
+  --shadow-color: rgba(255, 77, 0, 0.05);
   --sidebar-bg: #ffffff;
-  --sidebar-hover: rgba(0, 0, 0, 0.02);
+  --sidebar-hover: rgba(255, 77, 0, 0.03);
 }
 
 /* Master Grid Structure */
 .app-container {
-  display: flex;
+  display: block;
   min-height: 100vh;
   color: var(--text-primary);
 }
@@ -908,7 +908,8 @@ h6 {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: 10px;
+  border-radius: 0px;
+  border-left: 2px solid transparent;
   color: var(--text-secondary);
   font-weight: 600;
   font-size: 13.5px;
@@ -924,9 +925,10 @@ h6 {
 }
 
 .nav-item.active {
-  background-color: var(--accent-color);
-  color: white;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  background-color: var(--sidebar-hover);
+  border-left-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: none;
 }
 
 .app-container.light .nav-item.active {
@@ -952,7 +954,7 @@ h6 {
   font-size: 10px;
   font-weight: 700;
   padding: 2px 6px;
-  border-radius: 10px;
+  border-radius: 0px;
   margin-left: auto;
   text-transform: uppercase;
 }
@@ -979,7 +981,7 @@ h6 {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 0px;
   transition: all 0.2s;
   white-space: nowrap;
 }
@@ -1129,7 +1131,7 @@ h6 {
   gap: 8px;
   margin-top: 10px;
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius: 0px;
   font-size: 11px;
   font-weight: 600;
   background-color: rgba(255, 255, 255, 0.03);
@@ -1206,7 +1208,7 @@ h6 {
   color: var(--text-primary);
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 0px;
   outline: none;
   cursor: pointer;
   appearance: none;

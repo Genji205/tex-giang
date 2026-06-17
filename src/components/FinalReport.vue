@@ -169,82 +169,8 @@
 
           <div class="chart-container">
             <div class="chart-wrapper-box">
-              <svg class="custom-svg-chart" viewBox="0 0 1000 280" width="100%" height="240">
-                <defs>
-                  <linearGradient id="finalGrad" x1="0" y1="1" x2="0" y2="0">
-                    <stop offset="0%" stop-color="#3b82f6" />
-                    <stop offset="100%" stop-color="#60a5fa" />
-                  </linearGradient>
-                  <linearGradient id="failedGrad" x1="0" y1="1" x2="0" y2="0">
-                    <stop offset="0%" stop-color="#ef4444" />
-                    <stop offset="100%" stop-color="#f87171" />
-                  </linearGradient>
-                </defs>
-                <!-- Y Axis solid line -->
-                <line x1="70" y1="30" x2="70" y2="250" stroke="var(--text-secondary)" stroke-width="1.5" />
-                
-                <!-- Y Axis ticks (pointing left) -->
-                <line v-for="grid in yGridLines" :key="'yt-'+grid.label" x1="64" :y1="grid.y" x2="70" :y2="grid.y" stroke="var(--text-secondary)" stroke-width="1.5" />
-
-                <!-- Y Axis Labels -->
-                <text v-for="grid in yGridLines" :key="'yl-'+grid.label" x="55" :y="grid.y + 4" class="axis-text text-right">{{ grid.label }}</text>
-                
-                <!-- X Axis solid line -->
-                <line x1="70" y1="250" x2="970" y2="250" stroke="var(--text-secondary)" stroke-width="1.5" />
-
-                <!-- X Axis ticks (pointing down, matching column boundaries) -->
-                <line v-for="c in 14" :key="'xt-'+c" :x1="70 + (c - 1) * (900 / 13)" y1="250" :x2="70 + (c - 1) * (900 / 13)" y2="256" stroke="var(--text-secondary)" stroke-width="1.5" />
-
-                <!-- X Axis Month Labels -->
-                <text v-for="m in 13" :key="'xl-month-'+m" :x="getXColumnCenter(m)" y="272" class="axis-text text-center">{{ m <= 12 ? 'T' + m : 'Tổng' }}</text>
-
-                <!-- Bars -->
-                <g v-for="m in 13" :key="'bars-'+m">
-                  <!-- Bar: Số lần final -->
-                  <rect 
-                    :x="getXColumnCenter(m) - barConfig.width - barConfig.gap / 2"
-                    :y="getBarY(getBarVal(m, 0))"
-                    :width="barConfig.width"
-                    :height="getBarHeight(getBarVal(m, 0))"
-                    class="bar-rect bar-final"
-                    fill="url(#finalGrad)"
-                    @mouseenter="showTooltip($event, 'Số lần final', m, getBarVal(m, 0))"
-                    @mouseleave="hideTooltip"
-                  />
-                  <!-- Bar: Số lần không đạt -->
-                  <rect 
-                    :x="getXColumnCenter(m) + barConfig.gap / 2"
-                    :y="getBarY(getBarVal(m, 1))"
-                    :width="barConfig.width"
-                    :height="getBarHeight(getBarVal(m, 1))"
-                    class="bar-rect bar-failed"
-                    fill="url(#failedGrad)"
-                    @mouseenter="showTooltip($event, 'Số lần không đạt', m, getBarVal(m, 1))"
-                    @mouseleave="hideTooltip"
-                  />
-                </g>
-              </svg>
-
-              <!-- Chart Legend -->
-              <div class="chart-legend">
-                <div class="legend-item">
-                  <span class="legend-square-dash fill-final-dash"></span>
-                  <span>Số lần final</span>
-                </div>
-                <div class="legend-item">
-                  <span class="legend-square-dash fill-failed-dash"></span>
-                  <span>Số lần không đạt</span>
-                </div>
+              <v-chart class="chart" :option="chartOption" autoresize />
             </div>
-          </div>
-
-          <!-- Tooltip Element -->
-          <div v-if="tooltip.visible" class="chart-tooltip" :style="tooltip.style">
-            <div class="tooltip-title">{{ tooltip.month }}</div>
-            <div class="tooltip-content">
-              <strong>{{ tooltip.label }}:</strong> <span class="text-highlight">{{ tooltip.value }} lần</span>
-            </div>
-          </div>
           </div>
         </div>
 
@@ -557,15 +483,6 @@ export default {
       if (this.totalFinal === 0) return '0.00';
       return ((this.totalFailed / this.totalFinal) * 100).toFixed(2);
     },
-    // Y Grid lines for dashboard SVG (maxY = 250)
-    yGridLines() {
-      const lines = [];
-      for (let i = 0; i <= 5; i++) {
-        const val = i * 50; // 0, 50, 100, 150, 200, 250
-        lines.push({ label: val, y: this.getBarY(val) });
-      }
-      return lines;
-    },
     // Y Grid lines for paper view SVG (maxY = 250)
     paperGridLines() {
       const lines = [];
@@ -574,6 +491,62 @@ export default {
         lines.push({ label: val, y: 145 - (val * (130 / 250)) }); // 130px height baseline
       }
       return lines;
+    },
+    chartOption() {
+      const isDark = this.theme === 'dark';
+      const textColor = isDark ? '#888' : '#666';
+      const splitLineColor = isDark ? '#222' : '#ddd';
+      const color1 = '#3b82f6'; // Blue
+      const color2 = '#ef4444'; // Red
+      
+      const finalData = Array.from({length: 13}, (_, i) => this.getBarVal(i + 1, 0));
+      const failedData = Array.from({length: 13}, (_, i) => this.getBarVal(i + 1, 1));
+      
+      return {
+        backgroundColor: 'transparent',
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          backgroundColor: isDark ? '#050505' : '#fff',
+          borderColor: isDark ? '#333' : '#ccc',
+          textStyle: { color: isDark ? '#f5f5f5' : '#111' },
+          borderWidth: 1,
+          borderRadius: 0,
+        },
+        legend: {
+          data: ['Số lần final', 'Số lần không đạt'],
+          textStyle: { color: textColor },
+          icon: 'rect',
+          bottom: 0
+        },
+        grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+        xAxis: {
+          type: 'category',
+          data: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'Tổng'],
+          axisLabel: { color: textColor },
+          axisLine: { lineStyle: { color: splitLineColor } },
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: { color: textColor },
+          splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+        },
+        series: [
+          {
+            name: 'Số lần final',
+            type: 'bar',
+            data: finalData,
+            itemStyle: { color: color1 },
+            barGap: '10%'
+          },
+          {
+            name: 'Số lần không đạt',
+            type: 'bar',
+            data: failedData,
+            itemStyle: { color: color2 },
+          }
+        ]
+      };
     }
   },
   methods: {
@@ -619,24 +592,6 @@ export default {
       return this.getFailedRate(row);
     },
 
-    // Dashboard SVG math
-    getXColumnCenter(mIdx) {
-      const space = 900 / 13;
-      return 70 + ((mIdx - 1) * space) + (space / 2);
-    },
-    getBarX(mIdx) {
-      const center = this.getXColumnCenter(mIdx);
-      return center - this.barConfig.width / 2;
-    },
-    getBarY(value) {
-      const graphBottom = 250;
-      const ratio = value / 250; // maxY = 250
-      return graphBottom - (ratio * 220); // 220px height
-    },
-    getBarHeight(value) {
-      const ratio = value / 250;
-      return ratio * 220;
-    },
     getBarVal(mIdx, seriesIdx) {
       if (mIdx <= 12) {
         const row = this.finalReportData.rows[mIdx - 1];
@@ -707,24 +662,6 @@ export default {
       this.editState.value = null;
     },
 
-    // Tooltip
-    showTooltip(event, label, mIdx, val) {
-      const chartContainer = event.target.closest('.chart-container');
-      if (!chartContainer) return;
-      
-      const rect = chartContainer.getBoundingClientRect();
-      const clientX = event.clientX - rect.left;
-      const clientY = event.clientY - rect.top;
-
-      this.tooltip.month = mIdx === 13 ? 'Tổng số cả năm' : 'Tháng ' + mIdx;
-      this.tooltip.label = label;
-      this.tooltip.value = val.toString();
-      this.tooltip.style = {
-        top: `${clientY - 75}px`,
-        left: `${clientX - 60}px`
-      };
-      this.tooltip.visible = true;
-    },
     hideTooltip() {
       this.tooltip.visible = false;
     }
@@ -793,7 +730,7 @@ export default {
 
 .card-box {
   background-color: var(--bg-secondary);
-  border-radius: 16px;
+  border-radius: 0px;
   border: 1px solid var(--border-color);
   padding: 24px;
   box-shadow: 0 10px 15px -3px var(--shadow-color);
@@ -1005,15 +942,9 @@ export default {
 .fill-passed-rate-dash { background-color: #10b981; }
 .fill-failed-rate-dash { background-color: #f59e0b; }
 
-.grid-line {
-  stroke: var(--chart-grid);
-  stroke-width: 1;
-}
-
-.axis-text {
-  font-size: 11px;
-  fill: var(--text-secondary);
-  font-weight: 500;
+.chart {
+  width: 100%;
+  height: 250px;
 }
 
 .text-right { text-anchor: end; }
