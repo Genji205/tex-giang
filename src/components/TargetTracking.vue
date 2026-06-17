@@ -4,7 +4,7 @@
     <header class="page-action-header no-print">
       <div class="page-title-badge">
         <span class="pulse-dot"></span>
-        <h2>Trang 3: Theo Dõi Mục Tiêu Chất Lượng {{ selectedYear }}</h2>
+        <h2>Theo Dõi Mục Tiêu Chất Lượng {{ selectedYear }}</h2>
       </div>
 
       <div class="page-actions">

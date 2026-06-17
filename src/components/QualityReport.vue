@@ -4,7 +4,7 @@
     <header class="page-action-header no-print">
       <div class="page-title-badge">
         <span class="pulse-dot"></span>
-        <h2>Trang 1: Báo Cáo Chất Lượng XNTH {{ selectedYear }}</h2>
+        <h2>Báo Cáo Chất Lượng XNTH {{ selectedYear }}</h2>
       </div>
 
       <div class="page-actions">
