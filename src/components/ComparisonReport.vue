@@ -469,115 +469,169 @@ export default {
   },
   computed: {
     chartOptionTruocUi() {
-      const isDark = this.theme === 'dark';
-      const textColor = isDark ? '#888' : '#666';
-      const splitLineColor = isDark ? '#222' : '#ddd';
-      const color1 = '#64748b'; // Slate (2024)
-      const color2 = '#06b6d4'; // Cyan (2025)
-      
-      const truocUi2024 = Array.from({length: 13}, (_, i) => this.getVal1(i + 1, 0));
-      const truocUi2025 = Array.from({length: 13}, (_, i) => this.getVal1(i + 1, 1));
-      
+      const isDark = this.theme === "dark";
+      const textColor = isDark ? "#888" : "#666";
+      const splitLineColor = isDark ? "#222" : "#ddd";
+      const color1 = "#64748b"; // Slate (2024)
+      const color2 = "#06b6d4"; // Cyan (2025)
+
+      const truocUi2024 = Array.from({ length: 13 }, (_, i) =>
+        this.getVal1(i + 1, 0)
+      );
+      const truocUi2025 = Array.from({ length: 13 }, (_, i) =>
+        this.getVal1(i + 1, 1)
+      );
+
       return {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         tooltip: {
-          trigger: 'axis',
-          axisPointer: { type: 'shadow' },
-          backgroundColor: isDark ? '#050505' : '#fff',
-          borderColor: isDark ? '#333' : '#ccc',
-          textStyle: { color: isDark ? '#f5f5f5' : '#111' },
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          backgroundColor: isDark ? "#050505" : "#fff",
+          borderColor: isDark ? "#333" : "#ccc",
+          textStyle: { color: isDark ? "#f5f5f5" : "#111" },
           borderWidth: 1,
           borderRadius: 0,
         },
         legend: {
-          data: [`Trước ủi ${this.selectedYear - 1}`, `Trước ủi ${this.selectedYear}`],
+          data: [
+            `Trước ủi ${this.selectedYear - 1}`,
+            `Trước ủi ${this.selectedYear}`,
+          ],
           textStyle: { color: textColor },
-          icon: 'rect',
-          bottom: 0
+          icon: "rect",
+          bottom: 0,
         },
-        grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "10%",
+          top: "5%",
+          containLabel: true,
+        },
         xAxis: {
-          type: 'category',
-          data: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'TB'],
+          type: "category",
+          data: [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5",
+            "T6",
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11",
+            "T12",
+            "TB",
+          ],
           axisLabel: { color: textColor },
           axisLine: { lineStyle: { color: splitLineColor } },
         },
         yAxis: {
-          type: 'value',
-          axisLabel: { color: textColor, formatter: '{value}%' },
-          splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+          type: "value",
+          axisLabel: { color: textColor, formatter: "{value}%" },
+          splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
         },
         series: [
           {
             name: `Trước ủi ${this.selectedYear - 1}`,
-            type: 'bar',
+            type: "bar",
             data: truocUi2024,
             itemStyle: { color: color1 },
-            barGap: '10%'
+            barGap: "10%",
           },
           {
             name: `Trước ủi ${this.selectedYear}`,
-            type: 'bar',
+            type: "bar",
             data: truocUi2025,
             itemStyle: { color: color2 },
-          }
-        ]
+          },
+        ],
       };
     },
     chartOptionSauUi() {
-      const isDark = this.theme === 'dark';
-      const textColor = isDark ? '#888' : '#666';
-      const splitLineColor = isDark ? '#222' : '#ddd';
-      const color1 = '#64748b'; // Slate (2024)
-      const color2 = '#ff4d00'; // Signal Orange
-      
-      const sauUi2024 = Array.from({length: 13}, (_, i) => this.getVal2(i + 1, 0));
-      const sauUi2025 = Array.from({length: 13}, (_, i) => this.getVal2(i + 1, 1));
-      
+      const isDark = this.theme === "dark";
+      const textColor = isDark ? "#888" : "#666";
+      const splitLineColor = isDark ? "#222" : "#ddd";
+      const color1 = "#64748b"; // Slate (2024)
+      const color2 = "#ff4d00"; // Signal Orange
+
+      const sauUi2024 = Array.from({ length: 13 }, (_, i) =>
+        this.getVal2(i + 1, 0)
+      );
+      const sauUi2025 = Array.from({ length: 13 }, (_, i) =>
+        this.getVal2(i + 1, 1)
+      );
+
       return {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         tooltip: {
-          trigger: 'axis',
-          axisPointer: { type: 'shadow' },
-          backgroundColor: isDark ? '#050505' : '#fff',
-          borderColor: isDark ? '#333' : '#ccc',
-          textStyle: { color: isDark ? '#f5f5f5' : '#111' },
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          backgroundColor: isDark ? "#050505" : "#fff",
+          borderColor: isDark ? "#333" : "#ccc",
+          textStyle: { color: isDark ? "#f5f5f5" : "#111" },
           borderWidth: 1,
           borderRadius: 0,
         },
         legend: {
-          data: [`Sau ủi ${this.selectedYear - 1}`, `Sau ủi ${this.selectedYear}`],
+          data: [
+            `Sau ủi ${this.selectedYear - 1}`,
+            `Sau ủi ${this.selectedYear}`,
+          ],
           textStyle: { color: textColor },
-          icon: 'rect',
-          bottom: 0
+          icon: "rect",
+          bottom: 0,
         },
-        grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "10%",
+          top: "5%",
+          containLabel: true,
+        },
         xAxis: {
-          type: 'category',
-          data: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'TB'],
+          type: "category",
+          data: [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5",
+            "T6",
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11",
+            "T12",
+            "TB",
+          ],
           axisLabel: { color: textColor },
           axisLine: { lineStyle: { color: splitLineColor } },
         },
         yAxis: {
-          type: 'value',
-          axisLabel: { color: textColor, formatter: '{value}%' },
-          splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+          type: "value",
+          axisLabel: { color: textColor, formatter: "{value}%" },
+          splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
         },
         series: [
           {
             name: `Sau ủi ${this.selectedYear - 1}`,
-            type: 'bar',
+            type: "bar",
             data: sauUi2024,
             itemStyle: { color: color1 },
-            barGap: '10%'
+            barGap: "10%",
           },
           {
             name: `Sau ủi ${this.selectedYear}`,
-            type: 'bar',
+            type: "bar",
             data: sauUi2025,
             itemStyle: { color: color2 },
-          }
-        ]
+          },
+        ],
       };
     },
     // Computed gridlines for paper print view (shorter height)

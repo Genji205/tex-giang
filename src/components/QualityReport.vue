@@ -515,56 +515,73 @@ export default {
   },
   computed: {
     chartOption() {
-      const yearData = this.activeChartYear === 2024 ? this.data2024 : this.data2025;
+      const yearData =
+        this.activeChartYear === 2024 ? this.data2024 : this.data2025;
       const truocUi = yearData.rows[0].months;
       const sauUi = yearData.rows[1].months;
-      
-      const isDark = this.theme === 'dark';
-      const textColor = isDark ? '#888' : '#666';
-      const splitLineColor = isDark ? '#222' : '#ddd';
-      const colorTruoc = '#06b6d4'; // Cyan
-      const colorSau = '#ccff00'; // Acid Green
-      
+
+      const isDark = this.theme === "dark";
+      const textColor = isDark ? "#888" : "#666";
+      const splitLineColor = isDark ? "#222" : "#ddd";
+      const colorTruoc = "#06b6d4"; // Cyan
+      const colorSau = "#ccff00"; // Acid Green
+
       return {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         tooltip: {
-          trigger: 'axis',
-          axisPointer: { type: 'cross', crossStyle: { color: textColor } },
-          backgroundColor: isDark ? '#050505' : '#fff',
-          borderColor: isDark ? '#333' : '#ccc',
-          textStyle: { color: isDark ? '#f5f5f5' : '#111' },
+          trigger: "axis",
+          axisPointer: { type: "cross", crossStyle: { color: textColor } },
+          backgroundColor: isDark ? "#050505" : "#fff",
+          borderColor: isDark ? "#333" : "#ccc",
+          textStyle: { color: isDark ? "#f5f5f5" : "#111" },
           borderWidth: 1,
           borderRadius: 0,
         },
         legend: {
-          data: [`Trước ủi ${this.activeChartYear}`, `Sau ủi ${this.activeChartYear}`],
+          data: [
+            `Trước ủi ${this.activeChartYear}`,
+            `Sau ủi ${this.activeChartYear}`,
+          ],
           textStyle: { color: textColor },
-          icon: 'rect',
-          bottom: 0
+          icon: "rect",
+          bottom: 0,
         },
         grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '10%',
-          top: '5%',
-          containLabel: true
+          left: "3%",
+          right: "4%",
+          bottom: "10%",
+          top: "5%",
+          containLabel: true,
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           boundaryGap: false,
-          data: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+          data: [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5",
+            "T6",
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11",
+            "T12",
+          ],
           axisLabel: { color: textColor },
           axisLine: { lineStyle: { color: splitLineColor } },
         },
         yAxis: {
-          type: 'value',
-          axisLabel: { color: textColor, formatter: '{value}%' },
-          splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+          type: "value",
+          axisLabel: { color: textColor, formatter: "{value}%" },
+          splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
         },
         series: [
           {
             name: `Trước ủi ${this.activeChartYear}`,
-            type: 'line',
+            type: "line",
             data: truocUi,
             smooth: true,
             symbolSize: 8,
@@ -572,14 +589,21 @@ export default {
             lineStyle: { width: 3, shadowColor: colorTruoc, shadowBlur: 10 },
             areaStyle: {
               color: {
-                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-                colorStops: [{ offset: 0, color: 'rgba(6,182,212,0.5)' }, { offset: 1, color: 'rgba(6,182,212,0)' }]
-              }
-            }
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  { offset: 0, color: "rgba(6,182,212,0.5)" },
+                  { offset: 1, color: "rgba(6,182,212,0)" },
+                ],
+              },
+            },
           },
           {
             name: `Sau ủi ${this.activeChartYear}`,
-            type: 'line',
+            type: "line",
             data: sauUi,
             smooth: true,
             symbolSize: 8,
@@ -587,12 +611,19 @@ export default {
             lineStyle: { width: 3, shadowColor: colorSau, shadowBlur: 10 },
             areaStyle: {
               color: {
-                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-                colorStops: [{ offset: 0, color: 'rgba(204,255,0,0.5)' }, { offset: 1, color: 'rgba(204,255,0,0)' }]
-              }
-            }
-          }
-        ]
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  { offset: 0, color: "rgba(204,255,0,0.5)" },
+                  { offset: 1, color: "rgba(204,255,0,0)" },
+                ],
+              },
+            },
+          },
+        ],
       };
     },
     // Averages and analytics
@@ -771,7 +802,7 @@ export default {
       this.editState.rowIdx = null;
       this.editState.monthIdx = null;
       this.editState.value = null;
-    }
+    },
   },
   watch: {
     selectedYear(newYear) {

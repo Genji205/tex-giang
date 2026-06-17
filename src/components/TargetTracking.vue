@@ -569,6 +569,11 @@ export default {
     // Formatting decimal presentation
 
     // SVG coordinate math for print A4 portrait view (compact scale)
+    getGridValues(metric) {
+      const max = metric.maxY || 25;
+      const step = max / 4;
+      return [max, max - step, max - step * 2, max - step * 3, 0];
+    },
     getPrintX(mIdx) {
       // 840px graph area width
       return (mIdx - 1) * (840 / 11);
