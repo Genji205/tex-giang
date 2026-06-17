@@ -4,7 +4,7 @@
     <header class="page-action-header no-print">
       <div class="page-title-badge">
         <span class="pulse-dot"></span>
-        <h2>Trang 1: Báo Cáo Chất Lượng XNTH {{ selectedYear }}</h2>
+        <h2>Báo Cáo Chất Lượng XNTH {{ selectedYear }}</h2>
       </div>
 
       <div class="page-actions">
@@ -17,7 +17,6 @@
           >
             <span class="icon">📊</span> Bảng Điều Khiển
           </button>
-
         </div>
 
         <!-- Export Excel Action -->
@@ -50,9 +49,7 @@
     </header>
 
     <!-- Interactive Dashboard View -->
-    <main
-      class="dashboard-content animate-fade-in no-print"
-    >
+    <main class="dashboard-content animate-fade-in no-print">
       <!-- Welcome & Summary Cards -->
       <section class="summary-section">
         <div class="welcome-card">
@@ -252,9 +249,7 @@
     </main>
 
     <!-- Print / Official A4 Document View -->
-    <div
-      class="a4-document-container animate-scale-in print-only"
-    >
+    <div class="a4-document-container animate-scale-in print-only">
       <div class="a4-paper-sheet">
         <!-- Document Header Table-like grid -->
         <table class="report-header-table">
@@ -429,7 +424,6 @@
           </table>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -503,21 +497,37 @@ export default {
       const sauUi = yearData.rows[1].months;
 
       const isDark = this.theme === "dark";
-      const textColor = isDark ? "#888" : "#666";
-      const splitLineColor = isDark ? "#222" : "#ddd";
-      const colorTruoc = "#06b6d4"; // Cyan
-      const colorSau = "#ccff00"; // Acid Green
+
+      // 1. Nâng cấp bộ màu tương phản cao cho Trục và Lưới
+      const textColor = isDark ? "#cbd5e1" : "#334155"; // Chữ số trục tọa độ
+      const axisLineColor = isDark ? "#475569" : "#94a3b8"; // Đường biên chính trục X, Y
+      const splitLineColor = isDark ? "#334155" : "#cbd5e1"; // Đường lưới nét đứt phía sau
+
+      // 2. Khắc phục lỗi "tàng hình" màu Neon ở Light Mode
+      // Đường Trước ủi: Tối dùng Cyan rực rỡ | Sáng dùng Xanh Ngọc Biển sắc nét
+      const colorTruoc = isDark ? "#06b6d4" : "#0284c7";
+      // Đường Sau ủi: Tối dùng Acid Green phát sáng | Sáng dùng Xanh Táo đậm đà dễ nhìn
+      const colorSau = isDark ? "#ccff00" : "#65a30d";
+
+      // Cấu hình vùng đổ bóng mờ (Area Style) tương ứng theo từng chế độ
+      const areaColorTruocStart = isDark
+        ? "rgba(6,182,212,0.4)"
+        : "rgba(2,132,199,0.15)";
+      const areaColorSauStart = isDark
+        ? "rgba(204,255,0,0.3)"
+        : "rgba(101,163,13,0.12)";
 
       return {
         backgroundColor: "transparent",
         tooltip: {
           trigger: "axis",
           axisPointer: { type: "cross", crossStyle: { color: textColor } },
-          backgroundColor: isDark ? "#050505" : "#fff",
-          borderColor: isDark ? "#333" : "#ccc",
-          textStyle: { color: isDark ? "#f5f5f5" : "#111" },
+          // Đồng bộ màu hộp Tooltip khít với nền hệ thống mới
+          backgroundColor: isDark ? "#151f32" : "#ffffff",
+          borderColor: isDark ? "#1e293b" : "#e2e8f0",
+          textStyle: { color: isDark ? "#f1f5f9" : "#1e293b" },
           borderWidth: 1,
-          borderRadius: 0,
+          borderRadius: 4,
         },
         legend: {
           data: [
@@ -552,13 +562,23 @@ export default {
             "T11",
             "T12",
           ],
-          axisLabel: { color: textColor },
-          axisLine: { lineStyle: { color: splitLineColor } },
+          axisLabel: { color: textColor, fontWeight: "500" },
+          // Làm rõ nét đường biên ngang bên dưới
+          axisLine: { lineStyle: { color: axisLineColor, width: 1.5 } },
         },
         yAxis: {
           type: "value",
+          // Vì đây là biểu đồ tỷ lệ xu hướng nên giữ nguyên đơn vị %
           axisLabel: { color: textColor, formatter: "{value}%" },
-          splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
+          // Kích hoạt đường trục đứng biên trái (Mặc định ECharts ẩn dòng này)
+          axisLine: {
+            show: true,
+            lineStyle: { color: axisLineColor, width: 1.5 },
+          },
+          // Làm đậm nét hệ lưới dashed đối chiếu ngang phía sau
+          splitLine: {
+            lineStyle: { color: splitLineColor, type: "dashed", width: 1 },
+          },
         },
         series: [
           {
@@ -568,7 +588,11 @@ export default {
             smooth: true,
             symbolSize: 8,
             itemStyle: { color: colorTruoc },
-            lineStyle: { width: 3, shadowColor: colorTruoc, shadowBlur: 10 },
+            lineStyle: {
+              width: 3,
+              shadowColor: colorTruoc,
+              shadowBlur: isDark ? 10 : 2,
+            },
             areaStyle: {
               color: {
                 type: "linear",
@@ -577,8 +601,8 @@ export default {
                 x2: 0,
                 y2: 1,
                 colorStops: [
-                  { offset: 0, color: "rgba(6,182,212,0.5)" },
-                  { offset: 1, color: "rgba(6,182,212,0)" },
+                  { offset: 0, color: areaColorTruocStart },
+                  { offset: 1, color: "rgba(0,0,0,0)" },
                 ],
               },
             },
@@ -590,7 +614,11 @@ export default {
             smooth: true,
             symbolSize: 8,
             itemStyle: { color: colorSau },
-            lineStyle: { width: 3, shadowColor: colorSau, shadowBlur: 10 },
+            lineStyle: {
+              width: 3,
+              shadowColor: colorSau,
+              shadowBlur: isDark ? 10 : 2,
+            },
             areaStyle: {
               color: {
                 type: "linear",
@@ -599,8 +627,8 @@ export default {
                 x2: 0,
                 y2: 1,
                 colorStops: [
-                  { offset: 0, color: "rgba(204,255,0,0.5)" },
-                  { offset: 1, color: "rgba(204,255,0,0)" },
+                  { offset: 0, color: areaColorSauStart },
+                  { offset: 1, color: "rgba(0,0,0,0)" },
                 ],
               },
             },

@@ -4,9 +4,7 @@
     <header class="page-action-header no-print">
       <div class="page-title-badge">
         <span class="pulse-dot"></span>
-        <h2>
-          Trang 2: Biểu Đồ So Sánh {{ selectedYear - 1 }} - {{ selectedYear }}
-        </h2>
+        <h2>Biểu Đồ So Sánh {{ selectedYear - 1 }} - {{ selectedYear }}</h2>
       </div>
 
       <div class="page-actions">
@@ -75,7 +73,7 @@
               <thead>
                 <tr>
                   <th class="col-xn">{{ data2024.col1Header }}</th>
-                  <th v-for="m in 12" :key="'h1-p2-' + m">T{{ m }}</th>
+                  <th v-for="m in 12" :key="'h1-p2-' + m">Tháng {{ m }}</th>
                   <th>Trung Bình</th>
                 </tr>
               </thead>
@@ -133,7 +131,7 @@
               <thead>
                 <tr>
                   <th class="col-xn">{{ data2024.col1Header }}</th>
-                  <th v-for="m in 12" :key="'h2-p2-' + m">T{{ m }}</th>
+                  <th v-for="m in 12" :key="'h2-p2-' + m">Tháng {{ m }}</th>
                   <th>Trung Bình</th>
                 </tr>
               </thead>
@@ -506,10 +504,18 @@ export default {
   computed: {
     chartOptionTruocUi() {
       const isDark = this.theme === "dark";
-      const textColor = isDark ? "#888" : "#666";
-      const splitLineColor = isDark ? "#222" : "#ddd";
-      const color1 = "#64748b"; // Slate (2024)
-      const color2 = "#06b6d4"; // Cyan (2025)
+
+      // 1. Tăng độ tương phản cho chữ (Labels) để đọc số liệu rõ hơn
+      const textColor = isDark ? "#cbd5e1" : "#334155"; // Xám sáng (Dark) | Xám đậm (Light)
+
+      // 2. Màu sắc mới đậm đà hơn cho đường trục chính (Axis Line)
+      const axisLineColor = isDark ? "#475569" : "#64748b";
+
+      // 3. Màu sắc rõ nét hơn cho hệ thống lưới nét đứt phía sau (Split Line)
+      const splitLineColor = isDark ? "#334155" : "#cbd5e1";
+
+      const color1 = isDark ? "#00F0FF" : "#0284c7";
+      const color2 = isDark ? "#CCFF00" : "#65a30d";
 
       const truocUi2024 = Array.from({ length: 13 }, (_, i) =>
         this.getVal1(i + 1, 0)
@@ -523,11 +529,11 @@ export default {
         tooltip: {
           trigger: "axis",
           axisPointer: { type: "shadow" },
-          backgroundColor: isDark ? "#050505" : "#fff",
-          borderColor: isDark ? "#333" : "#ccc",
-          textStyle: { color: isDark ? "#f5f5f5" : "#111" },
+          backgroundColor: isDark ? "#151f32" : "#ffffff",
+          borderColor: isDark ? "#1e293b" : "#e2e8f0",
+          textStyle: { color: isDark ? "#f1f5f9" : "#1e293b" },
           borderWidth: 1,
-          borderRadius: 0,
+          borderRadius: 4,
         },
         legend: {
           data: [
@@ -563,11 +569,14 @@ export default {
             "TB",
           ],
           axisLabel: { color: textColor },
-          axisLine: { lineStyle: { color: splitLineColor } },
+          // Sử dụng axisLineColor đậm nét cho trục hoành
+          axisLine: { lineStyle: { color: axisLineColor } },
         },
         yAxis: {
           type: "value",
           axisLabel: { color: textColor, formatter: "{value}%" },
+          // Bật hiển thị đường trục dọc bên trái (Trục tung)
+          axisLine: { show: true, lineStyle: { color: axisLineColor } },
           splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
         },
         series: [
@@ -587,12 +596,18 @@ export default {
         ],
       };
     },
+
     chartOptionSauUi() {
       const isDark = this.theme === "dark";
-      const textColor = isDark ? "#888" : "#666";
-      const splitLineColor = isDark ? "#222" : "#ddd";
-      const color1 = "#64748b"; // Slate (2024)
-      const color2 = "#ff4d00"; // Signal Orange
+
+      // Đồng bộ bộ màu tương phản cao cho biểu đồ Sau Ủi
+      const textColor = isDark ? "#cbd5e1" : "#334155";
+      const axisLineColor = isDark ? "#475569" : "#64748b";
+      const splitLineColor = isDark ? "#334155" : "#cbd5e1";
+
+      const color1 = isDark ? "#00D2FF" : "#64748b";
+      // Giữ màu Cam chuẩn #ea580c đã sửa ở bước trước để Light mode không bị đỏ gắt
+      const color2 = isDark ? "#FF5500" : "#ea580c";
 
       const sauUi2024 = Array.from({ length: 13 }, (_, i) =>
         this.getVal2(i + 1, 0)
@@ -606,11 +621,11 @@ export default {
         tooltip: {
           trigger: "axis",
           axisPointer: { type: "shadow" },
-          backgroundColor: isDark ? "#050505" : "#fff",
-          borderColor: isDark ? "#333" : "#ccc",
-          textStyle: { color: isDark ? "#f5f5f5" : "#111" },
+          backgroundColor: isDark ? "#151f32" : "#ffffff",
+          borderColor: isDark ? "#1e293b" : "#e2e8f0",
+          textStyle: { color: isDark ? "#f1f5f9" : "#1e293b" },
           borderWidth: 1,
-          borderRadius: 0,
+          borderRadius: 4,
         },
         legend: {
           data: [
@@ -646,11 +661,13 @@ export default {
             "TB",
           ],
           axisLabel: { color: textColor },
-          axisLine: { lineStyle: { color: splitLineColor } },
+          axisLine: { lineStyle: { color: axisLineColor } },
         },
         yAxis: {
           type: "value",
           axisLabel: { color: textColor, formatter: "{value}%" },
+          // Bật hiển thị đường trục dọc bên trái (Trục tung)
+          axisLine: { show: true, lineStyle: { color: axisLineColor } },
           splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
         },
         series: [
@@ -670,7 +687,8 @@ export default {
         ],
       };
     },
-    // Computed gridlines for paper print view (shorter height)
+
+    // Giữ nguyên các hàm bổ trợ in ấn của bạn
     paperGridLines1() {
       const lines = [];
       for (let i = 0; i <= 8; i++) {

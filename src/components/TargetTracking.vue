@@ -4,7 +4,7 @@
     <header class="page-action-header no-print">
       <div class="page-title-badge">
         <span class="pulse-dot"></span>
-        <h2>Trang 3: Theo Dõi Mục Tiêu Chất Lượng {{ selectedYear }}</h2>
+        <h2>Theo Dõi Mục Tiêu Chất Lượng {{ selectedYear }}</h2>
       </div>
 
       <div class="page-actions">
@@ -17,7 +17,6 @@
           >
             <span class="icon">📊</span> Bảng Điều Khiển
           </button>
-
         </div>
 
         <!-- Export Excel Action -->
@@ -50,9 +49,7 @@
     </header>
 
     <!-- Interactive Dashboard View -->
-    <main
-      class="dashboard-content animate-fade-in no-print"
-    >
+    <main class="dashboard-content animate-fade-in no-print">
       <section class="metrics-dashboard-list">
         <div
           v-for="(metric, mIdx) in targetTrackingData.metrics"
@@ -69,7 +66,11 @@
 
           <!-- ECharts Chart Area -->
           <div class="chart-container">
-            <v-chart class="chart" :option="getChartOption(metric)" autoresize />
+            <v-chart
+              class="chart"
+              :option="getChartOption(metric)"
+              autoresize
+            />
           </div>
 
           <!-- Data table -->
@@ -78,7 +79,7 @@
               <thead>
                 <tr>
                   <th class="col-xn">Tháng</th>
-                  <th v-for="m in 12" :key="'th-' + m">T{{ m }}</th>
+                  <th v-for="m in 12" :key="'th-' + m">{{ m }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -136,13 +137,10 @@
           </div>
         </div>
       </section>
-
     </main>
 
     <!-- Print / Official A4 Document View -->
-    <div
-      class="a4-document-container animate-scale-in print-only"
-    >
+    <div class="a4-document-container animate-scale-in print-only">
       <div class="a4-paper-sheet paper-portrait-sheet">
         <!-- Header text on portrait print page -->
         <header class="print-paper-header">
@@ -278,21 +276,34 @@
           </div>
         </footer>
       </div>
-
     </div>
 
     <!-- Modal Popup for Quality Target Configuration -->
-    <div v-if="isModalOpen" class="target-modal-overlay no-print animate-fade-in-overlay" @click.self="closeModal">
+    <div
+      v-if="isModalOpen"
+      class="target-modal-overlay no-print animate-fade-in-overlay"
+      @click.self="closeModal"
+    >
       <div class="target-modal-content animate-scale-in-content">
         <header class="modal-header">
-          <h3>Cấu Hình Mục Tiêu: {{ activeModalMetric ? activeModalMetric.name : '' }}</h3>
-          <button class="btn-close-modal" @click="closeModal" title="Đóng">&times;</button>
+          <h3>
+            Cấu Hình Mục Tiêu:
+            {{ activeModalMetric ? activeModalMetric.name : "" }}
+          </h3>
+          <button class="btn-close-modal" @click="closeModal" title="Đóng">
+            &times;
+          </button>
         </header>
         <div class="modal-body">
           <!-- Thiết lập nhanh -->
           <div class="modal-quick-apply">
             <label>Thiết lập nhanh cả năm:</label>
-            <input type="number" step="0.1" v-model.number="tempQuickTargetValue" @keydown.enter="applyTempQuickTarget" />
+            <input
+              type="number"
+              step="0.1"
+              v-model.number="tempQuickTargetValue"
+              @keydown.enter="applyTempQuickTarget"
+            />
             <button @click="applyTempQuickTarget">Áp dụng</button>
           </div>
           <!-- Bảng 12 tháng -->
@@ -322,7 +333,9 @@
         </div>
         <footer class="modal-footer">
           <button class="btn-cancel" @click="closeModal">Hủy</button>
-          <button class="btn-save" @click="saveModalChanges">Lưu thay đổi</button>
+          <button class="btn-save" @click="saveModalChanges">
+            Lưu thay đổi
+          </button>
         </footer>
       </div>
     </div>
@@ -391,7 +404,11 @@ export default {
   },
   computed: {
     activeModalMetric() {
-      if (this.activeModalMetricIdx === null || !this.targetTrackingData || !this.targetTrackingData.metrics) {
+      if (
+        this.activeModalMetricIdx === null ||
+        !this.targetTrackingData ||
+        !this.targetTrackingData.metrics
+      ) {
         return null;
       }
       return this.targetTrackingData.metrics[this.activeModalMetricIdx];
@@ -402,9 +419,10 @@ export default {
       this.activeModalMetricIdx = metricIdx;
       const metric = this.targetTrackingData.metrics[metricIdx];
       if (!metric) return;
-      
+
       this.tempTargetValues = [...metric.target];
-      this.tempQuickTargetValue = metric.target[monthIdx !== null ? monthIdx : 0] || 5.0;
+      this.tempQuickTargetValue =
+        metric.target[monthIdx !== null ? monthIdx : 0] || 5.0;
       this.isModalOpen = true;
 
       this.$nextTick(() => {
@@ -433,14 +451,14 @@ export default {
     },
     saveModalChanges() {
       if (this.activeModalMetricIdx === null) return;
-      
+
       this.tempTargetValues.forEach((val, idx) => {
         let parsedValue = parseFloat(val);
         if (isNaN(parsedValue)) {
           parsedValue = 0;
         }
         parsedValue = Math.max(0, Math.min(1000, parsedValue));
-        
+
         this.$emit("update-target-data", {
           metricIdx: this.activeModalMetricIdx,
           rowKey: "target",
@@ -448,7 +466,7 @@ export default {
           value: parsedValue,
         });
       });
-      
+
       this.closeModal();
     },
     exportExcel() {
@@ -462,67 +480,104 @@ export default {
     },
 
     getChartOption(metric) {
-      const isDark = this.theme === 'dark';
-      const textColor = isDark ? '#888' : '#666';
-      const splitLineColor = isDark ? '#222' : '#ddd';
-      const colorTarget = '#64748b'; // Slate (Mục tiêu)
-      const colorActual = '#06b6d4'; // Cyan (Thực tế)
-      
+      const isDark = this.theme === "dark";
+
+      // 1. Tăng độ tương phản cho nhãn chữ (Labels) giúp dễ đọc số liệu hơn
+      const textColor = isDark ? "#cbd5e1" : "#334155"; // Xám sáng rõ (Dark) | Xám đậm nét (Light)
+
+      // 2. Định nghĩa màu sắc đậm đà, chắc chắn cho đường trục chính (Axis Line)
+      const axisLineColor = isDark ? "#475569" : "#64748b";
+
+      // 3. Tăng bậc màu cho hệ thống lưới nét đứt phía sau (Split Line) để không bị mờ lóa
+      const splitLineColor = isDark ? "#334155" : "#cbd5e1";
+
+      const colorTarget = "#64748b"; // Slate (Mục tiêu)
+      const colorActual = "#06b6d4"; // Cyan (Thực tế)
+
       return {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         tooltip: {
-          trigger: 'axis',
-          axisPointer: { type: 'cross', crossStyle: { color: textColor } },
-          backgroundColor: isDark ? '#050505' : '#fff',
-          borderColor: isDark ? '#333' : '#ccc',
-          textStyle: { color: isDark ? '#f5f5f5' : '#111' },
+          trigger: "axis",
+          axisPointer: { type: "cross", crossStyle: { color: textColor } },
+          backgroundColor: isDark ? "#050505" : "#fff",
+          borderColor: isDark ? "#333" : "#ccc",
+          textStyle: { color: isDark ? "#f5f5f5" : "#111" },
           borderWidth: 1,
-          borderRadius: 0,
+          borderRadius: 4, // Thay bằng 4 để đồng bộ bo góc hiện đại với các biểu đồ khác
         },
         legend: {
-          data: ['Mục tiêu', 'Thực tế'],
+          data: ["Mục tiêu", "Thực tế"],
           textStyle: { color: textColor },
-          icon: 'rect',
-          bottom: 0
+          icon: "rect",
+          bottom: 0,
         },
-        grid: { left: '2%', right: '4%', bottom: '15%', top: '10%', containLabel: true },
+        grid: {
+          left: "2%",
+          right: "4%",
+          bottom: "15%",
+          top: "10%",
+          containLabel: true,
+        },
         xAxis: {
-          type: 'category',
+          type: "category",
           boundaryGap: false,
-          data: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+          data: [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5",
+            "T6",
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11",
+            "T12",
+          ],
           axisLabel: { color: textColor },
-          axisLine: { lineStyle: { color: splitLineColor } },
+          // Đổi từ splitLineColor sang axisLineColor để đường chân trục hoành hiện rõ ràng
+          axisLine: { lineStyle: { color: axisLineColor } },
         },
         yAxis: {
-          type: 'value',
+          type: "value",
           max: metric.maxY,
-          axisLabel: { color: textColor, formatter: '{value}%' },
-          splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+          axisLabel: { color: textColor, formatter: "{value}%" },
+          // Bật hiển thị đường trục dọc bên trái (Trục tung) để tạo khung biểu đồ vững chãi
+          axisLine: { show: true, lineStyle: { color: axisLineColor } },
+          splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
         },
         series: [
           {
-            name: 'Mục tiêu',
-            type: 'line',
+            name: "Mục tiêu",
+            type: "line",
             data: metric.target,
             itemStyle: { color: colorTarget },
-            lineStyle: { type: 'dashed', width: 2 },
+            lineStyle: { type: "dashed", width: 2 },
             symbolSize: 6,
           },
           {
-            name: 'Thực tế',
-            type: 'line',
+            name: "Thực tế",
+            type: "line",
             data: metric.actual,
             itemStyle: { color: colorActual },
             lineStyle: { width: 3, shadowColor: colorActual, shadowBlur: 8 },
             symbolSize: 8,
             areaStyle: {
               color: {
-                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-                colorStops: [{ offset: 0, color: 'rgba(6,182,212,0.4)' }, { offset: 1, color: 'rgba(6,182,212,0)' }]
-              }
-            }
-          }
-        ]
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  { offset: 0, color: "rgba(6,182,212,0.4)" },
+                  { offset: 1, color: "rgba(6,182,212,0)" },
+                ],
+              },
+            },
+          },
+        ],
       };
     },
     // Formatting decimal presentation
@@ -1174,8 +1229,12 @@ export default {
 }
 
 @keyframes fadeInOverlay {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleInContent {

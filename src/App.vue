@@ -213,10 +213,10 @@ export default {
         2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030,
       ],
       tabs: [
-        { id: 1, name: "Trang 1: Số Liệu", icon: "📊" },
-        { id: 2, name: "Trang 2: So Sánh", icon: "📈" },
-        { id: 3, name: "Trang 3: Mục Tiêu", icon: "🎯" },
-        { id: 4, name: "Trang 4: Kết Quả", icon: "📋" },
+        { id: 1, name: "Số Liệu", icon: "📊" },
+        { id: 2, name: "So Sánh", icon: "📈" },
+        { id: 3, name: "Mục Tiêu", icon: "🎯" },
+        { id: 4, name: "Kết Quả", icon: "📋" },
       ],
       dataStore: {},
       dbStatus: "offline",
@@ -789,38 +789,69 @@ body {
 /* Global design variables */
 .app-container.dark {
   color-scheme: dark;
-  --bg-primary: #050505;
-  --bg-secondary: #0a0a0a;
-  --bg-card: #0a0a0a;
-  --text-primary: #f5f5f5;
-  --text-secondary: #888888;
-  --border-color: #222222;
-  --accent-color: #ccff00; /* Acid Green */
-  --accent-hover: #b3e600;
-  --chart-grid: rgba(255, 255, 255, 0.03);
-  --input-bg: #050505;
-  --input-border: #333333;
-  --shadow-color: rgba(204, 255, 0, 0.05);
-  --sidebar-bg: #020202;
-  --sidebar-hover: rgba(204, 255, 0, 0.05);
-}
 
+  /* Nền chính: Màu xanh đen sâu thẳm (Deep Space), làm nổi bật cực tốt màu Cyan và Lime */
+  --bg-primary: #0a0f1d;
+
+  /* Khối thẻ và Sidebar: Tông xanh xám đậm, tạo hiệu ứng phân lớp đổ bóng */
+  --bg-secondary: #111827;
+  --bg-card: #151f32;
+  --sidebar-bg: #0d1321;
+
+  /* Chữ: Màu trắng băng (Ice White) và xám xanh mờ để đồng bộ với biểu đồ */
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+
+  /* Đường viền: Tông lạnh mờ, giữ cho giao diện gọn gàng */
+  --border-color: #1e293b;
+
+  /* Điểm nhấn (Accent): Đồng bộ theo tông Acid Green sẵn có trong hệ thống của bạn */
+  --accent-color: #ccff00;
+  --accent-hover: #b3e600;
+
+  /* Lưới biểu đồ: Sử dụng chính màu Cyan mờ để tạo cảm giác màn hình hiển thị rada (HUD) */
+  --chart-grid: rgba(0, 240, 255, 0.04);
+
+  /* Ô nhập liệu */
+  --input-bg: #0b0f19;
+  --input-border: #334155;
+
+  /* Bóng đổ: Lan tỏa một chút ánh xanh dịu mắt */
+  --shadow-color: rgba(0, 240, 255, 0.03);
+  --sidebar-hover: rgba(0, 240, 255, 0.05);
+}
 .app-container.light {
   color-scheme: light;
-  --bg-primary: #f4f4f4;
+
+  /* Nền chính: Màu xám trắng dịu, có một chút ánh xanh ngọc cực nhẹ để ăn nhập với biểu đồ */
+  --bg-primary: #f5f8fa;
+
+  /* Khối thẻ và Sidebar: Màu trắng tinh khôi để tạo độ tương phản rõ ràng */
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;
-  --text-primary: #111111;
-  --text-secondary: #666666;
-  --border-color: #dddddd;
-  --accent-color: #ff4d00; /* Signal Orange */
-  --accent-hover: #e64500;
-  --chart-grid: rgba(0, 0, 0, 0.05);
-  --input-bg: #ffffff;
-  --input-border: #cccccc;
-  --shadow-color: rgba(255, 77, 0, 0.05);
   --sidebar-bg: #ffffff;
-  --sidebar-hover: rgba(255, 77, 0, 0.03);
+
+  /* Chữ: Màu xám than đậm (thay vì đen tuyền để đỡ gắt) và xám ghi cho chữ phụ */
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+
+  /* Đường viền: Xám mảnh, tạo cảm giác tinh tế, gọn gàng */
+  --border-color: #e2e8f0;
+
+  /* Điểm nhấn (Accent): Chuyển từ màu cam cũ sang màu Xanh Ngọc để đồng bộ với biểu đồ mới */
+  --accent-color: #0ea5e9;
+  --accent-hover: #0284c7;
+
+  /* Lưới biểu đồ: Đường kẻ mờ màu xám để không làm rối mắt */
+  --chart-grid: rgba(0, 0, 0, 0.04);
+
+  /* Ô nhập liệu */
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+
+  /* Bóng đổ: Đổ bóng mờ dịu dạng tinh thể nước */
+  --shadow-color: rgba(14, 165, 233, 0.05);
+  --sidebar-hover: rgba(14, 165, 233, 0.04);
 }
 
 /* Master Grid Structure */
