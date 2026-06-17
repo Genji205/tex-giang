@@ -7,7 +7,11 @@
     ]"
   >
     <!-- Sidebar Navigation Drawer (Hidden in standard Print mode) -->
-    <aside class="app-sidebar no-print">
+    <aside 
+      class="app-sidebar no-print"
+      @mouseenter="expandSidebar"
+      @mouseleave="collapseSidebar"
+    >
       <!-- Sidebar Brand Header -->
       <div class="sidebar-brand">
         <div class="brand-logo-wrapper">
@@ -149,15 +153,7 @@
           }}</span>
         </button>
 
-        <!-- Sidebar Collapse Button -->
-        <button
-          class="footer-control-btn collapse-toggle"
-          @click="toggleSidebar"
-          :title="sidebarCollapsed ? 'Mở rộng menu' : 'Thu gọn menu'"
-        >
-          <span class="control-icon">{{ sidebarCollapsed ? "➡️" : "⬅️" }}</span>
-          <span class="control-text">Thu Gọn Menu</span>
-        </button>
+
 
         <!-- Active User Profile Slot -->
         <div class="user-profile">
@@ -204,8 +200,8 @@ export default {
   },
   data() {
     return {
-      theme: "dark",
-      sidebarCollapsed: false,
+      theme: "light",
+      sidebarCollapsed: true,
       activeTab: 1,
       isPrintMode: false,
       selectedYear: 2025,
@@ -268,6 +264,12 @@ export default {
     },
     toggleSidebar() {
       this.sidebarCollapsed = !this.sidebarCollapsed;
+    },
+    expandSidebar() {
+      this.sidebarCollapsed = false;
+    },
+    collapseSidebar() {
+      this.sidebarCollapsed = true;
     },
     selectTab(tabId) {
       this.activeTab = tabId;

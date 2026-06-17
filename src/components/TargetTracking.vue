@@ -4,21 +4,10 @@
     <header class="page-action-header no-print">
       <div class="page-title-badge">
         <span class="pulse-dot"></span>
-        <h2>Theo Dõi Mục Tiêu Chất Lượng {{ selectedYear }}</h2>
+        <h2>Trang 3: Theo Dõi Mục Tiêu Chất Lượng {{ selectedYear }}</h2>
       </div>
 
       <div class="page-actions">
-        <!-- View Mode Selector -->
-        <div class="mode-selector">
-          <button
-            :class="['btn-mode', { active: viewMode === 'dashboard' }]"
-            @click="setViewMode('dashboard')"
-            title="Xem bảng điều khiển và biểu đồ mục tiêu trực quan"
-          >
-            <span class="icon">📊</span> Bảng Điều Khiển
-          </button>
-        </div>
-
         <!-- Export Excel Action -->
         <button
           class="btn-action btn-excel"
@@ -35,15 +24,6 @@
           title="In báo cáo này ra giấy hoặc PDF"
         >
           <span class="icon">🖨️</span> In Báo Cáo
-        </button>
-
-        <!-- Reset Data -->
-        <button
-          class="btn-action btn-secondary"
-          @click="resetData"
-          title="Khôi phục số liệu gốc theo ảnh"
-        >
-          <span class="icon">🔄</span> Khôi Phục
         </button>
       </div>
     </header>
@@ -79,7 +59,7 @@
               <thead>
                 <tr>
                   <th class="col-xn">Tháng</th>
-                  <th v-for="m in 12" :key="'th-' + m">{{ m }}</th>
+                  <th v-for="m in 12" :key="'th-' + m">T{{ m }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -162,33 +142,115 @@
             v-for="metric in targetTrackingData.metrics"
             :key="'p-met-' + metric.id"
             class="print-metric-section"
+            style="
+              border: 0.5px solid #000;
+              margin-bottom: -0.5px;
+              position: relative;
+            "
           >
             <!-- Title -->
-            <div class="print-section-title">{{ metric.name }}</div>
+            <div
+              class="print-section-title"
+              style="
+                font-size: 13px;
+                font-weight: normal;
+                margin-top: 5px;
+                margin-bottom: 2px;
+              "
+            >
+              {{ metric.name }}
+            </div>
+
+            <!-- Legend -->
+            <div
+              style="
+                position: absolute;
+                right: 8px;
+                top: 2px;
+                font-size: 8px;
+                border: 0.5px solid #000;
+                padding: 2px 4px;
+                background: white;
+                z-index: 2;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 4px;
+                  margin-bottom: 2px;
+                "
+              >
+                <svg width="20" height="4" style="overflow: visible">
+                  <line
+                    x1="0"
+                    y1="2"
+                    x2="20"
+                    y2="2"
+                    stroke="#a5a5a5"
+                    stroke-width="1.2"
+                  />
+                  <circle cx="10" cy="2" r="1.5" fill="#a5a5a5" />
+                </svg>
+                <span style="display: inline-block; width: 15px">MT</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 4px">
+                <svg width="20" height="4" style="overflow: visible">
+                  <line
+                    x1="0"
+                    y1="2"
+                    x2="20"
+                    y2="2"
+                    stroke="#000"
+                    stroke-width="1.2"
+                  />
+                  <circle cx="10" cy="2" r="2.5" fill="#000" />
+                </svg>
+                <span style="display: inline-block; width: 15px">TTế</span>
+              </div>
+            </div>
 
             <!-- Chart Box -->
-            <div class="print-svg-wrapper">
-              <div class="print-axis-left">
+            <div class="print-svg-wrapper" style="gap: 0; margin-top: 5px">
+              <div
+                class="print-axis-left"
+                style="
+                  width: 50px;
+                  border-right: none;
+                  height: 55px;
+                  text-align: right;
+                  padding-right: 4px;
+                  position: relative;
+                "
+              >
                 <span
                   v-for="gridVal in getGridValues(metric)"
                   :key="'p-yl-' + gridVal"
+                  :style="`position: absolute; right: 4px; transform: translateY(-50%); top: ${getPrintY(gridVal, getEffectiveMaxY(metric))}px;`"
                 >
                   {{ formatLabelVal(gridVal) }}%
                 </span>
               </div>
-              <div class="print-svg-plot">
-                <svg viewBox="0 0 840 90" class="print-svg-draw">
+              <div
+                class="print-svg-plot"
+                style="width: calc(100% - 50px); flex-grow: 0"
+              >
+                <svg
+                  viewBox="0 0 840 55"
+                  class="print-svg-draw"
+                  preserveAspectRatio="none"
+                >
                   <!-- Grid Lines -->
                   <line
                     v-for="gridVal in getGridValues(metric)"
                     :key="'pgl-' + gridVal"
                     x1="0"
-                    :y1="getPrintY(gridVal, metric.maxY)"
+                    :y1="getPrintY(gridVal, getEffectiveMaxY(metric))"
                     x2="840"
-                    :y2="getPrintY(gridVal, metric.maxY)"
-                    stroke="#bbb"
-                    stroke-dasharray="3,3"
-                    stroke-width="0.5"
+                    :y2="getPrintY(gridVal, getEffectiveMaxY(metric))"
+                    stroke="#000"
+                    stroke-width="0.3"
                   />
                   <!-- Line 1: Mục Tiêu -->
                   <path
@@ -208,54 +270,106 @@
                   <!-- Nodes for actual values -->
                   <circle
                     v-for="(val, idx) in metric.actual"
-                    :key="'pa-dot-' + idx"
+                    :key="'p-ca-' + idx"
                     :cx="getPrintX(idx + 1)"
-                    :cy="getPrintY(val, metric.maxY)"
+                    :cy="getPrintY(val, getEffectiveMaxY(metric))"
                     r="2.5"
                     fill="#000"
-                    stroke="#000"
                   />
                   <circle
                     v-for="(val, idx) in metric.target"
-                    :key="'pt-dot-' + idx"
+                    :key="'p-ct-' + idx"
                     :cx="getPrintX(idx + 1)"
-                    :cy="getPrintY(val, metric.maxY)"
+                    :cy="getPrintY(val, getEffectiveMaxY(metric))"
                     r="1.5"
                     fill="#a5a5a5"
-                    stroke="#a5a5a5"
                   />
                 </svg>
               </div>
             </div>
 
             <!-- X Axis Monthly Label row -->
-            <div class="print-x-axis">
-              <span v-for="m in 12" :key="'p-xl-' + m">tháng {{ m }}</span>
+            <div
+              class="print-x-axis"
+              style="padding-left: 50px; margin-top: 0; margin-bottom: 2px"
+            >
+              <span v-for="m in 12" :key="'p-xl-' + m">{{
+                m === 1 ? "tháng 1" : m
+              }}</span>
             </div>
 
             <!-- Table -->
-            <table class="print-data-table print-compact-table">
+            <table
+              class="print-data-table print-compact-table"
+              style="
+                border-top: 0.5px solid #000;
+                border-left: none;
+                border-right: none;
+                border-bottom: none;
+              "
+            >
               <tbody>
                 <tr>
-                  <td class="cell-label" style="width: 15.5%">Tháng</td>
-                  <td v-for="m in 12" :key="'p-td-m-' + m" class="fw-bold">
+                  <td
+                    class="cell-label"
+                    style="
+                      width: 50px;
+                      border-left: none;
+                      border-bottom: 0.5px solid #000;
+                      padding-left: 4px;
+                      box-sizing: border-box;
+                    "
+                  >
+                    Tháng
+                  </td>
+                  <td
+                    v-for="m in 12"
+                    :key="'p-td-m-' + m"
+                    :style="`width: calc((100% - 50px) / 12); border-bottom: 0.5px solid #000; ${
+                      m === 12 ? 'border-right: none;' : ''
+                    }`"
+                  >
                     {{ m }}
                   </td>
                 </tr>
                 <tr>
-                  <td class="cell-label">MTiêu</td>
+                  <td
+                    class="cell-label"
+                    style="
+                      border-left: none;
+                      border-bottom: 0.5px solid #000;
+                      padding-left: 4px;
+                    "
+                  >
+                    MTiêu
+                  </td>
                   <td
                     v-for="(val, idx) in metric.target"
                     :key="'p-td-t-' + idx"
+                    :style="`border-bottom: 0.5px solid #000; ${
+                      idx === 11 ? 'border-right: none;' : ''
+                    }`"
                   >
                     {{ formatDecimals(val) }}%
                   </td>
                 </tr>
                 <tr>
-                  <td class="cell-label">TTế</td>
+                  <td
+                    class="cell-label"
+                    style="
+                      border-left: none;
+                      border-bottom: none;
+                      padding-left: 4px;
+                    "
+                  >
+                    TTế
+                  </td>
                   <td
                     v-for="(val, idx) in metric.actual"
                     :key="'p-td-a-' + idx"
+                    :style="`border-bottom: none; ${
+                      idx === 11 ? 'border-right: none;' : ''
+                    }`"
                   >
                     {{ formatDecimals(val) }}%
                   </td>
@@ -267,7 +381,7 @@
 
         <!-- Signing Signatures Footer -->
         <footer class="print-report-footer">
-          <div class="footer-sign-col text-right">
+          <div class="footer-sign-col" style="text-align: center">
             <span
               >Ngày &nbsp;&nbsp;&nbsp;&nbsp; Tháng &nbsp;&nbsp;&nbsp;&nbsp; Năm
               {{ selectedYear }}</span
@@ -481,16 +595,8 @@ export default {
 
     getChartOption(metric) {
       const isDark = this.theme === "dark";
-
-      // 1. Tăng độ tương phản cho nhãn chữ (Labels) giúp dễ đọc số liệu hơn
-      const textColor = isDark ? "#cbd5e1" : "#334155"; // Xám sáng rõ (Dark) | Xám đậm nét (Light)
-
-      // 2. Định nghĩa màu sắc đậm đà, chắc chắn cho đường trục chính (Axis Line)
-      const axisLineColor = isDark ? "#475569" : "#64748b";
-
-      // 3. Tăng bậc màu cho hệ thống lưới nét đứt phía sau (Split Line) để không bị mờ lóa
-      const splitLineColor = isDark ? "#334155" : "#cbd5e1";
-
+      const textColor = isDark ? "#888" : "#666";
+      const splitLineColor = isDark ? "#222" : "#ddd";
       const colorTarget = "#64748b"; // Slate (Mục tiêu)
       const colorActual = "#06b6d4"; // Cyan (Thực tế)
 
@@ -503,7 +609,7 @@ export default {
           borderColor: isDark ? "#333" : "#ccc",
           textStyle: { color: isDark ? "#f5f5f5" : "#111" },
           borderWidth: 1,
-          borderRadius: 4, // Thay bằng 4 để đồng bộ bo góc hiện đại với các biểu đồ khác
+          borderRadius: 0,
         },
         legend: {
           data: ["Mục tiêu", "Thực tế"],
@@ -536,15 +642,12 @@ export default {
             "T12",
           ],
           axisLabel: { color: textColor },
-          // Đổi từ splitLineColor sang axisLineColor để đường chân trục hoành hiện rõ ràng
-          axisLine: { lineStyle: { color: axisLineColor } },
+          axisLine: { lineStyle: { color: splitLineColor } },
         },
         yAxis: {
           type: "value",
-          max: metric.maxY,
+          max: this.getEffectiveMaxY(metric),
           axisLabel: { color: textColor, formatter: "{value}%" },
-          // Bật hiển thị đường trục dọc bên trái (Trục tung) để tạo khung biểu đồ vững chãi
-          axisLine: { show: true, lineStyle: { color: axisLineColor } },
           splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
         },
         series: [
@@ -591,32 +694,68 @@ export default {
       return val.toFixed(1).replace(".0", "");
     },
     formatLabelVal(val) {
-      return val.toString().replace(".0", "");
+      return Math.round(val).toString();
     },
 
     // Formatting decimal presentation
 
     // SVG coordinate math for print A4 portrait view (compact scale)
+    getEffectiveMaxY(metric) {
+      const allValues = [...metric.target, ...metric.actual].map(v => Number(v) || 0);
+      const actualMax = Math.max(...allValues, 0);
+      let max = metric.maxY || 25;
+      if (actualMax > max) {
+         if (actualMax <= 5) max = 5;
+         else if (actualMax <= 10) max = 10;
+         else if (actualMax <= 20) max = 20;
+         else if (actualMax <= 25) max = 25;
+         else if (actualMax <= 50) max = 50;
+         else if (actualMax <= 100) max = 100;
+         else if (actualMax <= 200) max = 200;
+         else max = Math.ceil(actualMax / 50) * 50;
+      }
+      return max;
+    },
     getGridValues(metric) {
-      const max = metric.maxY || 25;
-      const step = max / 4;
-      return [max, max - step, max - step * 2, max - step * 3, 0];
+      const max = this.getEffectiveMaxY(metric);
+      let step = 5;
+      if (max >= 200) step = 50;
+      else if (max >= 100) step = 20;
+      else if (max >= 50) step = 10;
+      else if (max >= 25) step = 5;
+      else if (max >= 20) step = 5;
+      else if (max >= 10) step = 2;
+      else if (max >= 5) step = 1;
+      else if (max >= 4) step = 2;
+      else step = 1;
+
+      const gridValues = [];
+      for (let v = max; v >= 0; v -= step) {
+        gridValues.push(v);
+      }
+      
+      if (gridValues[gridValues.length - 1] !== 0) {
+        if (gridValues[gridValues.length - 1] > 0) {
+          gridValues.push(0);
+        }
+      }
+      return gridValues;
     },
     getPrintX(mIdx) {
-      // 840px graph area width
-      return (mIdx - 1) * (840 / 11);
+      // 840px graph area width, center in 12 equal segments
+      return (mIdx - 0.5) * (840 / 12);
     },
     getPrintY(value, maxY) {
-      // 90px graph area height
+      // 55px graph area height
       const ratio = value / maxY;
-      return 90 - ratio * 90;
+      return 55 - ratio * 55;
     },
     getPrintChartPath(metric, key) {
       const values = metric[key];
       let path = "";
       values.forEach((v, idx) => {
         const x = this.getPrintX(idx + 1);
-        const y = this.getPrintY(v, metric.maxY);
+        const y = this.getPrintY(v, this.getEffectiveMaxY(metric));
         if (idx === 0) {
           path += `M ${x} ${y}`;
         } else {
@@ -867,7 +1006,7 @@ export default {
   color: black;
   width: 210mm; /* A4 Portrait Width */
   min-height: 297mm; /* A4 Portrait Height */
-  padding: 10mm 12mm;
+  padding: 8mm 12mm;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   position: relative;
   display: flex;
@@ -904,8 +1043,8 @@ export default {
 }
 
 .print-header-divider {
-  border: 0.8px solid #000;
-  margin-bottom: 12px;
+  border: 0.5px solid #000;
+  margin-bottom: 2px;
   width: 100%;
 }
 
@@ -913,7 +1052,7 @@ export default {
 .print-metrics-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
 }
 
 .print-metric-section {
@@ -921,7 +1060,7 @@ export default {
 }
 
 .print-section-title {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 4px;
@@ -938,17 +1077,17 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 90px; /* aligns with bars area height */
+  height: 55px; /* aligns with bars area height */
   width: 45px;
   text-align: right;
-  font-size: 9px;
+  font-size: 11px;
   padding-right: 5px;
   border-right: 1px solid #000;
 }
 
 .print-svg-plot {
   flex-grow: 1;
-  height: 90px;
+  height: 55px;
 }
 
 .print-svg-draw {
@@ -969,7 +1108,7 @@ export default {
 .print-x-axis span {
   width: calc(100% / 12);
   text-align: center;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 /* W3C Tables on Print view */
@@ -979,9 +1118,9 @@ export default {
 }
 
 .print-compact-table td {
-  font-size: 9.5px;
+  font-size: 11.5px;
   padding: 3px 2px;
-  border: 0.8px solid #000;
+  border: 0.5px solid #000;
   text-align: center;
 }
 
@@ -998,15 +1137,16 @@ export default {
 /* Footers */
 .print-report-footer {
   margin-top: auto; /* Push to bottom of A4 page */
-  padding-top: 15px;
+  padding: 20px 60px 0 60px;
+  box-sizing: border-box;
   display: flex;
   justify-content: flex-end;
   width: 100%;
 }
 
 .footer-sign-col {
-  width: 45%;
-  font-size: 11px;
+  width: 35%;
+  font-size: 13px;
 }
 
 .footer-sign-col span {
@@ -1181,6 +1321,7 @@ export default {
     box-shadow: none !important;
     padding: 0 !important;
     width: 100% !important;
+    min-height: auto !important;
     height: auto !important;
     margin: 0 !important;
   }

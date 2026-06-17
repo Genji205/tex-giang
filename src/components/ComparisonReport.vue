@@ -8,16 +8,6 @@
       </div>
 
       <div class="page-actions">
-        <!-- View Mode Selector -->
-        <div class="mode-selector">
-          <button
-            :class="['btn-mode', { active: viewMode === 'dashboard' }]"
-            @click="setViewMode('dashboard')"
-            title="Xem bảng điều khiển và biểu đồ so sánh trực quan"
-          >
-            <span class="icon">📊</span> Bảng Điều Khiển
-          </button>
-        </div>
 
         <!-- Export Excel Action -->
         <button
@@ -37,14 +27,6 @@
           <span class="icon">🖨️</span> In Báo Cáo
         </button>
 
-        <!-- Reset Data -->
-        <button
-          class="btn-action btn-secondary"
-          @click="resetData"
-          title="Khôi phục số liệu gốc theo ảnh"
-        >
-          <span class="icon">🔄</span> Khôi Phục
-        </button>
       </div>
     </header>
 
@@ -1107,15 +1089,13 @@ export default {
 
 /* Footer layout */
 .print-report-footer {
-  margin-top: 35px; /* Positioned directly below the table with compact gap */
-  padding-top: 15px;
-  padding-left: 80px; /* Shift signatures inward from left edge */
-  padding-right: 80px; /* Shift signatures inward from right edge */
+  margin-top: auto;
+  padding: 20px 60px 0 60px;
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   width: 100%;
   border-top: none;
-  box-sizing: border-box; /* Ensure padding doesn't stretch overall width */
 }
 
 .footer-sign-col {
@@ -1294,6 +1274,7 @@ export default {
     box-shadow: none !important;
     padding: 0 !important;
     width: 100% !important;
+    min-height: auto !important;
     height: auto !important;
     margin: 0 !important;
   }
