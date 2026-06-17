@@ -1,27 +1,5 @@
 <template>
   <div :class="['report-wrapper', viewMode]">
-    <!-- Inside-Page Control Row (Hidden in standard Print Mode) -->
-    <header class="page-action-header no-print">
-      <div class="page-title-badge">
-        <span class="pulse-dot"></span>
-        <h2>Kết Quả Final {{ selectedYear }} - XN Chợ Gạo</h2>
-      </div>
-      
-      <div class="page-actions">
-
-        <!-- Export Excel Action -->
-        <button class="btn-action btn-excel" @click="exportExcel" title="Xuất dữ liệu báo cáo ra file Excel">
-          <span class="icon">📥</span> Xuất Excel
-        </button>
-
-        <!-- Print Action -->
-        <button class="btn-action btn-print" @click="triggerPrint" title="In báo cáo này ra giấy hoặc PDF">
-          <span class="icon">🖨️</span> In Báo Cáo
-        </button>
-
-      </div>
-    </header>
-
     <!-- Interactive Dashboard View -->
     <main class="dashboard-content animate-fade-in no-print">
       <div class="dashboard-grid-layout">
@@ -359,8 +337,10 @@
             <span class="fw-bold">Giám đốc</span>
           </div>
           <div class="footer-sign-col text-right">
-            <span>{{ finalReportData.date }}</span>
-            <span class="fw-bold margin-top-xs block">Bộ phận QLCL</span>
+            <div style="display: inline-block; text-align: center;">
+              <span>Ngày &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tháng &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Năm {{ selectedYear }}</span>
+              <span class="fw-bold margin-top-xs block">Bộ phận QLCL</span>
+            </div>
           </div>
         </footer>
       </div>
@@ -1268,16 +1248,17 @@ export default {
 
   .a4-paper-sheet.paper-portrait-sheet {
     box-shadow: none !important;
-    padding: 0 !important;
+    padding: 8mm 10mm !important;
     width: 100% !important;
     min-height: auto !important;
     height: auto !important;
     margin: 0 !important;
+    box-sizing: border-box !important;
   }
 
   @page {
-    size: A4 portrait;
-    margin: 8mm 10mm;
+    size: auto;
+    margin: 0;
   }
 }
 </style>

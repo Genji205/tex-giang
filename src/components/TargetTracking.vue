@@ -1,33 +1,5 @@
 <template>
   <div :class="['report-wrapper', viewMode]">
-    <!-- Inside-Page Control Row (Hidden in standard Print Mode) -->
-    <header class="page-action-header no-print">
-      <div class="page-title-badge">
-        <span class="pulse-dot"></span>
-        <h2>Theo Dõi Mục Tiêu Chất Lượng {{ selectedYear }}</h2>
-      </div>
-
-      <div class="page-actions">
-        <!-- Export Excel Action -->
-        <button
-          class="btn-action btn-excel"
-          @click="exportExcel"
-          title="Xuất dữ liệu báo cáo ra file Excel"
-        >
-          <span class="icon">📥</span> Xuất Excel
-        </button>
-
-        <!-- Print Action -->
-        <button
-          class="btn-action btn-print"
-          @click="triggerPrint"
-          title="In báo cáo này ra giấy hoặc PDF"
-        >
-          <span class="icon">🖨️</span> In Báo Cáo
-        </button>
-      </div>
-    </header>
-
     <!-- Interactive Dashboard View -->
     <main class="dashboard-content animate-fade-in no-print">
       <section class="metrics-dashboard-list">
@@ -1319,16 +1291,17 @@ export default {
 
   .a4-paper-sheet.paper-portrait-sheet {
     box-shadow: none !important;
-    padding: 0 !important;
+    padding: 8mm 10mm !important; /* Move margin into padding to prevent content from hitting the paper edge */
     width: 100% !important;
     min-height: auto !important;
     height: auto !important;
     margin: 0 !important;
+    box-sizing: border-box !important;
   }
 
   @page {
-    size: A4 portrait;
-    margin: 8mm 10mm;
+    size: auto; /* Let the user choose Portrait or Landscape in the browser print dialog */
+    margin: 0; /* This removes the browser's default headers and footers (URL, Date, Page Numbers) */
   }
 }
 

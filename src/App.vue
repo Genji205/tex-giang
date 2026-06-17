@@ -99,30 +99,6 @@
 
       <!-- Navigation Menu -->
       <nav class="sidebar-nav">
-        <!-- Year Selector Widget -->
-        <div class="sidebar-year-selector">
-          <span class="selector-label">Năm báo cáo</span>
-          <div class="select-wrapper">
-            <select v-model.number="selectedYear" class="year-select">
-              <option v-for="year in availableYears" :key="year" :value="year">
-                Năm {{ year }}
-              </option>
-            </select>
-            <span class="select-arrow">▼</span>
-          </div>
-          <div class="db-status-indicator" :class="dbStatus">
-            <span class="status-dot"></span>
-            <span class="status-text">
-              {{
-                dbStatus === "connected"
-                  ? "Dữ liệu: Live DB"
-                  : dbStatus === "loading"
-                  ? "Đang kết nối..."
-                  : "Dữ liệu: Offline Mock"
-              }}
-            </span>
-          </div>
-        </div>
 
         <ul class="nav-list">
           <li
@@ -168,7 +144,59 @@
 
     <!-- Main Component Render Area -->
     <main class="app-main">
+      <header class="page-action-header no-print">
+        <div class="page-title-badge">
+          <span class="pulse-dot"></span>
+          <h2>{{ pageTitle }}</h2>
+        </div>
+        
+        <div class="page-actions">
+          <!-- DB Status Indicator (Subtle) -->
+          <div class="db-status-indicator subtle-status" :class="dbStatus" title="Trạng thái kết nối dữ liệu">
+            <span class="status-dot"></span>
+            <span class="status-text">
+              {{
+                dbStatus === "connected"
+                  ? "Live DB"
+                  : dbStatus === "loading"
+                  ? "Đang kết nối..."
+                  : "Offline"
+              }}
+            </span>
+          </div>
+
+          <!-- Year Selector -->
+          <div class="header-year-selector" style="display: flex; align-items: center; margin-right: 15px;">
+            <span style="margin-right: 8px; font-weight: 500; white-space: nowrap;">Năm báo cáo:</span>
+            <div class="select-wrapper" style="position: relative; display: inline-block;">
+              <select v-model.number="selectedYear" class="year-select" style="padding: 6px 30px 6px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-primary); appearance: none; font-size: 14px; font-weight: 500; cursor: pointer; outline: none;">
+                <option v-for="year in availableYears" :key="year" :value="year">
+                  Năm {{ year }}
+                </option>
+              </select>
+              <span class="select-arrow" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 10px; color: var(--text-secondary);">▼</span>
+            </div>
+          </div>
+
+          <!-- Export All Action -->
+          <button class="btn-action btn-excel-all" @click="triggerExportAll" title="Xuất toàn bộ 4 trang báo cáo ra 1 file Excel">
+            <span class="icon">📚</span> Xuất Tất Cả
+          </button>
+
+          <!-- Export Excel Action -->
+          <button class="btn-action btn-excel" @click="triggerExport" title="Xuất dữ liệu báo cáo ra file Excel">
+            <span class="icon">📥</span> Xuất Excel
+          </button>
+
+          <!-- Print Action -->
+          <button class="btn-action btn-print" @click="triggerPrint" title="In báo cáo này ra giấy hoặc PDF">
+            <span class="icon">🖨️</span> In Báo Cáo
+          </button>
+        </div>
+      </header>
+
       <component
+        ref="activeChild"
         :is="activeComponent"
         v-bind="componentProps"
         @update-data="onUpdateData"
@@ -176,6 +204,7 @@
         @update-final-data="onUpdateFinalData"
         @reset-data="onResetData"
         @view-mode-change="onViewModeChange"
+        @update-year="onUpdateYear"
       />
     </main>
   </div>
@@ -188,6 +217,7 @@ import TargetTracking from "./components/TargetTracking.vue";
 import FinalReport from "./components/FinalReport.vue";
 import PagePlaceholder from "./components/PagePlaceholder.vue";
 import axios from "axios";
+import { exportAllReports } from "@/utils/excelExport";
 
 export default {
   name: "App",
@@ -224,11 +254,32 @@ export default {
   },
   computed: {
     activeComponent() {
-      if (this.activeTab === 1) return "QualityReport";
-      if (this.activeTab === 2) return "ComparisonReport";
-      if (this.activeTab === 3) return "TargetTracking";
-      if (this.activeTab === 4) return "FinalReport";
-      return "PagePlaceholder";
+      switch (this.activeTab) {
+        case 1:
+          return "QualityReport";
+        case 2:
+          return "ComparisonReport";
+        case 3:
+          return "TargetTracking";
+        case 4:
+          return "FinalReport";
+        default:
+          return "PagePlaceholder";
+      }
+    },
+    pageTitle() {
+      switch (this.activeTab) {
+        case 1:
+          return `Báo Cáo Chất Lượng XNTH ${this.selectedYear}`;
+        case 2:
+          return `Biểu Đồ So Sánh ${this.selectedYear - 1} - ${this.selectedYear}`;
+        case 3:
+          return `Theo Dõi Mục Tiêu Chất Lượng ${this.selectedYear}`;
+        case 4:
+          return `Kết Quả Final ${this.selectedYear} - XN Chợ Gạo`;
+        default:
+          return '';
+      }
     },
     componentProps() {
       const prevYearData = this.getYearData(this.selectedYear - 1);
@@ -240,18 +291,21 @@ export default {
           data2024: prevYearData.quality,
           data2025: activeYearData.quality,
           selectedYear: this.selectedYear,
+          availableYears: this.availableYears,
         };
       } else if (this.activeTab === 3) {
         return {
           theme: this.theme,
           targetTrackingData: activeYearData.targetTracking,
           selectedYear: this.selectedYear,
+          availableYears: this.availableYears,
         };
       } else if (this.activeTab === 4) {
         return {
           theme: this.theme,
           finalReportData: activeYearData.finalReport,
           selectedYear: this.selectedYear,
+          availableYears: this.availableYears,
         };
       } else {
         return { pageNumber: this.activeTab };
@@ -277,6 +331,50 @@ export default {
     },
     onViewModeChange(mode) {
       this.isPrintMode = mode === "print-preview";
+    },
+    onUpdateYear(year) {
+      this.selectedYear = year;
+    },
+    triggerExport() {
+      if (
+        this.$refs.activeChild &&
+        typeof this.$refs.activeChild.exportExcel === "function"
+      ) {
+        this.$refs.activeChild.exportExcel();
+      } else {
+        alert("Tính năng Xuất Excel chưa được hỗ trợ cho trang này.");
+      }
+    },
+    triggerExportAll() {
+      const prevYearData = this.getYearData(this.selectedYear - 1);
+      const activeYearData = this.getYearData(this.selectedYear);
+      
+      const finalReportData = activeYearData.finalReport;
+      const totalFinal = finalReportData.rows.reduce((sum, r) => sum + r.final, 0);
+      const totalPassed = finalReportData.rows.reduce((sum, r) => sum + r.passed, 0);
+      const totalFailed = finalReportData.rows.reduce((sum, r) => sum + r.failed, 0);
+      const totalPassedRate = totalFinal === 0 ? '0.00' : ((totalPassed / totalFinal) * 100).toFixed(2);
+      const totalFailedRate = totalFinal === 0 ? '0.00' : ((totalFailed / totalFinal) * 100).toFixed(2);
+      
+      const totals = {
+        final: totalFinal,
+        passed: totalPassed,
+        failed: totalFailed,
+        passedRate: totalPassedRate,
+        failedRate: totalFailedRate
+      };
+
+      exportAllReports(
+        this.selectedYear,
+        prevYearData.quality,
+        activeYearData.quality,
+        activeYearData.targetTracking,
+        finalReportData,
+        totals
+      );
+    },
+    triggerPrint() {
+      window.print();
     },
     // Page 1 & 2 Sync
     onUpdateData({ year, rowIdx, monthIdx, value }) {
@@ -969,12 +1067,20 @@ h6 {
 }
 
 .nav-icon {
-  font-size: 18px;
+  font-size: 18px !important;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  line-height: 1;
   flex-shrink: 0;
+  transition: none !important;
+  transform: translateZ(0); /* Hardware acceleration to prevent sub-pixel rendering changes */
 }
 
 .nav-text {
@@ -1025,12 +1131,20 @@ h6 {
 }
 
 .control-icon {
-  font-size: 16px;
+  font-size: 16px !important;
   width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: none !important;
+  transform: translateZ(0);
 }
 
 .control-text {
@@ -1049,7 +1163,11 @@ h6 {
 
 .user-avatar {
   width: 36px;
+  min-width: 36px;
+  max-width: 36px;
   height: 36px;
+  min-height: 36px;
+  max-height: 36px;
   background: linear-gradient(135deg, var(--accent-color), #ec4899);
   color: white;
   font-weight: 700;
@@ -1059,23 +1177,28 @@ h6 {
   justify-content: center;
   border-radius: 50%;
   flex-shrink: 0;
+  transition: none !important;
+  transform: translateZ(0);
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
   transition: opacity 0.2s ease;
+  white-space: nowrap;
 }
 
 .user-name {
   font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .user-role {
   font-size: 10.5px;
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 /* Main Area Container */
@@ -1096,14 +1219,23 @@ h6 {
 .app-container.sidebar-collapsed .brand-name,
 .app-container.sidebar-collapsed .nav-text,
 .app-container.sidebar-collapsed .nav-badge,
-.app-container.sidebar-collapsed .control-text,
-.app-container.sidebar-collapsed .user-info {
+.app-container.sidebar-collapsed .control-text {
   opacity: 0;
   pointer-events: none;
   width: 0;
   margin: 0;
   display: inline-block;
   overflow: hidden;
+  white-space: nowrap;
+}
+
+.app-container.sidebar-collapsed .user-info {
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .app-container.sidebar-collapsed .app-main {
@@ -1174,12 +1306,6 @@ h6 {
     display: none;
   }
 }
-/* Sidebar Year Selector Widget */
-.sidebar-year-selector {
-  margin-bottom: 20px;
-  padding: 0 14px;
-}
-
 .db-status-indicator {
   display: flex;
   align-items: center;
@@ -1192,6 +1318,19 @@ h6 {
   background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
+}
+.db-status-indicator.subtle-status {
+  background: transparent !important;
+  border: none !important;
+  padding: 0;
+  margin-top: 0;
+  margin-right: 15px;
+  font-weight: 500;
+  color: var(--text-secondary) !important;
+  height: 34px;
+}
+.db-status-indicator.subtle-status .status-text {
+  opacity: 0.8;
 }
 .app-container.light .db-status-indicator {
   background-color: rgba(0, 0, 0, 0.02);
@@ -1233,10 +1372,6 @@ h6 {
   100% {
     opacity: 1;
   }
-}
-
-.app-container.sidebar-collapsed .sidebar-year-selector {
-  display: none;
 }
 
 .selector-label {
@@ -1295,5 +1430,108 @@ h6 {
   font-size: 8px;
   color: var(--text-secondary);
   pointer-events: none;
+}
+
+/* Common Header Styles */
+.page-action-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 24px 24px;
+  padding-top: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.page-title-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-title-badge h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7);
+  animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(79, 70, 229, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+  }
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-action {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-action .icon {
+  font-size: 15px;
+}
+
+.btn-excel {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-excel:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.btn-excel-all {
+  background-color: #6366f1; /* Indigo */
+  color: white;
+}
+
+.btn-excel-all:hover {
+  background-color: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+}
+
+.btn-print {
+  background-color: #0ea5e9;
+  color: white;
+}
+
+.btn-print:hover {
+  background-color: #0284c7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.2);
 }
 </style>

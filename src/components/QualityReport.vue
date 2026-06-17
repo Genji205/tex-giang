@@ -1,35 +1,5 @@
 <template>
   <div :class="['report-wrapper', viewMode]">
-    <!-- Inside-Page Control Row (Hidden in standard Print Mode) -->
-    <header class="page-action-header no-print">
-      <div class="page-title-badge">
-        <span class="pulse-dot"></span>
-        <h2>Báo Cáo Chất Lượng XNTH {{ selectedYear }}</h2>
-      </div>
-
-      <div class="page-actions">
-
-        <!-- Export Excel Action -->
-        <button
-          class="btn-action btn-excel"
-          @click="exportExcel"
-          title="Xuất dữ liệu báo cáo ra file Excel"
-        >
-          <span class="icon">📥</span> Xuất Excel
-        </button>
-
-        <!-- Print Action -->
-        <button
-          class="btn-action btn-print"
-          @click="triggerPrint"
-          title="In báo cáo này ra giấy hoặc PDF"
-        >
-          <span class="icon">🖨️</span> In Báo Cáo
-        </button>
-
-      </div>
-    </header>
-
     <!-- Interactive Dashboard View -->
     <main class="dashboard-content animate-fade-in no-print">
       <!-- Welcome & Summary Cards -->
@@ -1459,10 +1429,6 @@ export default {
 }
 
 @media print {
-  @page {
-    size: A4 landscape;
-    margin: 10mm;
-  }
   
   .no-print {
     display: none !important;
@@ -1478,9 +1444,15 @@ export default {
     width: 100% !important;
     min-height: auto !important;
     height: auto !important;
-    padding: 0 !important;
+    padding: 8mm 10mm !important;
     box-shadow: none !important;
     margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 0;
   }
 }
 
