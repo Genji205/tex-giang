@@ -17,13 +17,7 @@
           >
             <span class="icon">📊</span> Bảng Điều Khiển
           </button>
-          <button
-            :class="['btn-mode', { active: viewMode === 'print-preview' }]"
-            @click="setViewMode('print-preview')"
-            title="Xem giao diện chuẩn khổ giấy báo cáo thực tế"
-          >
-            <span class="icon">📄</span> Bản In A4
-          </button>
+
         </div>
 
         <!-- Export Excel Action -->
@@ -57,7 +51,6 @@
 
     <!-- Interactive Dashboard View -->
     <main
-      v-if="viewMode === 'dashboard'"
       class="dashboard-content animate-fade-in no-print"
     >
       <section class="metrics-dashboard-list">
@@ -258,8 +251,7 @@
 
     <!-- Print / Official A4 Document View -->
     <div
-      v-else-if="viewMode === 'print-preview'"
-      class="a4-document-container animate-scale-in"
+      class="a4-document-container animate-scale-in print-only"
     >
       <div class="a4-paper-sheet paper-portrait-sheet">
         <!-- Header text on portrait print page -->
@@ -397,17 +389,6 @@
         </footer>
       </div>
 
-      <!-- Back to top floating warning (Interactive in print-preview but hidden in printing) -->
-      <div class="preview-mode-banner no-print">
-        <p>
-          💡 Đây là giao diện giả lập Trang 3 in A4 Portrait chính xác nhất. Bạn
-          có thể nhấn <strong>In Báo Cáo</strong> để in trực tiếp hoặc lưu thành
-          PDF.
-        </p>
-        <button class="btn-action" @click="setViewMode('dashboard')">
-          Quay lại bảng điều khiển
-        </button>
-      </div>
     </div>
 
     <!-- Modal Popup for Quality Target Configuration -->
@@ -583,16 +564,8 @@ export default {
     exportExcel() {
       exportTargetTracking(this.selectedYear, this.targetTrackingData);
     },
-    setViewMode(mode) {
-      this.viewMode = mode;
-      this.$emit("view-mode-change", mode);
-    },
     triggerPrint() {
-      this.viewMode = "print-preview";
-      this.$emit("view-mode-change", "print-preview");
-      this.$nextTick(() => {
-        window.print();
-      });
+      window.print();
     },
     resetData() {
       this.$emit("reset-data");

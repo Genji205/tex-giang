@@ -6,9 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "server": "node server/index.js",
-    "dev": "concurrently \"node server/index.js\" \"vue-cli-service serve\"",
-    "start": "concurrently \"node server/index.js\" \"vue-cli-service serve\"",
+    "server": "node -e \"const fs = require('fs'); const cp = require('child_process'); if (!fs.existsSync('server/node_modules')) { console.log('Checking server dependencies: server/node_modules not found. Running npm install inside server...'); cp.execSync('node \\\"' + process.env.npm_execpath + '\\\" install', { cwd: 'server', stdio: 'inherit' }); }\" && node server/index.js",
+    "dev": "concurrently \"npm run server\" \"vue-cli-service serve\"",
+    "start": "concurrently \"npm run server\" \"vue-cli-service serve\"",
     "postinstall": "node -e \"const cp = require('child_process'); cp.execSync('node \\\"' + process.env.npm_execpath + '\\\" install', { cwd: 'server', stdio: 'inherit' })\""
   },
   "dependencies": {
