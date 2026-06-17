@@ -19,13 +19,6 @@
           >
             <span class="icon">📊</span> Bảng Điều Khiển
           </button>
-          <button
-            :class="['btn-mode', { active: viewMode === 'print-preview' }]"
-            @click="setViewMode('print-preview')"
-            title="Xem giao diện chuẩn khổ giấy báo cáo thực tế"
-          >
-            <span class="icon">📄</span> Bản In A4
-          </button>
         </div>
 
         <!-- Export Excel Action -->
@@ -58,10 +51,7 @@
     </header>
 
     <!-- Interactive Dashboard View -->
-    <main
-      v-if="viewMode === 'dashboard'"
-      class="dashboard-content animate-fade-in no-print"
-    >
+    <main class="dashboard-content animate-fade-in no-print">
       <section class="charts-comparison-grid">
         <!-- Chart 1: Trước Ủi -->
         <div class="chart-card card-box">
@@ -182,10 +172,7 @@
     </main>
 
     <!-- Print / Official A4 Document View -->
-    <div
-      v-else-if="viewMode === 'print-preview'"
-      class="a4-document-container animate-scale-in"
-    >
+    <div class="a4-document-container animate-scale-in print-only">
       <div class="a4-paper-sheet paper-comparison-sheet">
         <!-- Chart 1: Trước Ủi -->
         <div class="print-chart-block">
@@ -203,7 +190,11 @@
 
             <!-- SVG Bars Area -->
             <div class="paper-svg-container">
-              <svg viewBox="0 0 840 180" class="paper-svg-chart">
+              <svg
+                viewBox="0 0 840 150"
+                preserveAspectRatio="none"
+                class="paper-svg-chart"
+              >
                 <!-- Grid Lines -->
                 <line
                   v-for="grid in paperGridLines1"
@@ -242,19 +233,34 @@
             </div>
           </div>
 
-          <!-- Axis Labels aligned underneath columns -->
-          <div class="paper-x-axis">
-            <span v-for="m in 12" :key="'pax1-' + m">Tháng {{ m }}</span>
-            <span class="fw-bold">Trung Bình</span>
-          </div>
-
           <!-- Data Table 1 -->
-          <table class="print-data-table margin-top-xs">
+          <table class="print-data-table">
+            <thead>
+              <tr>
+                <th class="cell-empty" style="width: 12%"></th>
+                <th v-for="m in 12" :key="'pth1-' + m" class="cell-val-center">
+                  Tháng {{ m }}
+                </th>
+                <th class="cell-avg-val-center">Trung Bình</th>
+              </tr>
+            </thead>
             <tbody>
               <tr>
-                <td class="cell-label cell-legend-label" style="width: 15.5%">
-                  <span class="legend-square fill-light"></span> Trước ủi
-                  {{ selectedYear - 1 }}
+                <td class="cell-label" style="width: 12%">
+                  <div class="cell-legend-wrapper">
+                    <svg width="9" height="9" style="flex-shrink: 0">
+                      <rect
+                        width="9"
+                        height="9"
+                        fill="#d2d2d2"
+                        stroke="#000"
+                        stroke-width="0.5"
+                      />
+                    </svg>
+                    <span class="legend-text"
+                      >Trước ủi {{ selectedYear - 1 }}</span
+                    >
+                  </div>
                 </td>
                 <td
                   v-for="(val, idx) in data2024.rows[0].months"
@@ -268,9 +274,19 @@
                 </td>
               </tr>
               <tr>
-                <td class="cell-label cell-legend-label" style="width: 15.5%">
-                  <span class="legend-square fill-dark"></span> Trước ủi
-                  {{ selectedYear }}
+                <td class="cell-label" style="width: 12%">
+                  <div class="cell-legend-wrapper">
+                    <svg width="9" height="9" style="flex-shrink: 0">
+                      <rect
+                        width="9"
+                        height="9"
+                        fill="#545454"
+                        stroke="#000"
+                        stroke-width="0.5"
+                      />
+                    </svg>
+                    <span class="legend-text">Trước ủi {{ selectedYear }}</span>
+                  </div>
                 </td>
                 <td
                   v-for="(val, idx) in data2025.rows[0].months"
@@ -303,7 +319,11 @@
 
             <!-- SVG Bars Area -->
             <div class="paper-svg-container">
-              <svg viewBox="0 0 840 180" class="paper-svg-chart">
+              <svg
+                viewBox="0 0 840 150"
+                preserveAspectRatio="none"
+                class="paper-svg-chart"
+              >
                 <!-- Grid Lines -->
                 <line
                   v-for="grid in paperGridLines2"
@@ -342,19 +362,34 @@
             </div>
           </div>
 
-          <!-- Axis Labels aligned underneath columns -->
-          <div class="paper-x-axis">
-            <span v-for="m in 12" :key="'pax2-' + m">Tháng {{ m }}</span>
-            <span class="fw-bold">Trung Bình</span>
-          </div>
-
           <!-- Data Table 2 -->
-          <table class="print-data-table margin-top-xs">
+          <table class="print-data-table">
+            <thead>
+              <tr>
+                <th class="cell-empty" style="width: 12%"></th>
+                <th v-for="m in 12" :key="'pth2-' + m" class="cell-val-center">
+                  Tháng {{ m }}
+                </th>
+                <th class="cell-avg-val-center">Trung Bình</th>
+              </tr>
+            </thead>
             <tbody>
               <tr>
-                <td class="cell-label cell-legend-label" style="width: 15.5%">
-                  <span class="legend-square fill-light"></span> Sau ủi
-                  {{ selectedYear - 1 }}
+                <td class="cell-label" style="width: 12%">
+                  <div class="cell-legend-wrapper">
+                    <svg width="9" height="9" style="flex-shrink: 0">
+                      <rect
+                        width="9"
+                        height="9"
+                        fill="#d2d2d2"
+                        stroke="#000"
+                        stroke-width="0.5"
+                      />
+                    </svg>
+                    <span class="legend-text"
+                      >Sau ủi {{ selectedYear - 1 }}</span
+                    >
+                  </div>
                 </td>
                 <td
                   v-for="(val, idx) in data2024.rows[1].months"
@@ -368,9 +403,19 @@
                 </td>
               </tr>
               <tr>
-                <td class="cell-label cell-legend-label" style="width: 15.5%">
-                  <span class="legend-square fill-dark"></span> Sau ủi
-                  {{ selectedYear }}
+                <td class="cell-label" style="width: 12%">
+                  <div class="cell-legend-wrapper">
+                    <svg width="9" height="9" style="flex-shrink: 0">
+                      <rect
+                        width="9"
+                        height="9"
+                        fill="#545454"
+                        stroke="#000"
+                        stroke-width="0.5"
+                      />
+                    </svg>
+                    <span class="legend-text">Sau ủi {{ selectedYear }}</span>
+                  </div>
                 </td>
                 <td
                   v-for="(val, idx) in data2025.rows[1].months"
@@ -393,24 +438,15 @@
             <span class="fw-bold">Giám đốc XN3</span>
           </div>
           <div class="footer-sign-col text-right">
-            <span
-              >Ngày &nbsp;&nbsp;&nbsp;&nbsp; Tháng &nbsp;&nbsp;&nbsp;&nbsp; Năm
-              {{ selectedYear }}</span
-            >
-            <span class="fw-bold margin-top-xs block">Bộ phận QLCL</span>
+            <div class="sign-block-right">
+              <span
+                >Ngày &nbsp;&nbsp;&nbsp;&nbsp; Tháng &nbsp;&nbsp;&nbsp;&nbsp;
+                Năm {{ selectedYear }}</span
+              >
+              <span class="fw-bold margin-top-xs block">Bộ phận QLCL</span>
+            </div>
           </div>
         </footer>
-      </div>
-
-      <!-- Back to top floating warning (Interactive in print-preview but hidden in printing) -->
-      <div class="preview-mode-banner no-print">
-        <p>
-          💡 Đây là giao diện giả lập Trang 2 in A4 chính xác nhất. Bạn có thể
-          nhấn <strong>In Báo Cáo</strong> để in trực tiếp hoặc lưu thành PDF.
-        </p>
-        <button class="btn-action" @click="setViewMode('dashboard')">
-          Quay lại bảng điều khiển
-        </button>
       </div>
     </div>
   </div>
@@ -656,16 +692,8 @@ export default {
     exportExcel() {
       exportComparisonReport(this.selectedYear, this.data2024, this.data2025);
     },
-    setViewMode(mode) {
-      this.viewMode = mode;
-      this.$emit("view-mode-change", mode);
-    },
     triggerPrint() {
-      this.viewMode = "print-preview";
-      this.$emit("view-mode-change", "print-preview");
-      this.$nextTick(() => {
-        window.print();
-      });
+      window.print();
     },
     resetData() {
       this.$emit("reset-data");
@@ -948,25 +976,31 @@ export default {
 
 .paper-chart-flex {
   display: flex;
-  gap: 8px;
+  gap: 0;
   width: 100%;
+  height: 150px;
+  align-items: flex-end;
 }
 
 /* Y Axis labels aligned in single column */
 .paper-y-axis {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   justify-content: space-between;
-  height: 150px; /* aligns with bars area height */
-  width: 48px;
+  height: 161px; /* 150px + font-size */
+  margin-top: -5.5px;
+  margin-bottom: -5.5px;
+  flex: 0 0 12%;
   text-align: right;
-  font-size: 10.5px;
-  padding-right: 6px;
+  font-size: 11px;
+  line-height: 11px;
+  padding-right: 4px;
   border-right: 1.5px solid #000;
+  box-sizing: border-box;
 }
 
 .paper-svg-container {
-  flex-grow: 1;
+  flex: 0 0 88%;
   height: 150px;
 }
 
@@ -977,31 +1011,37 @@ export default {
   overflow: visible;
 }
 
-.paper-x-axis {
-  display: flex;
-  width: 100%;
-  padding-left: 56px; /* Offset matching Y-axis width */
-  margin-top: 4px;
-}
-
-.paper-x-axis span {
-  width: calc(100% / 13);
-  text-align: center;
-  font-size: 10px;
-}
-
 /* A4 Print Tables */
 .print-data-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 6px;
+  margin-top: 0;
+  table-layout: fixed;
 }
 
+.print-data-table th,
 .print-data-table td {
-  border: 1px solid #000;
+  border: 0.5px solid #000;
   font-size: 11px;
   padding: 6px 3px;
   text-align: center;
+}
+
+.print-data-table th {
+  font-size: 10.5px; /* Slightly smaller to prevent Tháng 10,11,12 from touching borders */
+  font-weight: normal;
+  background-color: transparent;
+}
+
+.print-data-table th.cell-val-center {
+  white-space: nowrap;
+}
+
+.print-data-table th.cell-empty {
+  border-top: none !important;
+  border-left: none !important;
+  border-bottom: 0.5px solid #000 !important;
+  border-right: 0.5px solid #000 !important;
 }
 
 .print-data-table td.cell-label {
@@ -1010,17 +1050,21 @@ export default {
   font-weight: normal;
 }
 
-.print-data-table td.cell-legend-label {
+.cell-legend-wrapper {
   display: flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid #000;
+  white-space: nowrap;
+}
+
+.legend-text {
+  font-size: 11px;
 }
 
 .legend-square {
   width: 9px;
   height: 9px;
-  border: 1px solid #000;
+  border: 0.5px solid #000;
   display: inline-block;
   flex-shrink: 0;
 }
@@ -1032,20 +1076,28 @@ export default {
   background-color: #545454;
 }
 
+.print-data-table th.cell-val-center,
+.print-data-table td.cell-val-center {
+  width: 6.769%;
+}
+
 .cell-avg-val-center {
-  font-weight: bold;
-  width: 10%;
+  font-weight: normal;
+  width: 6.769%;
   background-color: transparent;
 }
 
 /* Footer layout */
 .print-report-footer {
-  margin-top: auto; /* Push to bottom of A4 page */
+  margin-top: 35px; /* Positioned directly below the table with compact gap */
   padding-top: 15px;
+  padding-left: 80px; /* Shift signatures inward from left edge */
+  padding-right: 80px; /* Shift signatures inward from right edge */
   display: flex;
   justify-content: space-between;
   width: 100%;
   border-top: none;
+  box-sizing: border-box; /* Ensure padding doesn't stretch overall width */
 }
 
 .footer-sign-col {
@@ -1055,6 +1107,11 @@ export default {
 
 .footer-sign-col span {
   display: block;
+}
+
+.sign-block-right {
+  display: inline-block;
+  text-align: center;
 }
 
 .block {

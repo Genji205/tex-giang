@@ -1084,6 +1084,28 @@ h6 {
   background-color: white !important;
 }
 
+/* Print/Screen layout rules for print-only */
+@media screen {
+  .print-only {
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+@media print {
+  .print-only {
+    position: static !important;
+    visibility: visible !important;
+    display: flex !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
+
 /* Hide all headers, sidebar and preview mode banner in print */
 @media print {
   .no-print {
