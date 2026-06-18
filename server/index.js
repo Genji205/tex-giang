@@ -242,7 +242,7 @@ app.get('/api/reports/final-qa', async (req, res) => {
         title: `BÁO CÁO KẾT QUẢ FINAL NĂM ${year} XN-CHỢ GẠO`,
         company: 'CÔNG TY CỔ PHẦN TEX-GIANG',
         department: 'Bộ phận: QLCL',
-        date: `Ngày 27 tháng 12 Năm ${year}`,
+        date: `Ngày       tháng       Năm ${year}`,
         rows: rows
       }
     });
