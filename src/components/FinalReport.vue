@@ -17,12 +17,12 @@
             <table class="dashboard-table final-table">
               <thead>
                 <tr>
-                  <th style="width: 8%">Tháng</th>
-                  <th style="width: 12%">Số lần final</th>
-                  <th style="width: 12%">Số lần đạt</th>
-                  <th style="width: 12%">Số lần không đạt</th>
-                  <th style="width: 12%">% Đạt</th>
-                  <th style="width: 12%">% Không đạt</th>
+                  <th style="width: 5%">Tháng</th>
+                  <th style="width: 8%">Số lần final</th>
+                  <th style="width: 8%">Số lần đạt</th>
+                  <th style="width: 9%">Số lần không đạt</th>
+                  <th style="width: 8%">% Đạt</th>
+                  <th style="width: 9%">% Không đạt</th>
                   <th>Lỗi bị tái chế</th>
                 </tr>
               </thead>
@@ -146,7 +146,7 @@
           </div>
         </div>
 
-        <!-- Card 2: Bar Chart -->
+        <!-- Card 2: Bar Chart + Summary Table (merged) -->
         <div class="chart-card card-box">
           <div class="table-title-container">
             <h4>Biểu Đồ Số Lần Final XN Chợ Gạo</h4>
@@ -157,226 +157,222 @@
           </div>
 
           <div class="chart-container">
-            <div class="chart-wrapper-box">
-              <v-chart class="chart" :option="chartOption" autoresize />
+            <div class="chart-wrapper-box chart-with-table">
+              <v-chart class="chart" :option="mergedChartOption" autoresize />
+
+              <!-- Bảng tóm tắt gắn liền bên dưới biểu đồ -->
+              <div class="merged-summary-table-wrapper">
+                <table
+                  class="dashboard-compact-table merged-compact-table"
+                  style="table-layout: fixed; width: 100%"
+                >
+                  <thead>
+                    <tr>
+                      <th class="merged-th-label"></th>
+                      <th
+                        v-for="m in 12"
+                        :key="'d-th-' + m"
+                        class="merged-th-month"
+                      >
+                        T{{ m }}
+                      </th>
+                      <th class="merged-th-month merged-th-total">Tổng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="cell-label merged-td-label">
+                        <span class="legend-square-dash fill-final-dash"></span>
+                        <span style="vertical-align: middle">Số lần final</span>
+                      </td>
+                      <td
+                        v-for="m in 12"
+                        :key="'d-td1-' + m"
+                        class="merged-td-val"
+                      >
+                        {{ getBarVal(m, 0) }}
+                      </td>
+                      <td class="merged-td-val fw-bold">
+                        {{ totalFinal }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="cell-label merged-td-label">
+                        <span
+                          class="legend-square-dash fill-failed-dash"
+                        ></span>
+                        <span style="vertical-align: middle"
+                          >Số lần không đạt</span
+                        >
+                      </td>
+                      <td
+                        v-for="m in 12"
+                        :key="'d-td2-' + m"
+                        class="merged-td-val"
+                      >
+                        {{ getBarVal(m, 1) }}
+                      </td>
+                      <td class="merged-td-val fw-bold">
+                        {{ totalFailed }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="cell-label merged-td-label">
+                        <span
+                          class="legend-square-dash fill-passed-rate-dash"
+                        ></span>
+                        <span style="vertical-align: middle">% Đạt</span>
+                      </td>
+                      <td
+                        v-for="m in 12"
+                        :key="'d-td3-' + m"
+                        class="merged-td-val"
+                      >
+                        {{ getPassedRateForMonth(m) }}%
+                      </td>
+                      <td class="merged-td-val fw-bold">
+                        {{ totalPassedRate }}%
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="cell-label merged-td-label">
+                        <span
+                          class="legend-square-dash fill-failed-rate-dash"
+                        ></span>
+                        <span style="vertical-align: middle">% Không đạt</span>
+                      </td>
+                      <td
+                        v-for="m in 12"
+                        :key="'d-td4-' + m"
+                        class="merged-td-val"
+                      >
+                        {{ getFailedRateForMonth(m) }}%
+                      </td>
+                      <td class="merged-td-val fw-bold">
+                        {{ totalFailedRate }}%
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Card 3: Compact Summary Table (separated from chart) -->
-        <div class="table-card card-box">
-          <div class="table-title-container">
-            <h4>Bảng Tóm Tắt Số Liệu Theo Tháng</h4>
-            <span class="table-subtitle"
-              >Tổng hợp nhanh số lần final, số lần không đạt và tỷ lệ % qua từng
-              tháng</span
-            >
-          </div>
+        <!-- Signature Section -->
+        <div class="signature-section card-box">
+          <h4 class="signature-section-title">Xác Nhận Báo Cáo</h4>
+          <div class="signature-grid">
+            <!-- Giám đốc -->
+            <div class="signature-block">
+              <span class="signature-role">Giám đốc</span>
+              <div class="signature-pad-area">
+                <canvas
+                  v-if="!signatures.director.data"
+                  ref="directorCanvas"
+                  class="signature-canvas"
+                  @mousedown="startDraw('director', $event)"
+                  @mousemove="draw('director', $event)"
+                  @mouseup="stopDraw('director')"
+                  @mouseleave="stopDraw('director')"
+                  @touchstart.prevent="startDrawTouch('director', $event)"
+                  @touchmove.prevent="drawTouch('director', $event)"
+                  @touchend.prevent="stopDraw('director')"
+                ></canvas>
+                <div v-else class="signature-saved">
+                  <img :src="signatures.director.data" alt="Chữ ký Giám đốc" />
+                </div>
+              </div>
+              <div class="signature-actions">
+                <button
+                  v-if="!signatures.director.data"
+                  class="sig-btn sig-btn-save"
+                  @click="saveSignature('director')"
+                  :disabled="!signatures.director.hasDrawn"
+                >
+                  ✓ Ký xác nhận
+                </button>
+                <button
+                  v-if="!signatures.director.data"
+                  class="sig-btn sig-btn-clear"
+                  @click="clearCanvas('director')"
+                >
+                  ✕ Xóa
+                </button>
+                <button
+                  v-if="signatures.director.data"
+                  class="sig-btn sig-btn-redo"
+                  @click="redoSignature('director')"
+                >
+                  ↺ Ký lại
+                </button>
+              </div>
+              <span v-if="signatures.director.date" class="signature-date">
+                Đã ký ngày: {{ signatures.director.date }}
+              </span>
+            </div>
 
-          <div class="responsive-table-wrapper">
-            <table
-              class="dashboard-compact-table"
-              style="table-layout: fixed; width: 100%; min-width: 900px"
-            >
-              <thead>
-                <tr>
-                  <th
-                    style="
-                      width: 7%;
-                      border: 1px solid var(--border-color);
-                      font-size: 11px;
-                      font-weight: bold;
-                      text-align: center;
-                      height: 28px;
-                      background: none;
-                    "
-                  ></th>
-                  <th
-                    v-for="m in 12"
-                    :key="'d-th-' + m"
-                    style="
-                      width: 6.923%;
-                      border: 1px solid var(--border-color);
-                      font-size: 11px;
-                      font-weight: bold;
-                      text-align: center;
-                      background: none;
-                    "
-                  >
-                    T{{ m }}
-                  </th>
-                  <th
-                    style="
-                      width: 6.923%;
-                      border: 1px solid var(--border-color);
-                      font-size: 11px;
-                      font-weight: bold;
-                      text-align: center;
-                      background: none;
-                    "
-                  >
-                    Tổng
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td
-                    class="cell-label"
-                    style="
-                      width: 7%;
-                      font-size: 12px;
-                      text-align: left;
-                      padding: 8px 10px;
-                      border: 1px solid var(--border-color);
-                    "
-                  >
-                    <span class="legend-square-dash fill-final-dash"></span>
-                    <span style="vertical-align: middle">Số lần final</span>
-                  </td>
-                  <td
-                    v-for="m in 12"
-                    :key="'d-td1-' + m"
-                    style="
-                      width: 6.923%;
-                      border: 1px solid var(--border-color);
-                      font-size: 12px;
-                      text-align: center;
-                      padding: 8px 4px;
-                    "
-                  >
-                    {{ getBarVal(m, 0) }}
-                  </td>
-                  <td
-                    class="fw-bold"
-                    style="
-                      width: 6.923%;
-                      border: 1px solid var(--border-color);
-                      font-size: 12px;
-                      text-align: center;
-                      padding: 8px 4px;
-                    "
-                  >
-                    {{ totalFinal }}
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    class="cell-label"
-                    style="
-                      font-size: 12px;
-                      text-align: left;
-                      padding: 8px 10px;
-                      border: 1px solid var(--border-color);
-                    "
-                  >
-                    <span class="legend-square-dash fill-failed-dash"></span>
-                    <span style="vertical-align: middle">Số lần không đạt</span>
-                  </td>
-                  <td
-                    v-for="m in 12"
-                    :key="'d-td2-' + m"
-                    style="
-                      border: 1px solid var(--border-color);
-                      font-size: 12px;
-                      text-align: center;
-                      padding: 8px 4px;
-                    "
-                  >
-                    {{ getBarVal(m, 1) }}
-                  </td>
-                  <td
-                    class="fw-bold"
-                    style="
-                      border: 1px solid var(--border-color);
-                      font-size: 12px;
-                      text-align: center;
-                      padding: 8px 4px;
-                    "
-                  >
-                    {{ totalFailed }}
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    class="cell-label"
-                    style="
-                      font-size: 12px;
-                      text-align: left;
-                      padding: 8px 10px;
-                      border: 1px solid var(--border-color);
-                    "
-                  >
-                    <span
-                      class="legend-square-dash fill-passed-rate-dash"
-                    ></span>
-                    <span style="vertical-align: middle">% Đạt</span>
-                  </td>
-                  <td
-                    v-for="m in 12"
-                    :key="'d-td3-' + m"
-                    style="
-                      border: 1px solid var(--border-color);
-                      font-size: 12px;
-                      text-align: center;
-                      padding: 8px 4px;
-                    "
-                  >
-                    {{ getPassedRateForMonth(m) }}%
-                  </td>
-                  <td
-                    class="fw-bold"
-                    style="
-                      border: 1px solid var(--border-color);
-                      font-size: 12px;
-                      text-align: center;
-                      padding: 8px 4px;
-                    "
-                  >
-                    {{ totalPassedRate }}%
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    class="cell-label"
-                    style="
-                      font-size: 12px;
-                      text-align: left;
-                      padding: 8px 10px;
-                      border: 1px solid var(--border-color);
-                    "
-                  >
-                    <span
-                      class="legend-square-dash fill-failed-rate-dash"
-                    ></span>
-                    <span style="vertical-align: middle">% Không đạt</span>
-                  </td>
-                  <td
-                    v-for="m in 12"
-                    :key="'d-td4-' + m"
-                    style="
-                      border: 1px solid var(--border-color);
-                      font-size: 12px;
-                      text-align: center;
-                      padding: 8px 4px;
-                    "
-                  >
-                    {{ getFailedRateForMonth(m) }}%
-                  </td>
-                  <td
-                    class="fw-bold"
-                    style="
-                      border: 1px solid var(--border-color);
-                      font-size: 12px;
-                      text-align: center;
-                      padding: 8px 4px;
-                    "
-                  >
-                    {{ totalFailedRate }}%
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <!-- Bộ phận QLCL -->
+            <div class="signature-block">
+              <div class="signature-date-header">
+                <span
+                  v-if="signatures.qlcl.date"
+                  class="signature-date-display"
+                >
+                  Ngày {{ signatures.qlcl.dateObj.day }} tháng
+                  {{ signatures.qlcl.dateObj.month }} Năm
+                  {{ signatures.qlcl.dateObj.year }}
+                </span>
+                <span v-else class="signature-date-display date-placeholder">
+                  Ngày _____ tháng _____ Năm {{ selectedYear }}
+                </span>
+              </div>
+              <span class="signature-role">Bộ phận QLCL</span>
+              <div class="signature-pad-area">
+                <canvas
+                  v-if="!signatures.qlcl.data"
+                  ref="qlclCanvas"
+                  class="signature-canvas"
+                  @mousedown="startDraw('qlcl', $event)"
+                  @mousemove="draw('qlcl', $event)"
+                  @mouseup="stopDraw('qlcl')"
+                  @mouseleave="stopDraw('qlcl')"
+                  @touchstart.prevent="startDrawTouch('qlcl', $event)"
+                  @touchmove.prevent="drawTouch('qlcl', $event)"
+                  @touchend.prevent="stopDraw('qlcl')"
+                ></canvas>
+                <div v-else class="signature-saved">
+                  <img :src="signatures.qlcl.data" alt="Chữ ký QLCL" />
+                </div>
+              </div>
+              <div class="signature-actions">
+                <button
+                  v-if="!signatures.qlcl.data"
+                  class="sig-btn sig-btn-save"
+                  @click="saveSignature('qlcl')"
+                  :disabled="!signatures.qlcl.hasDrawn"
+                >
+                  ✓ Ký xác nhận
+                </button>
+                <button
+                  v-if="!signatures.qlcl.data"
+                  class="sig-btn sig-btn-clear"
+                  @click="clearCanvas('qlcl')"
+                >
+                  ✕ Xóa
+                </button>
+                <button
+                  v-if="signatures.qlcl.data"
+                  class="sig-btn sig-btn-redo"
+                  @click="redoSignature('qlcl')"
+                >
+                  ↺ Ký lại
+                </button>
+              </div>
+              <span v-if="signatures.qlcl.date" class="signature-date">
+                Đã ký ngày: {{ signatures.qlcl.date }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -701,16 +697,36 @@
         <!-- Signing Signatures Footer -->
         <footer class="print-report-footer print-page4-footer">
           <div class="footer-sign-col">
-            <span class="fw-bold">Giám đốc</span>
+            <div style="display: inline-block; text-align: center">
+              <span style="visibility: hidden; display: block"
+                >Ngày tháng Năm</span
+              >
+
+              <span class="fw-bold margin-top-xs block">Giám đốc</span>
+              <div v-if="signatures.director.data" class="print-signature-img">
+                <img :src="signatures.director.data" alt="Chữ ký Giám đốc" />
+              </div>
+              <div v-else class="print-signature-placeholder"></div>
+            </div>
           </div>
+
           <div class="footer-sign-col text-right">
             <div style="display: inline-block; text-align: center">
-              <span
-                >Ngày &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tháng
+              <span v-if="signatures.qlcl.dateObj">
+                Ngày {{ signatures.qlcl.dateObj.day }} tháng
+                {{ signatures.qlcl.dateObj.month }} Năm
+                {{ signatures.qlcl.dateObj.year }}
+              </span>
+              <span v-else>
+                Ngày &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tháng
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Năm
-                {{ selectedYear }}</span
-              >
+                {{ selectedYear }}
+              </span>
               <span class="fw-bold margin-top-xs block">Bộ phận QLCL</span>
+              <div v-if="signatures.qlcl.data" class="print-signature-img">
+                <img :src="signatures.qlcl.data" alt="Chữ ký QLCL" />
+              </div>
+              <div v-else class="print-signature-placeholder"></div>
             </div>
           </div>
         </footer>
@@ -774,6 +790,28 @@ export default {
       barConfig: {
         width: 22,
         gap: 0,
+      },
+
+      // Signature state
+      signatures: {
+        director: {
+          data: null,
+          date: null,
+          dateObj: null,
+          isDrawing: false,
+          hasDrawn: false,
+          lastX: 0,
+          lastY: 0,
+        },
+        qlcl: {
+          data: null,
+          date: null,
+          dateObj: null,
+          isDrawing: false,
+          hasDrawn: false,
+          lastX: 0,
+          lastY: 0,
+        },
       },
     };
   },
@@ -903,6 +941,46 @@ export default {
         ],
       };
     },
+    mergedChartOption() {
+      const base = this.chartOption;
+      const isDark = this.theme === "dark";
+      const textColor = isDark ? "#cbd5e1" : "#334155";
+      return {
+        ...base,
+        legend: { show: false },
+        grid: {
+          left: "10.5%",
+          right: "0.3%",
+          bottom: 0,
+          top: "8%",
+          containLabel: false,
+        },
+        xAxis: {
+          ...base.xAxis,
+          axisLabel: { show: false },
+          axisTick: { show: false },
+          axisLine: { show: false },
+        },
+        yAxis: {
+          ...base.yAxis,
+          axisLabel: {
+            color: textColor,
+            fontSize: 11,
+            margin: 4,
+          },
+          axisLine: {
+            show: true,
+            lineStyle: { color: isDark ? "#475569" : "#64748b" },
+          },
+          splitLine: {
+            lineStyle: {
+              color: isDark ? "#334155" : "#cbd5e1",
+              type: "dashed",
+            },
+          },
+        },
+      };
+    },
   },
   methods: {
     exportExcel() {
@@ -1011,6 +1089,159 @@ export default {
 
     hideTooltip() {
       this.tooltip.visible = false;
+    },
+
+    // Signature methods
+    initCanvas(role) {
+      const refName = role === "director" ? "directorCanvas" : "qlclCanvas";
+      this.$nextTick(() => {
+        const canvas = this.$refs[refName];
+        if (!canvas) return;
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        const ctx = canvas.getContext("2d");
+        ctx.strokeStyle = "#1e293b";
+        ctx.lineWidth = 2;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      });
+    },
+    getCanvasPos(role, e) {
+      const refName = role === "director" ? "directorCanvas" : "qlclCanvas";
+      const canvas = this.$refs[refName];
+      if (!canvas) return { x: 0, y: 0 };
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+    },
+    startDraw(role, e) {
+      const sig = this.signatures[role];
+      sig.isDrawing = true;
+      const pos = this.getCanvasPos(role, e);
+      sig.lastX = pos.x;
+      sig.lastY = pos.y;
+    },
+    draw(role, e) {
+      const sig = this.signatures[role];
+      if (!sig.isDrawing) return;
+      const refName = role === "director" ? "directorCanvas" : "qlclCanvas";
+      const canvas = this.$refs[refName];
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const pos = this.getCanvasPos(role, e);
+      ctx.beginPath();
+      ctx.moveTo(sig.lastX, sig.lastY);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+      sig.lastX = pos.x;
+      sig.lastY = pos.y;
+      sig.hasDrawn = true;
+    },
+    stopDraw(role) {
+      this.signatures[role].isDrawing = false;
+    },
+    startDrawTouch(role, e) {
+      const touch = e.touches[0];
+      this.startDraw(role, touch);
+    },
+    drawTouch(role, e) {
+      const touch = e.touches[0];
+      this.draw(role, touch);
+    },
+    clearCanvas(role) {
+      const refName = role === "director" ? "directorCanvas" : "qlclCanvas";
+      const canvas = this.$refs[refName];
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      this.signatures[role].hasDrawn = false;
+    },
+    saveSignature(role) {
+      const refName = role === "director" ? "directorCanvas" : "qlclCanvas";
+      const canvas = this.$refs[refName];
+      if (!canvas) return;
+      const dataUrl = canvas.toDataURL("image/png");
+      const now = new Date();
+      const dateStr = `${now.getDate().toString().padStart(2, "0")}/${(
+        now.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}/${now.getFullYear()} ${now
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+      const dateObj = {
+        day: now.getDate().toString().padStart(2, "0"),
+        month: (now.getMonth() + 1).toString().padStart(2, "0"),
+        year: now.getFullYear(),
+      };
+      this.signatures[role].data = dataUrl;
+      this.signatures[role].date = dateStr;
+      this.signatures[role].dateObj = dateObj;
+      this.persistSignatures();
+    },
+    redoSignature(role) {
+      this.signatures[role].data = null;
+      this.signatures[role].date = null;
+      this.signatures[role].dateObj = null;
+      this.signatures[role].hasDrawn = false;
+      this.persistSignatures();
+      this.$nextTick(() => this.initCanvas(role));
+    },
+    persistSignatures() {
+      const toSave = {};
+      ["director", "qlcl"].forEach((role) => {
+        toSave[role] = {
+          data: this.signatures[role].data,
+          date: this.signatures[role].date,
+          dateObj: this.signatures[role].dateObj,
+        };
+      });
+      localStorage.setItem(
+        `final-report-signatures-${this.selectedYear}`,
+        JSON.stringify(toSave)
+      );
+    },
+    loadSignatures() {
+      const saved = localStorage.getItem(
+        `final-report-signatures-${this.selectedYear}`
+      );
+      if (!saved) return;
+      try {
+        const parsed = JSON.parse(saved);
+        ["director", "qlcl"].forEach((role) => {
+          if (parsed[role]) {
+            this.signatures[role].data = parsed[role].data || null;
+            this.signatures[role].date = parsed[role].date || null;
+            this.signatures[role].dateObj = parsed[role].dateObj || null;
+          }
+        });
+      } catch (e) {
+        // ignore corrupt data
+      }
+    },
+  },
+  mounted() {
+    this.loadSignatures();
+    this.$nextTick(() => {
+      this.initCanvas("director");
+      this.initCanvas("qlcl");
+    });
+    this._resizeHandler = () => {
+      if (!this.signatures.director.data) this.initCanvas("director");
+      if (!this.signatures.qlcl.data) this.initCanvas("qlcl");
+    };
+    window.addEventListener("resize", this._resizeHandler);
+  },
+  beforeUnmount() {
+    window.removeEventListener("resize", this._resizeHandler);
+  },
+  watch: {
+    selectedYear() {
+      this.loadSignatures();
     },
   },
 };
@@ -1143,7 +1374,6 @@ export default {
   cursor: pointer;
   position: relative;
   transition: background-color 0.15s ease;
-  width: 12%;
   font-weight: 500;
   text-align: center;
 }
@@ -1299,6 +1529,65 @@ export default {
 .chart {
   width: 100%;
   height: 250px;
+}
+
+/* Merged chart + table layout */
+.chart-with-table {
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0 !important;
+}
+
+.chart-with-table .chart {
+  height: 220px;
+  padding: 12px 0 0 0;
+}
+
+.merged-summary-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.merged-compact-table {
+  min-width: 800px;
+}
+
+.merged-th-label {
+  width: 10.5%;
+  border: 1px solid var(--border-color);
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  height: 26px;
+  background: none;
+}
+
+.merged-th-month {
+  width: 6.88%;
+  border: 1px solid var(--border-color);
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  background: none;
+}
+
+.merged-th-total {
+  font-weight: 800;
+}
+
+.merged-td-label {
+  width: 10.5%;
+  font-size: 12px;
+  text-align: left;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+}
+
+.merged-td-val {
+  border: 1px solid var(--border-color);
+  font-size: 12px;
+  text-align: center;
+  padding: 6px 4px;
 }
 
 .text-right {
@@ -1722,6 +2011,175 @@ export default {
   @page {
     size: auto;
     margin: 0;
+  }
+}
+
+/* ===== Signature Section ===== */
+.signature-section {
+  margin-top: 8px;
+}
+
+.signature-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  letter-spacing: 0.3px;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.signature-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.signature-role {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.3px;
+}
+
+.signature-date-header {
+  min-height: 20px;
+}
+
+.signature-date-display {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.date-placeholder {
+  color: var(--text-secondary);
+}
+
+.signature-pad-area {
+  width: 100%;
+  max-width: 340px;
+  height: 140px;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.signature-pad-area:hover {
+  border-color: var(--accent-color);
+}
+
+.signature-canvas {
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  display: block;
+  touch-action: none;
+}
+
+.signature-saved {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.signature-saved img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.signature-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.sig-btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sig-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sig-btn-save {
+  background-color: #10b981;
+  color: white;
+}
+
+.sig-btn-save:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.sig-btn-clear {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.sig-btn-clear:hover {
+  background-color: var(--border-color);
+}
+
+.sig-btn-redo {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.sig-btn-redo:hover {
+  background-color: #d97706;
+}
+
+.signature-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Print signature images */
+.print-signature-img {
+  margin-top: 10px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.print-signature-img img {
+  max-height: 75px;
+  max-width: 180px;
+  object-fit: contain;
+}
+
+.print-signature-placeholder {
+  height: 80px;
+}
+
+@media (max-width: 640px) {
+  .signature-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 }
 </style>
