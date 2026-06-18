@@ -7,19 +7,22 @@
         <div class="table-card card-box">
           <div class="table-title-container">
             <h4>Bảng Tổng Hợp Kết Quả Final XN-Chợ Gạo</h4>
-            <span class="table-subtitle">Nhấp đúp chuột vào bất kỳ ô số liệu nào dưới đây để chỉnh sửa</span>
+            <span class="table-subtitle"
+              >Nhấp đúp chuột vào bất kỳ ô số liệu nào dưới đây để chỉnh
+              sửa</span
+            >
           </div>
 
           <div class="responsive-table-wrapper">
             <table class="dashboard-table final-table">
               <thead>
                 <tr>
-                  <th style="width: 8%;">Tháng</th>
-                  <th style="width: 12%;">Số lần final</th>
-                  <th style="width: 12%;">Số lần đạt</th>
-                  <th style="width: 12%;">Số lần không đạt</th>
-                  <th style="width: 12%;">% Đạt</th>
-                  <th style="width: 12%;">% Không đạt</th>
+                  <th style="width: 8%">Tháng</th>
+                  <th style="width: 12%">Số lần final</th>
+                  <th style="width: 12%">Số lần đạt</th>
+                  <th style="width: 12%">Số lần không đạt</th>
+                  <th style="width: 12%">% Đạt</th>
+                  <th style="width: 12%">% Không đạt</th>
                   <th>Lỗi bị tái chế</th>
                 </tr>
               </thead>
@@ -27,12 +30,15 @@
                 <tr v-for="(row, idx) in finalReportData.rows" :key="row.month">
                   <td class="row-label text-center">{{ row.month }}</td>
                   <!-- Final Count -->
-                  <td 
-                    :class="['cell-editable', { editing: isEditing(idx, 'final') }]"
+                  <td
+                    :class="[
+                      'cell-editable',
+                      { editing: isEditing(idx, 'final') },
+                    ]"
                     @dblclick="startEdit(idx, 'final', row.final)"
                   >
                     <span v-if="!isEditing(idx, 'final')">{{ row.final }}</span>
-                    <input 
+                    <input
                       v-else
                       :ref="'input-' + idx + '-final'"
                       type="number"
@@ -45,12 +51,17 @@
                     />
                   </td>
                   <!-- Passed Count -->
-                  <td 
-                    :class="['cell-editable', { editing: isEditing(idx, 'passed') }]"
+                  <td
+                    :class="[
+                      'cell-editable',
+                      { editing: isEditing(idx, 'passed') },
+                    ]"
                     @dblclick="startEdit(idx, 'passed', row.passed)"
                   >
-                    <span v-if="!isEditing(idx, 'passed')">{{ row.passed }}</span>
-                    <input 
+                    <span v-if="!isEditing(idx, 'passed')">{{
+                      row.passed
+                    }}</span>
+                    <input
                       v-else
                       :ref="'input-' + idx + '-passed'"
                       type="number"
@@ -63,12 +74,17 @@
                     />
                   </td>
                   <!-- Failed Count -->
-                  <td 
-                    :class="['cell-editable', { editing: isEditing(idx, 'failed') }]"
+                  <td
+                    :class="[
+                      'cell-editable',
+                      { editing: isEditing(idx, 'failed') },
+                    ]"
                     @dblclick="startEdit(idx, 'failed', row.failed)"
                   >
-                    <span v-if="!isEditing(idx, 'failed')">{{ row.failed }}</span>
-                    <input 
+                    <span v-if="!isEditing(idx, 'failed')">{{
+                      row.failed
+                    }}</span>
+                    <input
                       v-else
                       :ref="'input-' + idx + '-failed'"
                       type="number"
@@ -83,14 +99,23 @@
                   <!-- % Passed (Auto Computed) -->
                   <td class="cell-calculated">{{ getPassedRate(row) }}%</td>
                   <!-- % Failed (Auto Computed) -->
-                  <td class="cell-calculated text-danger">{{ getFailedRate(row) }}%</td>
+                  <td class="cell-calculated text-danger">
+                    {{ getFailedRate(row) }}%
+                  </td>
                   <!-- Defects List -->
-                  <td 
-                    :class="['cell-editable text-left-align', { editing: isEditing(idx, 'defects') }]"
+                  <td
+                    :class="[
+                      'cell-editable text-left-align',
+                      { editing: isEditing(idx, 'defects') },
+                    ]"
                     @dblclick="startEdit(idx, 'defects', row.defects)"
                   >
-                    <span v-if="!isEditing(idx, 'defects')" class="cell-text-desc">{{ row.defects || '—' }}</span>
-                    <input 
+                    <span
+                      v-if="!isEditing(idx, 'defects')"
+                      class="cell-text-desc"
+                      >{{ row.defects || "—" }}</span
+                    >
+                    <input
                       v-else
                       :ref="'input-' + idx + '-defects'"
                       type="text"
@@ -104,12 +129,16 @@
                 </tr>
                 <!-- Totals Row -->
                 <tr class="fw-bold bg-highlight">
-                  <td class="row-label text-center" style="text-align: center;">Tổng</td>
-                  <td style="text-align: center;">{{ totalFinal }}</td>
-                  <td style="text-align: center;">{{ totalPassed }}</td>
-                  <td style="text-align: center;">{{ totalFailed }}</td>
+                  <td class="row-label text-center" style="text-align: center">
+                    Tổng
+                  </td>
+                  <td style="text-align: center">{{ totalFinal }}</td>
+                  <td style="text-align: center">{{ totalPassed }}</td>
+                  <td style="text-align: center">{{ totalFailed }}</td>
                   <td class="cell-calculated">{{ totalPassedRate }}%</td>
-                  <td class="cell-calculated text-danger">{{ totalFailedRate }}%</td>
+                  <td class="cell-calculated text-danger">
+                    {{ totalFailedRate }}%
+                  </td>
                   <td class="text-left-align color-gray">—</td>
                 </tr>
               </tbody>
@@ -121,7 +150,10 @@
         <div class="chart-card card-box">
           <div class="table-title-container">
             <h4>Biểu Đồ Số Lần Final XN Chợ Gạo</h4>
-            <span class="table-subtitle">Thể hiện trực quan số lần kiểm tra final qua 12 tháng cùng tổng số cả năm</span>
+            <span class="table-subtitle"
+              >Thể hiện trực quan số lần kiểm tra final qua 12 tháng cùng tổng
+              số cả năm</span
+            >
           </div>
 
           <div class="chart-container">
@@ -135,57 +167,219 @@
         <div class="table-card card-box">
           <div class="table-title-container">
             <h4>Bảng Tóm Tắt Số Liệu Theo Tháng</h4>
-            <span class="table-subtitle">Tổng hợp nhanh số lần final, số lần không đạt và tỷ lệ % qua từng tháng</span>
+            <span class="table-subtitle"
+              >Tổng hợp nhanh số lần final, số lần không đạt và tỷ lệ % qua từng
+              tháng</span
+            >
           </div>
 
           <div class="responsive-table-wrapper">
-            <table class="dashboard-compact-table" style="table-layout: fixed; width: 100%; min-width: 900px;">
+            <table
+              class="dashboard-compact-table"
+              style="table-layout: fixed; width: 100%; min-width: 900px"
+            >
               <thead>
                 <tr>
-                  <th style="width: 7.0%; border: 1px solid var(--border-color); font-size: 11px; font-weight: bold; text-align: center; height: 28px; background: none;"></th>
-                  <th v-for="m in 12" :key="'d-th-'+m" style="width: 6.923%; border: 1px solid var(--border-color); font-size: 11px; font-weight: bold; text-align: center; background: none;">T{{ m }}</th>
-                  <th style="width: 6.923%; border: 1px solid var(--border-color); font-size: 11px; font-weight: bold; text-align: center; background: none;">Tổng</th>
+                  <th
+                    style="
+                      width: 7%;
+                      border: 1px solid var(--border-color);
+                      font-size: 11px;
+                      font-weight: bold;
+                      text-align: center;
+                      height: 28px;
+                      background: none;
+                    "
+                  ></th>
+                  <th
+                    v-for="m in 12"
+                    :key="'d-th-' + m"
+                    style="
+                      width: 6.923%;
+                      border: 1px solid var(--border-color);
+                      font-size: 11px;
+                      font-weight: bold;
+                      text-align: center;
+                      background: none;
+                    "
+                  >
+                    T{{ m }}
+                  </th>
+                  <th
+                    style="
+                      width: 6.923%;
+                      border: 1px solid var(--border-color);
+                      font-size: 11px;
+                      font-weight: bold;
+                      text-align: center;
+                      background: none;
+                    "
+                  >
+                    Tổng
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class="cell-label" style="width: 7.0%; font-size: 12px; text-align: left; padding: 8px 10px; border: 1px solid var(--border-color);">
+                  <td
+                    class="cell-label"
+                    style="
+                      width: 7%;
+                      font-size: 12px;
+                      text-align: left;
+                      padding: 8px 10px;
+                      border: 1px solid var(--border-color);
+                    "
+                  >
                     <span class="legend-square-dash fill-final-dash"></span>
-                    <span style="vertical-align: middle;">Số lần final</span>
+                    <span style="vertical-align: middle">Số lần final</span>
                   </td>
-                  <td v-for="m in 12" :key="'d-td1-'+m" style="width: 6.923%; border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ getBarVal(m, 0) }}</td>
-                  <td class="fw-bold" style="width: 6.923%; border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ totalFinal }}</td>
+                  <td
+                    v-for="m in 12"
+                    :key="'d-td1-' + m"
+                    style="
+                      width: 6.923%;
+                      border: 1px solid var(--border-color);
+                      font-size: 12px;
+                      text-align: center;
+                      padding: 8px 4px;
+                    "
+                  >
+                    {{ getBarVal(m, 0) }}
+                  </td>
+                  <td
+                    class="fw-bold"
+                    style="
+                      width: 6.923%;
+                      border: 1px solid var(--border-color);
+                      font-size: 12px;
+                      text-align: center;
+                      padding: 8px 4px;
+                    "
+                  >
+                    {{ totalFinal }}
+                  </td>
                 </tr>
                 <tr>
-                  <td class="cell-label" style="font-size: 12px; text-align: left; padding: 8px 10px; border: 1px solid var(--border-color);">
+                  <td
+                    class="cell-label"
+                    style="
+                      font-size: 12px;
+                      text-align: left;
+                      padding: 8px 10px;
+                      border: 1px solid var(--border-color);
+                    "
+                  >
                     <span class="legend-square-dash fill-failed-dash"></span>
-                    <span style="vertical-align: middle;">Số lần không đạt</span>
+                    <span style="vertical-align: middle">Số lần không đạt</span>
                   </td>
-                  <td v-for="m in 12" :key="'d-td2-'+m" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ getBarVal(m, 1) }}</td>
-                  <td class="fw-bold" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ totalFailed }}</td>
+                  <td
+                    v-for="m in 12"
+                    :key="'d-td2-' + m"
+                    style="
+                      border: 1px solid var(--border-color);
+                      font-size: 12px;
+                      text-align: center;
+                      padding: 8px 4px;
+                    "
+                  >
+                    {{ getBarVal(m, 1) }}
+                  </td>
+                  <td
+                    class="fw-bold"
+                    style="
+                      border: 1px solid var(--border-color);
+                      font-size: 12px;
+                      text-align: center;
+                      padding: 8px 4px;
+                    "
+                  >
+                    {{ totalFailed }}
+                  </td>
                 </tr>
                 <tr>
-                  <td class="cell-label" style="font-size: 12px; text-align: left; padding: 8px 10px; border: 1px solid var(--border-color);">
-                    <span class="legend-square-dash fill-passed-rate-dash"></span>
-                    <span style="vertical-align: middle;">% Đạt</span>
+                  <td
+                    class="cell-label"
+                    style="
+                      font-size: 12px;
+                      text-align: left;
+                      padding: 8px 10px;
+                      border: 1px solid var(--border-color);
+                    "
+                  >
+                    <span
+                      class="legend-square-dash fill-passed-rate-dash"
+                    ></span>
+                    <span style="vertical-align: middle">% Đạt</span>
                   </td>
-                  <td v-for="m in 12" :key="'d-td3-'+m" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ getPassedRateForMonth(m) }}%</td>
-                  <td class="fw-bold" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ totalPassedRate }}%</td>
+                  <td
+                    v-for="m in 12"
+                    :key="'d-td3-' + m"
+                    style="
+                      border: 1px solid var(--border-color);
+                      font-size: 12px;
+                      text-align: center;
+                      padding: 8px 4px;
+                    "
+                  >
+                    {{ getPassedRateForMonth(m) }}%
+                  </td>
+                  <td
+                    class="fw-bold"
+                    style="
+                      border: 1px solid var(--border-color);
+                      font-size: 12px;
+                      text-align: center;
+                      padding: 8px 4px;
+                    "
+                  >
+                    {{ totalPassedRate }}%
+                  </td>
                 </tr>
                 <tr>
-                  <td class="cell-label" style="font-size: 12px; text-align: left; padding: 8px 10px; border: 1px solid var(--border-color);">
-                    <span class="legend-square-dash fill-failed-rate-dash"></span>
-                    <span style="vertical-align: middle;">% Không đạt</span>
+                  <td
+                    class="cell-label"
+                    style="
+                      font-size: 12px;
+                      text-align: left;
+                      padding: 8px 10px;
+                      border: 1px solid var(--border-color);
+                    "
+                  >
+                    <span
+                      class="legend-square-dash fill-failed-rate-dash"
+                    ></span>
+                    <span style="vertical-align: middle">% Không đạt</span>
                   </td>
-                  <td v-for="m in 12" :key="'d-td4-'+m" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ getFailedRateForMonth(m) }}%</td>
-                  <td class="fw-bold" style="border: 1px solid var(--border-color); font-size: 12px; text-align: center; padding: 8px 4px;">{{ totalFailedRate }}%</td>
+                  <td
+                    v-for="m in 12"
+                    :key="'d-td4-' + m"
+                    style="
+                      border: 1px solid var(--border-color);
+                      font-size: 12px;
+                      text-align: center;
+                      padding: 8px 4px;
+                    "
+                  >
+                    {{ getFailedRateForMonth(m) }}%
+                  </td>
+                  <td
+                    class="fw-bold"
+                    style="
+                      border: 1px solid var(--border-color);
+                      font-size: 12px;
+                      text-align: center;
+                      padding: 8px 4px;
+                    "
+                  >
+                    {{ totalFailedRate }}%
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-
     </main>
 
     <!-- Print / Official A4 Document View -->
@@ -200,26 +394,24 @@
           <div class="print-report-main-title">{{ finalReportData.title }}</div>
         </header>
 
-
-
         <!-- Table 1 (Main Table) -->
         <table class="print-data-table print-final-main-table">
           <thead>
             <tr>
-              <th rowspan="2" style="width: 5%;">Tháng</th>
-              <th rowspan="2" style="width: 8%;">Số lần final</th>
-              <th rowspan="2" style="width: 8%;">Số lần đạt</th>
-              <th rowspan="2" style="width: 9%;">Số lần không đạt</th>
-              <th colspan="2" style="width: 16%;">% Tỷ lệ</th>
+              <th rowspan="2" style="width: 5%">Tháng</th>
+              <th rowspan="2" style="width: 8%">Số lần final</th>
+              <th rowspan="2" style="width: 8%">Số lần đạt</th>
+              <th rowspan="2" style="width: 9%">Số lần không đạt</th>
+              <th colspan="2" style="width: 16%">% Tỷ lệ</th>
               <th rowspan="2">Lỗi bị tái chế</th>
             </tr>
             <tr>
-              <th style="width: 8%;">% Đạt</th>
-              <th style="width: 8%;">% Không đạt</th>
+              <th style="width: 8%">% Đạt</th>
+              <th style="width: 8%">% Không đạt</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in finalReportData.rows" :key="'p-row-'+row.month">
+            <tr v-for="row in finalReportData.rows" :key="'p-row-' + row.month">
               <td class="fw-bold">{{ row.month }}</td>
               <td>{{ row.final }}</td>
               <td>{{ row.passed }}</td>
@@ -242,89 +434,264 @@
         </table>
 
         <!-- SVG Bar Chart area on A4 page -->
-        <div class="print-chart-block" style="margin-top: 15px; width: 100%; display: flex; flex-direction: column;">
+        <div
+          class="print-chart-block"
+          style="
+            margin-top: 15px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+          "
+        >
           <!-- Unified Chart SVG -->
-          <svg viewBox="0 0 1000 146" class="paper-svg-chart" style="width: 100%; display: block; overflow: visible;">
+          <svg
+            viewBox="0 0 1000 146"
+            class="paper-svg-chart"
+            style="width: 100%; display: block; overflow: visible"
+          >
             <!-- Y Axis Labels -->
-            <text v-for="grid in paperGridLines" :key="'pl-'+grid.label" x="170" :y="grid.y + 3.5" class="paper-axis-text text-right">{{ grid.label }}</text>
+            <text
+              v-for="grid in paperGridLines"
+              :key="'pl-' + grid.label"
+              x="170"
+              :y="grid.y + 3.5"
+              class="paper-axis-text text-right"
+            >
+              {{ grid.label }}
+            </text>
 
             <!-- Y Axis solid line -->
-            <line x1="185" y1="15" x2="185" y2="145" stroke="#000" stroke-width="1.2" />
+            <line
+              x1="185"
+              y1="15"
+              x2="185"
+              y2="145"
+              stroke="#000"
+              stroke-width="1.2"
+            />
 
             <!-- Y Axis ticks (pointing left) -->
-            <line v-for="grid in paperGridLines" :key="'pt-'+grid.label" x1="179" :y1="grid.y" x2="185" :y2="grid.y" stroke="#000" stroke-width="1.2" />
+            <line
+              v-for="grid in paperGridLines"
+              :key="'pt-' + grid.label"
+              x1="179"
+              :y1="grid.y"
+              x2="185"
+              :y2="grid.y"
+              stroke="#000"
+              stroke-width="1.2"
+            />
 
             <!-- X Axis solid line -->
-            <line x1="185" y1="145" x2="1000" y2="145" stroke="#000" stroke-width="1.2" />
+            <line
+              x1="185"
+              y1="145"
+              x2="1000"
+              y2="145"
+              stroke="#000"
+              stroke-width="1.2"
+            />
 
             <!-- X Axis ticks (removed to fuse table with X-axis) -->
 
-
             <!-- Bars (Double series for final & failed) -->
-            <g v-for="m in 13" :key="'pb-'+m">
+            <g v-for="m in 13" :key="'pb-' + m">
               <!-- Bar: Số lần final -->
-              <rect 
-                :x="185 + (m - 1) * 62.6923 + 62.6923 / 2 - 14" 
-                :y="getPaperBarY(getBarVal(m, 0))" 
-                width="14" 
-                :height="getPaperBarHeight(getBarVal(m, 0))" 
-                fill="#404040" 
-                stroke="#000" 
-                stroke-width="1" 
+              <rect
+                :x="185 + (m - 1) * 62.6923 + 62.6923 / 2 - 14"
+                :y="getPaperBarY(getBarVal(m, 0))"
+                width="14"
+                :height="getPaperBarHeight(getBarVal(m, 0))"
+                fill="#404040"
+                stroke="#000"
+                stroke-width="1"
               />
               <!-- Bar: Số lần không đạt -->
-              <rect 
-                :x="185 + (m - 1) * 62.6923 + 62.6923 / 2" 
-                :y="getPaperBarY(getBarVal(m, 1))" 
-                width="14" 
-                :height="getPaperBarHeight(getBarVal(m, 1))" 
-                fill="#d2d2d2" 
-                stroke="#000" 
-                stroke-width="1" 
+              <rect
+                :x="185 + (m - 1) * 62.6923 + 62.6923 / 2"
+                :y="getPaperBarY(getBarVal(m, 1))"
+                width="14"
+                :height="getPaperBarHeight(getBarVal(m, 1))"
+                fill="#d2d2d2"
+                stroke="#000"
+                stroke-width="1"
               />
             </g>
           </svg>
 
           <!-- Table 2 (Mini Grid directly below chart) -->
-          <table class="print-data-table print-compact-table" style="margin-top: -1.2px; table-layout: fixed; width: 100%;">
+          <table
+            class="print-data-table print-compact-table"
+            style="margin-top: -1.2px; table-layout: fixed; width: 100%"
+          >
             <thead>
               <tr>
-                <th style="width: 18.5%; border: none; font-family: 'Times New Roman', Times, serif; font-size: 11px; font-weight: bold; text-align: center; height: 18px; background: none;"></th>
-                <th v-for="m in 12" :key="'p-th-'+m" style="width: 6.269%; border: 0.8px solid #000; font-family: 'Times New Roman', Times, serif; font-size: 11px; font-weight: bold; text-align: center; background: none;">T{{ m }}</th>
-                <th style="width: 6.269%; border: 0.8px solid #000; font-family: 'Times New Roman', Times, serif; font-size: 11px; font-weight: bold; text-align: center; background: none;">Tổng</th>
+                <th
+                  style="
+                    width: 18.5%;
+                    border: none;
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 11px;
+                    font-weight: bold;
+                    text-align: center;
+                    height: 18px;
+                    background: none;
+                  "
+                ></th>
+                <th
+                  v-for="m in 12"
+                  :key="'p-th-' + m"
+                  style="
+                    width: 6.269%;
+                    border: 0.8px solid #000;
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 11px;
+                    font-weight: bold;
+                    text-align: center;
+                    background: none;
+                  "
+                >
+                  T{{ m }}
+                </th>
+                <th
+                  style="
+                    width: 6.269%;
+                    border: 0.8px solid #000;
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 11px;
+                    font-weight: bold;
+                    text-align: center;
+                    background: none;
+                  "
+                >
+                  Tổng
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td class="cell-label" style="width: 18.5%; font-family: 'Times New Roman', Times, serif; font-size: 11px; text-align: left; padding: 4px 6px;">
-                  <span style="display: inline-block; width: 10px; height: 10px; border: 1px solid #000; background-color: #404040; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin-right: 4px; vertical-align: middle; margin-top: -2px;"></span>
-                  <span style="vertical-align: middle;">Số lần final</span>
+                <td
+                  class="cell-label"
+                  style="
+                    width: 18.5%;
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 11px;
+                    text-align: left;
+                    padding: 4px 6px;
+                  "
+                >
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 10px;
+                      height: 10px;
+                      border: 1px solid #000;
+                      background-color: #404040;
+                      -webkit-print-color-adjust: exact;
+                      print-color-adjust: exact;
+                      margin-right: 4px;
+                      vertical-align: middle;
+                      margin-top: -2px;
+                    "
+                  ></span>
+                  <span style="vertical-align: middle">Số lần final</span>
                 </td>
-                <td v-for="m in 12" :key="'p-td1-'+m" style="width: 6.269%;">{{ getBarVal(m, 0) }}</td>
-                <td class="fw-bold" style="width: 6.269%;">{{ totalFinal }}</td>
+                <td v-for="m in 12" :key="'p-td1-' + m" style="width: 6.269%">
+                  {{ getBarVal(m, 0) }}
+                </td>
+                <td class="fw-bold" style="width: 6.269%">{{ totalFinal }}</td>
               </tr>
               <tr>
-                <td class="cell-label" style="font-family: 'Times New Roman', Times, serif; font-size: 11px; text-align: left; padding: 4px 6px;">
-                  <span style="display: inline-block; width: 10px; height: 10px; border: 1px solid #000; background-color: #d2d2d2; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin-right: 4px; vertical-align: middle; margin-top: -2px;"></span>
-                  <span style="vertical-align: middle;">Số lần không đạt</span>
+                <td
+                  class="cell-label"
+                  style="
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 11px;
+                    text-align: left;
+                    padding: 4px 6px;
+                  "
+                >
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 10px;
+                      height: 10px;
+                      border: 1px solid #000;
+                      background-color: #d2d2d2;
+                      -webkit-print-color-adjust: exact;
+                      print-color-adjust: exact;
+                      margin-right: 4px;
+                      vertical-align: middle;
+                      margin-top: -2px;
+                    "
+                  ></span>
+                  <span style="vertical-align: middle">Số lần không đạt</span>
                 </td>
-                <td v-for="m in 12" :key="'p-td2-'+m">{{ getBarVal(m, 1) }}</td>
+                <td v-for="m in 12" :key="'p-td2-' + m">
+                  {{ getBarVal(m, 1) }}
+                </td>
                 <td class="fw-bold">{{ totalFailed }}</td>
               </tr>
               <tr>
-                <td class="cell-label" style="font-family: 'Times New Roman', Times, serif; font-size: 11px; text-align: left; padding: 4px 6px;">
-                  <span style="display: inline-block; width: 10px; height: 10px; border: 1px solid #000; background-color: #808080; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin-right: 4px; vertical-align: middle; margin-top: -2px;"></span>
-                  <span style="vertical-align: middle;">% Đạt</span>
+                <td
+                  class="cell-label"
+                  style="
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 11px;
+                    text-align: left;
+                    padding: 4px 6px;
+                  "
+                >
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 10px;
+                      height: 10px;
+                      border: 1px solid #000;
+                      background-color: #808080;
+                      -webkit-print-color-adjust: exact;
+                      print-color-adjust: exact;
+                      margin-right: 4px;
+                      vertical-align: middle;
+                      margin-top: -2px;
+                    "
+                  ></span>
+                  <span style="vertical-align: middle">% Đạt</span>
                 </td>
-                <td v-for="m in 12" :key="'p-td3-'+m">{{ getPassedRateForMonth(m) }}%</td>
+                <td v-for="m in 12" :key="'p-td3-' + m">
+                  {{ getPassedRateForMonth(m) }}%
+                </td>
                 <td class="fw-bold">{{ totalPassedRate }}%</td>
               </tr>
               <tr>
-                <td class="cell-label" style="font-family: 'Times New Roman', Times, serif; font-size: 11px; text-align: left; padding: 4px 6px;">
-                  <span style="display: inline-block; width: 10px; height: 10px; border: 1px solid #000; background-color: #000000; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin-right: 4px; vertical-align: middle; margin-top: -2px;"></span>
-                  <span style="vertical-align: middle;">% Không đạt</span>
+                <td
+                  class="cell-label"
+                  style="
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 11px;
+                    text-align: left;
+                    padding: 4px 6px;
+                  "
+                >
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 10px;
+                      height: 10px;
+                      border: 1px solid #000;
+                      background-color: #000000;
+                      -webkit-print-color-adjust: exact;
+                      print-color-adjust: exact;
+                      margin-right: 4px;
+                      vertical-align: middle;
+                      margin-top: -2px;
+                    "
+                  ></span>
+                  <span style="vertical-align: middle">% Không đạt</span>
                 </td>
-                <td v-for="m in 12" :key="'p-td4-'+m">{{ getFailedRateForMonth(m) }}%</td>
+                <td v-for="m in 12" :key="'p-td4-' + m">
+                  {{ getFailedRateForMonth(m) }}%
+                </td>
                 <td class="fw-bold">{{ totalFailedRate }}%</td>
               </tr>
             </tbody>
@@ -337,58 +704,61 @@
             <span class="fw-bold">Giám đốc</span>
           </div>
           <div class="footer-sign-col text-right">
-            <div style="display: inline-block; text-align: center;">
-              <span>Ngày &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tháng &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Năm {{ selectedYear }}</span>
+            <div style="display: inline-block; text-align: center">
+              <span
+                >Ngày &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tháng
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Năm
+                {{ selectedYear }}</span
+              >
               <span class="fw-bold margin-top-xs block">Bộ phận QLCL</span>
             </div>
           </div>
         </footer>
       </div>
-      
     </div>
   </div>
 </template>
 
 <script>
-import { exportFinalReport } from '@/utils/excelExport';
+import { exportFinalReport } from "@/utils/excelExport";
 
 export default {
-  name: 'FinalReport',
+  name: "FinalReport",
   props: {
     theme: {
       type: String,
-      default: 'dark'
+      default: "dark",
     },
     finalReportData: {
       type: Object,
-      required: true
+      required: true,
     },
     selectedYear: {
       type: Number,
-      default: 2025
-    }
+      default: 2025,
+    },
   },
   data() {
     return {
-      viewMode: 'dashboard',
-      
+      viewMode: "dashboard",
+
       // Inline editing variables
       editState: {
         rowIdx: null,
         key: null, // 'final', 'passed', 'failed', 'defects'
-        value: null
+        value: null,
       },
 
       // Tooltip variables
       tooltip: {
         visible: false,
-        label: '',
-        month: '',
+        label: "",
+        month: "",
         value: 0,
         style: {
-          top: '0px',
-          left: '0px'
-        }
+          top: "0px",
+          left: "0px",
+        },
       },
 
       // Dashboard SVG settings
@@ -398,12 +768,12 @@ export default {
         paddingX: 70,
         paddingY: 30,
         graphHeight: 220,
-        graphWidth: 890
+        graphWidth: 890,
       },
 
       barConfig: {
         width: 22,
-        gap: 0
+        gap: 0,
       },
     };
   },
@@ -413,17 +783,23 @@ export default {
       return this.finalReportData.rows.reduce((sum, row) => sum + row.final, 0);
     },
     totalPassed() {
-      return this.finalReportData.rows.reduce((sum, row) => sum + row.passed, 0);
+      return this.finalReportData.rows.reduce(
+        (sum, row) => sum + row.passed,
+        0
+      );
     },
     totalFailed() {
-      return this.finalReportData.rows.reduce((sum, row) => sum + row.failed, 0);
+      return this.finalReportData.rows.reduce(
+        (sum, row) => sum + row.failed,
+        0
+      );
     },
     totalPassedRate() {
-      if (this.totalFinal === 0) return '0.00';
+      if (this.totalFinal === 0) return "0.00";
       return ((this.totalPassed / this.totalFinal) * 100).toFixed(2);
     },
     totalFailedRate() {
-      if (this.totalFinal === 0) return '0.00';
+      if (this.totalFinal === 0) return "0.00";
       return ((this.totalFailed / this.totalFinal) * 100).toFixed(2);
     },
     // Y Grid lines for paper view SVG (maxY = 250)
@@ -431,66 +807,102 @@ export default {
       const lines = [];
       for (let i = 0; i <= 5; i++) {
         const val = i * 50;
-        lines.push({ label: val, y: 145 - (val * (130 / 250)) }); // 130px height baseline
+        lines.push({ label: val, y: 145 - val * (130 / 250) }); // 130px height baseline
       }
       return lines;
     },
     chartOption() {
-      const isDark = this.theme === 'dark';
-      const textColor = isDark ? '#888' : '#666';
-      const splitLineColor = isDark ? '#222' : '#ddd';
-      const color1 = '#3b82f6'; // Blue
-      const color2 = '#ef4444'; // Red
-      
-      const finalData = Array.from({length: 13}, (_, i) => this.getBarVal(i + 1, 0));
-      const failedData = Array.from({length: 13}, (_, i) => this.getBarVal(i + 1, 1));
-      
+      const isDark = this.theme === "dark";
+
+      // 1. Tăng tương phản cho nhãn chữ (Labels) giúp số liệu hiển thị sắc nét hơn
+      const textColor = isDark ? "#cbd5e1" : "#334155"; // Xám sáng rõ (Dark) | Xám đậm nét (Light)
+
+      // 2. Định nghĩa màu sắc đậm đà, chắc chắn cho đường trục chính (Axis Line)
+      const axisLineColor = isDark ? "#475569" : "#64748b";
+
+      // 3. Tăng bậc màu cho hệ thống lưới nét đứt phía sau (Split Line) để không bị mờ lóa
+      const splitLineColor = isDark ? "#334155" : "#cbd5e1";
+
+      const color1 = isDark ? "#38bdf8" : "#3b82f6";
+
+      const color2 = isDark ? "#ff4d6d" : "#ef4444";
+
+      const finalData = Array.from({ length: 13 }, (_, i) =>
+        this.getBarVal(i + 1, 0)
+      );
+      const failedData = Array.from({ length: 13 }, (_, i) =>
+        this.getBarVal(i + 1, 1)
+      );
+
       return {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         tooltip: {
-          trigger: 'axis',
-          axisPointer: { type: 'shadow' },
-          backgroundColor: isDark ? '#050505' : '#fff',
-          borderColor: isDark ? '#333' : '#ccc',
-          textStyle: { color: isDark ? '#f5f5f5' : '#111' },
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          backgroundColor: isDark ? "#151f32" : "#ffffff",
+          borderColor: isDark ? "#1e293b" : "#e2e8f0",
+          textStyle: { color: isDark ? "#f1f5f9" : "#1e293b" },
           borderWidth: 1,
-          borderRadius: 0,
+          borderRadius: 4,
         },
         legend: {
-          data: ['Số lần final', 'Số lần không đạt'],
+          data: ["Số lần final", "Số lần không đạt"],
           textStyle: { color: textColor },
-          icon: 'rect',
-          bottom: 0
+          icon: "rect",
+          bottom: 0,
         },
-        grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "10%",
+          top: "5%",
+          containLabel: true,
+        },
         xAxis: {
-          type: 'category',
-          data: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'Tổng'],
+          type: "category",
+          data: [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5",
+            "T6",
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11",
+            "T12",
+            "Tổng",
+          ],
           axisLabel: { color: textColor },
-          axisLine: { lineStyle: { color: splitLineColor } },
+          // Đổi từ splitLineColor sang axisLineColor để đường chân trục hoành hiện rõ ràng
+          axisLine: { lineStyle: { color: axisLineColor } },
         },
         yAxis: {
-          type: 'value',
+          type: "value",
           axisLabel: { color: textColor },
-          splitLine: { lineStyle: { color: splitLineColor, type: 'dashed' } }
+          // Bật hiển thị đường trục dọc bên trái (Trục tung) giúp bao khung biểu đồ chắc chắn
+          axisLine: { show: true, lineStyle: { color: axisLineColor } },
+          splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
         },
         series: [
           {
-            name: 'Số lần final',
-            type: 'bar',
+            name: "Số lần final",
+            type: "bar",
             data: finalData,
             itemStyle: { color: color1 },
-            barGap: '10%'
+            barGap: "10%",
           },
           {
-            name: 'Số lần không đạt',
-            type: 'bar',
+            name: "Số lần không đạt",
+            type: "bar",
             data: failedData,
             itemStyle: { color: color2 },
-          }
-        ]
+          },
+        ],
       };
-    }
+    },
   },
   methods: {
     exportExcel() {
@@ -499,23 +911,23 @@ export default {
         passed: this.totalPassed,
         failed: this.totalFailed,
         passedRate: this.totalPassedRate,
-        failedRate: this.totalFailedRate
+        failedRate: this.totalFailedRate,
       });
     },
     triggerPrint() {
       window.print();
     },
     resetData() {
-      this.$emit('reset-data');
+      this.$emit("reset-data");
     },
 
     // Row Rate calculations
     getPassedRate(row) {
-      if (row.final === 0) return '0.00';
+      if (row.final === 0) return "0.00";
       return ((row.passed / row.final) * 100).toFixed(2);
     },
     getFailedRate(row) {
-      if (row.final === 0) return '0.00';
+      if (row.final === 0) return "0.00";
       return ((row.failed / row.final) * 100).toFixed(2);
     },
     getPassedRateForMonth(mIdx) {
@@ -539,7 +951,7 @@ export default {
     // Print A4 Portrait SVG math
     getPaperBarY(value) {
       const ratio = value / 250;
-      return 145 - (ratio * 130); // baseline Y is 145, plot height is 130
+      return 145 - ratio * 130; // baseline Y is 145, plot height is 130
     },
     getPaperBarHeight(value) {
       const ratio = value / 250;
@@ -554,7 +966,7 @@ export default {
       this.editState.rowIdx = rowIdx;
       this.editState.key = key;
       this.editState.value = currentVal;
-      
+
       this.$nextTick(() => {
         const refName = `input-${rowIdx}-${key}`;
         const inputEl = this.$refs[refName];
@@ -573,22 +985,22 @@ export default {
     },
     saveEdit() {
       if (this.editState.rowIdx === null) return;
-      
+
       let finalValue = this.editState.value;
-      if (this.editState.key !== 'defects') {
+      if (this.editState.key !== "defects") {
         finalValue = parseInt(finalValue);
         if (isNaN(finalValue)) {
           finalValue = 0;
         }
         finalValue = Math.max(0, finalValue);
       }
-      
-      this.$emit('update-final-data', {
+
+      this.$emit("update-final-data", {
         monthIdx: this.editState.rowIdx,
         key: this.editState.key,
-        value: finalValue
+        value: finalValue,
       });
-      
+
       this.cancelEdit();
     },
     cancelEdit() {
@@ -599,8 +1011,8 @@ export default {
 
     hideTooltip() {
       this.tooltip.visible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -704,7 +1116,7 @@ export default {
   font-size: 13px;
 }
 
-.dashboard-table th, 
+.dashboard-table th,
 .dashboard-table td {
   padding: 12px 10px;
   text-align: right;
@@ -871,18 +1283,30 @@ export default {
   vertical-align: middle;
 }
 
-.fill-final-dash { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
-.fill-failed-dash { background: linear-gradient(135deg, #ef4444, #f87171); }
-.fill-passed-rate-dash { background-color: #10b981; }
-.fill-failed-rate-dash { background-color: #f59e0b; }
+.fill-final-dash {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+.fill-failed-dash {
+  background: linear-gradient(135deg, #ef4444, #f87171);
+}
+.fill-passed-rate-dash {
+  background-color: #10b981;
+}
+.fill-failed-rate-dash {
+  background-color: #f59e0b;
+}
 
 .chart {
   width: 100%;
   height: 250px;
 }
 
-.text-right { text-anchor: end; }
-.text-center { text-anchor: middle; }
+.text-right {
+  text-anchor: end;
+}
+.text-center {
+  text-anchor: middle;
+}
 
 /* Bar elements */
 .bar-rect {
@@ -927,8 +1351,12 @@ export default {
   border-radius: 4px;
 }
 
-.color-final { background-color: #4f46e5; }
-.color-failed { background-color: #f43f5e; }
+.color-final {
+  background-color: #4f46e5;
+}
+.color-failed {
+  background-color: #f43f5e;
+}
 
 /* Tooltip on SVG Chart */
 .chart-tooltip {
@@ -960,9 +1388,15 @@ export default {
 }
 
 /* Margin helpers */
-.margin-top-md { margin-top: 24px; }
-.margin-top-sm { margin-top: 16px; }
-.margin-top-xs { margin-top: 8px; }
+.margin-top-md {
+  margin-top: 24px;
+}
+.margin-top-sm {
+  margin-top: 16px;
+}
+.margin-top-xs {
+  margin-top: 8px;
+}
 
 /* A4 Print portrait view overrides */
 .a4-document-container {
@@ -984,7 +1418,7 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .print-paper-header {
@@ -1048,7 +1482,7 @@ export default {
 }
 
 .paper-axis-text {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 11px;
   fill: #000;
 }
@@ -1081,12 +1515,22 @@ export default {
   flex-shrink: 0;
 }
 
-.fill-dark { background-color: #404040; }
-.fill-light { background-color: #d2d2d2; }
-.fill-grey { background-color: #8c8c8c; }
-.fill-black { background-color: #000000; }
+.fill-dark {
+  background-color: #404040;
+}
+.fill-light {
+  background-color: #d2d2d2;
+}
+.fill-grey {
+  background-color: #8c8c8c;
+}
+.fill-black {
+  background-color: #000000;
+}
 
-.fw-bold { font-weight: bold; }
+.fw-bold {
+  font-weight: bold;
+}
 
 /* Footers */
 .print-report-footer.print-page4-footer {
@@ -1107,9 +1551,16 @@ export default {
   display: block;
 }
 
-.block { display: block; }
-.fw-bold { font-weight: bold; }
-.text-right { text-anchor: end; text-align: right; }
+.block {
+  display: block;
+}
+.fw-bold {
+  font-weight: bold;
+}
+.text-right {
+  text-anchor: end;
+  text-align: right;
+}
 
 /* Buttons & switches */
 .mode-selector {
@@ -1226,20 +1677,32 @@ export default {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @media print {
   .no-print {
     display: none !important;
   }
-  
+
   .a4-document-container {
     padding: 0 !important;
     background-color: white !important;

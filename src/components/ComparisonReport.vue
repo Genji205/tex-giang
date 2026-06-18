@@ -1,7 +1,5 @@
 <template>
   <div :class="['report-wrapper', viewMode]">
-
-
     <!-- Interactive Dashboard View -->
     <main class="dashboard-content animate-fade-in no-print">
       <section class="charts-comparison-grid">

@@ -199,7 +199,10 @@
                 <span
                   v-for="gridVal in getGridValues(metric)"
                   :key="'p-yl-' + gridVal"
-                  :style="`position: absolute; right: 4px; transform: translateY(-50%); top: ${getPrintY(gridVal, getEffectiveMaxY(metric))}px;`"
+                  :style="`position: absolute; right: 4px; transform: translateY(-50%); top: ${getPrintY(
+                    gridVal,
+                    getEffectiveMaxY(metric)
+                  )}px;`"
                 >
                   {{ formatLabelVal(gridVal) }}%
                 </span>
@@ -567,10 +570,18 @@ export default {
 
     getChartOption(metric) {
       const isDark = this.theme === "dark";
-      const textColor = isDark ? "#888" : "#666";
-      const splitLineColor = isDark ? "#222" : "#ddd";
-      const colorTarget = "#64748b"; // Slate (Mục tiêu)
-      const colorActual = "#06b6d4"; // Cyan (Thực tế)
+
+      // 1. Tăng độ tương phản cho nhãn chữ (Labels) giúp dễ đọc số liệu hơn
+      const textColor = isDark ? "#cbd5e1" : "#334155"; // Xám sáng rõ (Dark) | Xám đậm nét (Light)
+
+      // 2. Định nghĩa màu sắc đậm đà, chắc chắn cho đường trục chính (Axis Line)
+      const axisLineColor = isDark ? "#475569" : "#64748b";
+
+      // 3. Tăng bậc màu cho hệ thống lưới nét đứt phía sau (Split Line) để không bị mờ lóa
+      const splitLineColor = isDark ? "#334155" : "#cbd5e1";
+
+      const colorTarget = isDark ? "#64748b" : "#475569"; // Slate (Mục tiêu)
+      const colorActual = isDark ? "#06b6d4" : "#0891b2"; // Cyan (Thực tế)
 
       return {
         backgroundColor: "transparent",
@@ -581,7 +592,7 @@ export default {
           borderColor: isDark ? "#333" : "#ccc",
           textStyle: { color: isDark ? "#f5f5f5" : "#111" },
           borderWidth: 1,
-          borderRadius: 0,
+          borderRadius: 4,
         },
         legend: {
           data: ["Mục tiêu", "Thực tế"],
@@ -614,12 +625,13 @@ export default {
             "T12",
           ],
           axisLabel: { color: textColor },
-          axisLine: { lineStyle: { color: splitLineColor } },
+          axisLine: { lineStyle: { color: axisLineColor } },
         },
         yAxis: {
           type: "value",
-          max: this.getEffectiveMaxY(metric),
+          max: metric.maxY,
           axisLabel: { color: textColor, formatter: "{value}%" },
+          axisLine: { show: true, lineStyle: { color: axisLineColor } },
           splitLine: { lineStyle: { color: splitLineColor, type: "dashed" } },
         },
         series: [
@@ -673,18 +685,20 @@ export default {
 
     // SVG coordinate math for print A4 portrait view (compact scale)
     getEffectiveMaxY(metric) {
-      const allValues = [...metric.target, ...metric.actual].map(v => Number(v) || 0);
+      const allValues = [...metric.target, ...metric.actual].map(
+        (v) => Number(v) || 0
+      );
       const actualMax = Math.max(...allValues, 0);
       let max = metric.maxY || 25;
       if (actualMax > max) {
-         if (actualMax <= 5) max = 5;
-         else if (actualMax <= 10) max = 10;
-         else if (actualMax <= 20) max = 20;
-         else if (actualMax <= 25) max = 25;
-         else if (actualMax <= 50) max = 50;
-         else if (actualMax <= 100) max = 100;
-         else if (actualMax <= 200) max = 200;
-         else max = Math.ceil(actualMax / 50) * 50;
+        if (actualMax <= 5) max = 5;
+        else if (actualMax <= 10) max = 10;
+        else if (actualMax <= 20) max = 20;
+        else if (actualMax <= 25) max = 25;
+        else if (actualMax <= 50) max = 50;
+        else if (actualMax <= 100) max = 100;
+        else if (actualMax <= 200) max = 200;
+        else max = Math.ceil(actualMax / 50) * 50;
       }
       return max;
     },
@@ -705,7 +719,7 @@ export default {
       for (let v = max; v >= 0; v -= step) {
         gridValues.push(v);
       }
-      
+
       if (gridValues[gridValues.length - 1] !== 0) {
         if (gridValues[gridValues.length - 1] > 0) {
           gridValues.push(0);
